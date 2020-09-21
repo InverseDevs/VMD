@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
@@ -7,6 +8,21 @@
 <body>
 
 Main VMD page
+
+<div sec:authorize="isAuthenticated()">
+    some text for everyone
+</div>
+<div sec:authorize="hasRole('ROLE_ADMIN')">
+    This content is only shown to administrators.
+</div>
+<div sec:authorize="hasRole('ROLE_USER')">
+    This content is only shown to users.
+</div>
+
+<br>
+<a href="/login">Войти</a>
+<br>
+<a href="/registration">Регистрация</a>
 
 </body>
 </html>
