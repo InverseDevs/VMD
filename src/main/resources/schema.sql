@@ -1,11 +1,11 @@
 create table if not exists users(
-  id       int,
+  id       serial,
   username varchar(256),
   password varchar(256)
 );
 
 create table if not exists roles(
-  id       int,
+  id       serial,
   name     varchar(256)
 );
 

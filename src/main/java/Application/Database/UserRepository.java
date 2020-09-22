@@ -40,8 +40,7 @@ public class UserRepository implements DBRepository<User> {
 
     @Override
     public User save(User user) {
-        jdbc.update("insert into users (id, username, password) values (?,?,?)",
-                user.getId(),
+        jdbc.update("insert into users (username, password) values (?,?)",
                 user.getUsername(),
                 user.getPassword());
         return user;

@@ -60,7 +60,7 @@ public class UserService implements UserDetailsService {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         jdbc.update("insert into user_to_role (user_id, role_id) values (?,?)",
-                user.getId(), 1);
+                userRepository.findByUsername(user.getUsername()).getId(), 1);
         return true;
     }
 

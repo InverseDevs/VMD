@@ -35,7 +35,7 @@ public class RoleRepository implements DBRepository<Role> {
 
     @Override
     public Role save(Role role) {
-        jdbc.update("insert into roles (id, name) values (?,?)",
+        jdbc.update("insert into roles (name) values (?)",
                 role.getId(),
                 role.getName());
         return role;
