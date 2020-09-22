@@ -1,32 +1,32 @@
 package Application.Services;
 
-import Application.Database.RoleRepository;
 import Application.Database.UserRepository;
 import Application.Entities.Role;
 import Application.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
-    @PersistenceContext
-    private EntityManager em;
     @Autowired
     UserRepository userRepository;
     @Autowired
-    RoleRepository roleRepository;
-    @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    //Todo remove
+    private JdbcTemplate jdbc;
+
+    @Autowired
+    public UserService(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -40,11 +40,12 @@ public class UserService implements UserDetailsService {
     }
 
     public User findUserById(Long userId) {
-        Optional<User> userFromDb = userRepository.findById(userId);
-        return userFromDb.orElse(new User());
+        User user = userRepository.findById(userId);
+
+        return user != null ? user : new User();
     }
 
-    public List<User> allUsers() {
+    public Iterable<User> allUsers() {
         return userRepository.findAll();
     }
 
@@ -58,19 +59,16 @@ public class UserService implements UserDetailsService {
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+        jdbc.update("insert into user_to_role (user_id, role_id) values (?,?)",
+                user.getId(), 1);
         return true;
     }
 
     public boolean deleteUser(Long userId) {
-        if (userRepository.findById(userId).isPresent()) {
+        if (userRepository.findById(userId) != null) {
             userRepository.deleteById(userId);
             return true;
         }
         return false;
-    }
-
-    public List<User> usergtList(Long idMin) {
-        return em.createQuery("SELECT u FROM User u WHERE u.id > :paramId", User.class)
-                .setParameter("paramId", idMin).getResultList();
     }
 }
