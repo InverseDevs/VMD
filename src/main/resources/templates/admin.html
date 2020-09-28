@@ -25,11 +25,11 @@
                     <th:forEach items="${user.roles}" var="role">${role.name}; </th:forEach>
                 </td>
                 <td>
-                    <form action="${pageContext.request.contextPath}/admin" method="post">
-                        <input type="hidden" name="userId" value="${user.id}"/>
-                        <input type="hidden" name="action" value="delete"/>
-                        <button type="submit">Delete</button>
-                    </form>
+<!--                    <form action="${pageContext.request.contextPath}/admin" method="post">-->
+<!--                        <input type="hidden" name="userId" value="${user.id}"/>-->
+<!--                        <input type="hidden" name="action" value="delete"/>-->
+<!--                        <button type="submit">Delete</button>-->
+<!--                    </form>-->
                 </td>
             </tr>
         </th:forEach>

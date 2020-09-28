@@ -1,5 +1,6 @@
 package Application.Database;
 
+import Application.Entities.Role;
 import Application.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -20,30 +22,89 @@ public class UserRepository implements DBRepository<User> {
 
     @Override
     public Iterable<User> findAll() {
-        return jdbc.query("select id, username, password from users", this::mapRowToUser);
+        return jdbc.query("select " +
+                "users.id as id, " +
+                "users.username as username, " +
+                "users.password as password, " +
+                "users.email as email, " +
+                "users.token as token, " +
+                "users.permitted as permitted, " +
+                "roles.id as role_id, " +
+                "roles.name as role " +
+                "from users " +
+                "inner join user_to_role on users.id = user_to_role.user_id " +
+                "inner join roles on roles.id = user_to_role.role_id", this::mapRowToUser);
     }
 
     @Override
     public User findById(Long id) {
-        List<User> users = jdbc.query("select id, username, password from users where id =" + id,
+        List<User> users = jdbc.query("select " +
+                        "users.id as id, " +
+                        "users.username as username, " +
+                        "users.password as password, " +
+                        "users.email as email, " +
+                        "users.token as token, " +
+                        "users.permitted as permitted, " +
+                        "roles.id as role_id, " +
+                        "roles.name as role " +
+                        "from users " +
+                        "inner join user_to_role on users.id = user_to_role.user_id " +
+                        "inner join roles on roles.id = user_to_role.role_id where users.id =" + id,
                 this::mapRowToUser);
 
         return users.size() != 0 ? users.get(0) : null;
     }
 
     public User findByUsername(String username) {
-        List<User> users = jdbc.query("select id, username, password from users where username ='" + username + "'",
+        List<User> users = jdbc.query("select " +
+                        "users.id as id, " +
+                        "users.username as username, " +
+                        "users.password as password, " +
+                        "users.email as email, " +
+                        "users.token as token, " +
+                        "users.permitted as permitted, " +
+                        "roles.id as role_id, " +
+                        "roles.name as role " +
+                        "from users " +
+                        "inner join user_to_role on users.id = user_to_role.user_id " +
+                        "inner join roles on roles.id = user_to_role.role_id where users.username ='" + username + "'",
                 this::mapRowToUser);
 
         return users.size() != 0 ? users.get(0) : null;
     }
 
+    public User findByEmail(String email) {
+        List<User> users = jdbc.query("select " +
+                        "users.id as id, " +
+                        "users.username as username, " +
+                        "users.password as password, " +
+                        "users.email as email, " +
+                        "users.token as token, " +
+                        "users.permitted as permitted, " +
+                        "roles.id as role_id, " +
+                        "roles.name as role " +
+                        "from users " +
+                        "inner join user_to_role on users.id = user_to_role.user_id " +
+                        "inner join roles on roles.id = user_to_role.role_id where users.email ='" + email + "'",
+                this::mapRowToUser);
+
+        return users.size() != 0 ? users.get(0) : null;
+    }
+
+    public void permitUser(String token) {
+        jdbc.update("update users set permitted = true where token = '" + token + "'");
+    }
+
     @Override
     public User save(User user) {
-        jdbc.update("insert into users (username, password) values (?,?)",
+        jdbc.update("insert into users (username, password, email, token, permitted) values (?,?,?,?, false)",
                 user.getUsername(),
-                user.getPassword());
-        return user;
+                user.getPassword(),
+                user.getEmail(),
+                user.getToken());
+        User newUser = jdbc.queryForObject("select id from users where username = '" + user.getUsername() + "'", this::mapRowToId);
+        jdbc.update("insert into user_to_role (user_id, role_id) values (?,?)", newUser.getId(), 1);
+        return newUser;
     }
 
     @Override
@@ -65,7 +126,18 @@ public class UserRepository implements DBRepository<User> {
         user.setId(resultSet.getLong("id"));
         user.setUsername(resultSet.getString("username"));
         user.setPassword(resultSet.getString("password"));
+        user.setEmail(resultSet.getString("email"));
+        user.setToken(resultSet.getString("token"));
+        user.setPermitted(resultSet.getBoolean("permitted"));
+        user.setRoles(Collections.singleton(new Role(resultSet.getLong("role_id"), resultSet.getString("role"))));
 
+        return user;
+    }
+
+    private User mapRowToId(ResultSet resultSet, int rowNum) throws SQLException {
+        User user = new User();
+
+        user.setId(resultSet.getLong("id"));
         return user;
     }
 }

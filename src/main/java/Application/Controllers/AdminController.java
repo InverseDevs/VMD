@@ -15,13 +15,13 @@ public class AdminController {
     private UserService userService;
 
     @GetMapping("/admin")
-    public String userList(Model model) {
+    public String getUserList(Model model) {
         model.addAttribute("allUsers", userService.allUsers());
         return "admin";
     }
 
 //    @PostMapping("/admin")
-//    public String  deleteUser(@RequestParam(required = true, defaultValue = "" ) Long userId,
+//    public String deleteUser(@RequestParam(required = true, defaultValue = "" ) Long userId,
 //                              @RequestParam(required = true, defaultValue = "" ) String action,
 //                              Model model) {
 //        if (action.equals("delete")){
@@ -30,8 +30,8 @@ public class AdminController {
 //        return "redirect:/admin";
 //    }
 //
-//    @GetMapping("/admin/gt/{userId}")
-//    public String  gtUser(@PathVariable("userId") Long userId, Model model) {
+//    @GetMapping("/admin/get/{userId}")
+//    public String  getUser(@PathVariable("userId") Long userId, Model model) {
 //        model.addAttribute("allUsers", userService.usergtList(userId));
 //        return "admin";
 //    }

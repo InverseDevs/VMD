@@ -18,6 +18,10 @@
 Main VMD page
 
 <div sec:authorize="isAuthenticated()">
+<!--    Authenticated username:-->
+<!--    <div sec:authentication="name"></div>-->
+<!--    Authenticated user roles:-->
+<!--    <div sec:authentication="principal.authorities"></div>-->
     some text for everyone
 </div>
 <div sec:authorize="hasRole('ROLE_ADMIN')">
@@ -27,10 +31,23 @@ Main VMD page
     This content is only shown to users.
 </div>
 
+<div sec:authorize="hasRole('ADMIN')">
+    This content is only shown to administrators. 2
+</div>
+<div sec:authorize="hasRole('USER')">
+    This content is only shown to users. 2
+</div>
+
 <br>
 <a href="/login">Войти</a>
 <br>
 <a href="/registration">Регистрация</a>
+
+<div sec:authorize="isAuthenticated()">
+    <form method="POST" modelAttribute="userForm" action="/exit">
+        <button type="submit">Выйти</button>
+    </form>
+</div>
 
 </body>
 </html>

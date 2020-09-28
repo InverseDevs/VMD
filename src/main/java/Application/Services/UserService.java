@@ -4,29 +4,18 @@ import Application.Database.UserRepository;
 import Application.Entities.Role;
 import Application.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.UUID;
 
 @Service
 public class UserService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
-    @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    //Todo remove
-    private JdbcTemplate jdbc;
-
-    @Autowired
-    public UserService(JdbcTemplate jdbc) {
-        this.jdbc = jdbc;
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -45,6 +34,12 @@ public class UserService implements UserDetailsService {
         return user != null ? user : new User();
     }
 
+    public User findUserByEmail(String email) {
+        User user = userRepository.findByEmail(email);
+
+        return user != null ? user : new User();
+    }
+
     public Iterable<User> allUsers() {
         return userRepository.findAll();
     }
@@ -57,11 +52,13 @@ public class UserService implements UserDetailsService {
         }
 
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setToken(generateToken());
         userRepository.save(user);
-        jdbc.update("insert into user_to_role (user_id, role_id) values (?,?)",
-                userRepository.findByUsername(user.getUsername()).getId(), 1);
         return true;
+    }
+
+    public void permitUser(String token) {
+        userRepository.permitUser(token);
     }
 
     public boolean deleteUser(Long userId) {
@@ -70,5 +67,9 @@ public class UserService implements UserDetailsService {
             return true;
         }
         return false;
+    }
+
+    private String generateToken() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 }
