@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Source+Serif+Pro&display=swap"
+          rel="stylesheet">
+    <title>VMD Login Page</title>
+</head>
+<body>
+<header>
+    <div id="ellipse_left"></div>
+    <div id="big_ellipse_left"></div>
+    <div id="big_ellipse_right"></div>
+    <div id="small_ellipse_top"></div>
+    <div id="small_ellipse_middle"></div>
+    <div id="small_ellipse_bottom"></div>
+</header>
+<main>
+    <div id="text">
+        <img th:src="@{/images/logo_opacity.png}" alt="logo" id="logo"/>
+        <p id="title">VMD - первая в мире социальная сеть убийца</p>
+        <p id="subtitle">Мы не скрываем, что работаем на ФСБ</p>
+    </div>
+    <div id="form" class="flat-form">
+        <ul class="tabs">
+            <li>
+                <a href="#login" class="active">Войти</a>
+            </li>
+            <li>
+                <a href="#reset">Смена пароль</a>
+            </li>
+        </ul>
+        <div id="login" class="form-action show">
+            <div id="form-header">
+                <img th:src="@{/images/logo_opacity.png}" alt="logo" id="form_logo"/>
+                <a href="/registration" id="register">Регистрация</a>
+            </div>
+
+            <div>
+                <form method="POST" action="/authorization" th:object="${user}">
+
+                    <ul>
+                        <li>
+                            <input type="text" id="login-email" placeholder="Имя пользователя:"
+                                   th:field="${user.username}" autofocus="true"/>
+                        </li>
+                        <li>
+                            <input type="password" id="login-pass" placeholder="Пароль:"
+                                   th:field="${user.password}"/>
+                        </li>
+                        <li>
+                            <input type="submit" value="Войти" class="button"/>
+                        </li>
+                    </ul>
+
+                </form>
+            </div>
+
+        </div>
+        <div id="reset" class="form-action hide">
+            <div id="form-header">
+                <img th:src="@{/images/logo_opacity.png}" alt="logo" id="form_logo"/>
+            </div>
+            <form method="POST" action="/forgot_password" th:object="${user}">
+
+                <ul>
+                    <li>
+                        <input type="email" placeholder="Электронная почта:" th:field="${user.email}" autofocus="true"/>
+                    </li>
+                    <li>
+                        <input type="submit" value="Отправить" class="button"/>
+                    </li>
+                </ul>
+
+            </form>
+        </div>
+    </div>
+
+    <div id="shadow"></div>
+</main>
+
+<script th:src="@{/js/jquery.min.js}"></script>
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

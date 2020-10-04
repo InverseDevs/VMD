@@ -42,7 +42,7 @@ public class RegistrationController {
         MailSender mailSender = new MailSender();
         mailSender.sendVerification(user);
 
-        return "redirect:/";
+        return "login";
     }
 
     @GetMapping("/verification/{token}")
