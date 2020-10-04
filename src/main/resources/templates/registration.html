@@ -1,33 +1,33 @@
 <!DOCTYPE html>
-<html lang="en" >
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Source+Serif+Pro&display=swap" rel="stylesheet">
+    <title>VMD Registration Page</title>
 </head>
 <body>
-
-<div>
-    <form method="POST" modelAttribute="userForm" th:object="${user}">
-        <h2>Регистрация</h2>
-        <div>
-            <input type="text" th:field="${user.username}" placeholder="Username" autofocus="true"/>
-        </div>
-        <div>
-            <input type="text" th:field="${user.email}" placeholder="email"/>
-        </div>
-        <div>
-            <input type="password" th:field="${user.password}" placeholder="Password"/>
-        </div>
-        <div>
-            <input type="password" th:field="${user.passwordConfirm}" placeholder="Confirm your password"/>
-        </div>
-        <button type="submit">Зарегистрироваться</button>
-    </form>
-    <br>
-    <a href="/">Главная</a>
-    <br>
-    <a href="/login">Войти</a>
-</div>
+    <header>
+        <div id="reg-left-ellipse"></div>
+        <div id="reg-right-ellipse"></div>
+        <div id="reg-small-ellipse-1"></div>
+        <div id="reg-small-ellipse-2"></div>
+        <div id="reg-small-ellipse-3"></div>
+    </header>
+    <main>
+        <div id="reg-shadow"></div>
+        <form id="reg-form">
+            <div id="reg-form-header">
+            <img src="images/logo_opacity.png" alt="logo" id="reg-form-logo">
+            <p id="reg-form-title">Регистрация</p>
+            </div>
+            <input type="email" name="email" id="reg-email-field" placeholder="Почта">
+            <input type="text" name="login" id="reg-login-field" placeholder="Имя пользователя">
+            <input type="password" name="pass" id="reg-pass-field" placeholder="Пароль">
+            <input type="password" name="pass" id="reg-pass-field" placeholder="Повторите пароль">
+            <button><a href="after-registration.html">Зарегистрироваться</a></button>
+        </form>
+    </main>
 </body>
+</html>
