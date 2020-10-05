@@ -435,8 +435,9 @@ font-family: 'Source Serif Pro', serif; */
     color: #000;
     outline: none;
 }
-#reg-form button{
-    border: none;
+
+form #reg-btn{
+ border: none;
     display: block;
     background: #7EC272;
     height: 50px;
@@ -458,20 +459,22 @@ font-family: 'Source Serif Pro', serif; */
     transition: all 0.15s linear;
     outline: none;
 }
-#reg-form button:hover{
+#reg-btn:hover{
     background: #92CE76;
     -moz-box-shadow: 0 3px 1px #2e885d;
     -webkit-box-shadow: 0 3px 1px #2e885d;
     box-shadow: 0 3px 1px #2e885d;
 }
-#reg-form button a{
+#reg-btn a{
     text-decoration: none;
-    color: #000;
+        color: #000;
 }
-#reg-form button:active{
-    background:#74BC70;
+#reg-btn:active{
+background:#74BC70;
     box-shadow:  0 3px 1px #2e885d;
 }
+
+
 
 
 #reg-form-logo{
