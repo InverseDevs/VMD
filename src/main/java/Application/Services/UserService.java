@@ -28,6 +28,12 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    public User findUserByToken(String token) {
+        User user = userRepository.findByToken(token);
+
+        return user != null ? user : new User();
+    }
+
     public User findUserById(Long userId) {
         User user = userRepository.findById(userId);
 

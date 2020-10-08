@@ -91,6 +91,24 @@ public class UserRepository implements DBRepository<User> {
         return users.size() != 0 ? users.get(0) : null;
     }
 
+    public User findByToken(String token) {
+        List<User> users = jdbc.query("select " +
+                        "users.id as id, " +
+                        "users.username as username, " +
+                        "users.password as password, " +
+                        "users.email as email, " +
+                        "users.token as token, " +
+                        "users.permitted as permitted, " +
+                        "roles.id as role_id, " +
+                        "roles.name as role " +
+                        "from users " +
+                        "inner join user_to_role on users.id = user_to_role.user_id " +
+                        "inner join roles on roles.id = user_to_role.role_id where users.token ='" + token + "'",
+                this::mapRowToUser);
+
+        return users.size() != 0 ? users.get(0) : null;
+    }
+
     public void permitUser(String token) {
         jdbc.update("update users set permitted = true where token = '" + token + "'");
     }

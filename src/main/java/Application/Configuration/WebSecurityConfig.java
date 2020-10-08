@@ -26,6 +26,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/console/**").permitAll()
                 .antMatchers("/authorization").permitAll()
                 .antMatchers("/verification/**").permitAll()
+                .antMatchers("/message/**").permitAll()
+                .antMatchers("/chat/**").permitAll()
+                .antMatchers("/app/**").permitAll()
+                .antMatchers("/ws/**").permitAll()
                 .antMatchers("/css/**").permitAll()
                 .antMatchers("/js/**").permitAll()
                 .antMatchers("/images/**").permitAll()
@@ -47,13 +51,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService);
-
-//        auth
-//                .inMemoryAuthentication()
-//                .withUser("user")
-//                .password(bCryptPasswordEncoder().encode("password")).roles("USER")
-//                .and()
-//                .withUser("admin")
-//                .password(bCryptPasswordEncoder().encode("admin")).roles("ADMIN");
     }
 }

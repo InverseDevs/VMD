@@ -20,7 +20,7 @@ public class LoginController {
     public String getLogin(Model model) {
         model.addAttribute("user", new User());
 
-        return "login";
+        return "/login";
     }
 
     @PostMapping("/authorization")
@@ -34,7 +34,7 @@ public class LoginController {
                             userFromDB.getPassword(),
                             userFromDB.getRoles())
             );
-            return "/home";
+            return "redirect:/";
         } else {
             return "/login";
         }
@@ -43,7 +43,7 @@ public class LoginController {
     @PostMapping("/exit")
     public String exit() {
         SecurityContextHolder.getContext().setAuthentication(null);
-        return "/home";
+        return "redirect:/";
     }
 
     @GetMapping("/forgot_password")

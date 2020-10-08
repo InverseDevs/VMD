@@ -6,14 +6,15 @@
     <meta charset="UTF-8">
     <title>Home</title>
     <script type="application/javascript" src="https://unpkg.com/react@16.0.0/umd/react.production.min.js"></script>
-    <script type="application/javascript" src="https://unpkg.com/react-dom@16.0.0/umd/react-dom.production.min.js"></script>
+    <script type="application/javascript"
+            src="https://unpkg.com/react-dom@16.0.0/umd/react-dom.production.min.js"></script>
     <script type="application/javascript" src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
 </head>
 <body>
 
 <div id="root"></div>
 
-<script type="text/babel" th:src="@{/js/test.js}"></script>
+<!--<script type="text/babel" th:src="@{/js/test.js}"></script>-->
 
 Main VMD page
 
@@ -22,7 +23,8 @@ Main VMD page
     <!--    <div sec:authentication="name"></div>-->
     <!--    Authenticated user roles:-->
     <!--    <div sec:authentication="principal.authorities"></div>-->
-    some text for everyone
+
+    Authorized users only
 </div>
 <div sec:authorize="hasRole('ROLE_ADMIN')">
     This content is only shown to administrators.
@@ -37,6 +39,30 @@ Main VMD page
 <div sec:authorize="hasRole('USER')">
     This content is only shown to users. 2
 </div>
+
+
+
+
+<br>
+All users list:
+<div>
+    <table>
+        <thead>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        </thead>
+        <div th:each="user : ${users}">
+            <tr>
+                <td> <p th:text="${user.id}"> </td>
+                <td> <p th:text="${user.username}"> </td>
+                <td> <p th:text="${user.email}"> </td>
+                <td> <a th:href="|/chat/${user.token}|"> Написать </a> </td>
+            </tr>
+        </div>
+    </table>
+</div>
+
 
 <br>
 <a href="/login">Войти</a>
