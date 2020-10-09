@@ -31,7 +31,12 @@ create table if not exists chats(
 );
 
 create table if not exists messages(
-  chat_id int,
+  chat_id  int,
   sender   varchar(256),
-  message varchar(256)
+  message  varchar(256)
+);
+
+create table if not exists friends(
+  user1_id int,
+  user2_id int
 );

@@ -30,10 +30,12 @@ public class UserRepository implements DBRepository<User> {
                 "users.token as token, " +
                 "users.permitted as permitted, " +
                 "roles.id as role_id, " +
-                "roles.name as role " +
+                "roles.name as role, " +
+                "friends.user2_id as friend_id " +
                 "from users " +
                 "inner join user_to_role on users.id = user_to_role.user_id " +
-                "inner join roles on roles.id = user_to_role.role_id", this::mapRowToUser);
+                "inner join roles on roles.id = user_to_role.role_id " +
+                "left join friends on users.id = friends.user1_id", this::mapRowToUser);
     }
 
     @Override
@@ -46,10 +48,13 @@ public class UserRepository implements DBRepository<User> {
                         "users.token as token, " +
                         "users.permitted as permitted, " +
                         "roles.id as role_id, " +
-                        "roles.name as role " +
+                        "roles.name as role, " +
+                        "friends.user2_id as friend_id " +
                         "from users " +
                         "inner join user_to_role on users.id = user_to_role.user_id " +
-                        "inner join roles on roles.id = user_to_role.role_id where users.id =" + id,
+                        "inner join roles on roles.id = user_to_role.role_id " +
+                        "left join friends on users.id = friends.user1_id " +
+                        "where users.id =" + id,
                 this::mapRowToUser);
 
         return users.size() != 0 ? users.get(0) : null;
@@ -64,10 +69,13 @@ public class UserRepository implements DBRepository<User> {
                         "users.token as token, " +
                         "users.permitted as permitted, " +
                         "roles.id as role_id, " +
-                        "roles.name as role " +
+                        "roles.name as role, " +
+                        "friends.user2_id as friend_id " +
                         "from users " +
                         "inner join user_to_role on users.id = user_to_role.user_id " +
-                        "inner join roles on roles.id = user_to_role.role_id where users.username ='" + username + "'",
+                        "inner join roles on roles.id = user_to_role.role_id " +
+                        "left join friends on users.id = friends.user1_id " +
+                        "where users.username ='" + username + "'",
                 this::mapRowToUser);
 
         return users.size() != 0 ? users.get(0) : null;
@@ -82,10 +90,13 @@ public class UserRepository implements DBRepository<User> {
                         "users.token as token, " +
                         "users.permitted as permitted, " +
                         "roles.id as role_id, " +
-                        "roles.name as role " +
+                        "roles.name as role, " +
+                        "friends.user2_id as friend_id " +
                         "from users " +
                         "inner join user_to_role on users.id = user_to_role.user_id " +
-                        "inner join roles on roles.id = user_to_role.role_id where users.email ='" + email + "'",
+                        "inner join roles on roles.id = user_to_role.role_id " +
+                        "left join friends on users.id = friends.user1_id " +
+                        "where users.email ='" + email + "'",
                 this::mapRowToUser);
 
         return users.size() != 0 ? users.get(0) : null;
@@ -100,10 +111,13 @@ public class UserRepository implements DBRepository<User> {
                         "users.token as token, " +
                         "users.permitted as permitted, " +
                         "roles.id as role_id, " +
-                        "roles.name as role " +
+                        "roles.name as role, " +
+                        "friends.user2_id as friend_id " +
                         "from users " +
                         "inner join user_to_role on users.id = user_to_role.user_id " +
-                        "inner join roles on roles.id = user_to_role.role_id where users.token ='" + token + "'",
+                        "inner join roles on roles.id = user_to_role.role_id " +
+                        "left join friends on users.id = friends.user1_id " +
+                        "where users.token ='" + token + "'",
                 this::mapRowToUser);
 
         return users.size() != 0 ? users.get(0) : null;
@@ -123,6 +137,15 @@ public class UserRepository implements DBRepository<User> {
         User newUser = jdbc.queryForObject("select id from users where username = '" + user.getUsername() + "'", this::mapRowToId);
         jdbc.update("insert into user_to_role (user_id, role_id) values (?,?)", newUser.getId(), 1);
         return newUser;
+    }
+
+    public void addFriend(User user, Long friendId) {
+        jdbc.update("insert into friends (user1_id, user2_id) values (?,?)", user.getId(), friendId);
+    }
+
+    public void deleteFriend(User user, Long friendId) {
+        jdbc.update("delete from friends where user1_id = ? and user2_id = ?", user.getId(), friendId);
+        jdbc.update("delete from friends where user2_id = ? and user1_id = ?", user.getId(), friendId);
     }
 
     @Override
@@ -148,6 +171,7 @@ public class UserRepository implements DBRepository<User> {
         user.setToken(resultSet.getString("token"));
         user.setPermitted(resultSet.getBoolean("permitted"));
         user.setRoles(Collections.singleton(new Role(resultSet.getLong("role_id"), resultSet.getString("role"))));
+        user.setFriends(Collections.singleton(resultSet.getLong("friend_id")));
 
         return user;
     }

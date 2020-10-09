@@ -67,6 +67,10 @@ public class UserService implements UserDetailsService {
         userRepository.permitUser(token);
     }
 
+    public void addFriend(User user, User friend) {
+        userRepository.addFriend(user, friend.getId());
+    }
+
     public boolean deleteUser(Long userId) {
         if (userRepository.findById(userId) != null) {
             userRepository.deleteById(userId);

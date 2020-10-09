@@ -22,6 +22,7 @@ public class User implements UserDetails {
     private Boolean permitted;
     private String passwordConfirm;
     private Set<Role> roles;
+    private Set<Long> friends; // friends' ids
 
     @Override
     public String getUsername() {
@@ -58,4 +59,16 @@ public class User implements UserDetails {
         return password;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", token='" + token + '\'' +
+                ", permitted=" + permitted +
+                ", passwordConfirm='" + passwordConfirm + '\'' +
+                '}';
+    }
 }
