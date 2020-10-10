@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Repository
-public class UserRepository implements DBRepository<User> {
+public class UserRepository {
     private JdbcTemplate jdbc;
 
     @Autowired
@@ -20,7 +20,6 @@ public class UserRepository implements DBRepository<User> {
         this.jdbc = jdbc;
     }
 
-    @Override
     public Iterable<User> findAll() {
         return jdbc.query("select " +
                 "users.id as id, " +
@@ -38,7 +37,6 @@ public class UserRepository implements DBRepository<User> {
                 "left join friends on users.id = friends.user1_id", this::mapRowToUser);
     }
 
-    @Override
     public User findById(Long id) {
         List<User> users = jdbc.query("select " +
                         "users.id as id, " +
@@ -127,7 +125,6 @@ public class UserRepository implements DBRepository<User> {
         jdbc.update("update users set permitted = true where token = '" + token + "'");
     }
 
-    @Override
     public User save(User user) {
         jdbc.update("insert into users (username, password, email, token, permitted) values (?,?,?,?, false)",
                 user.getUsername(),
@@ -148,7 +145,6 @@ public class UserRepository implements DBRepository<User> {
         jdbc.update("delete from friends where user2_id = ? and user1_id = ?", user.getId(), friendId);
     }
 
-    @Override
     public User deleteById(Long id) {
         User userToRemove = findById(id);
         jdbc.update("delete from users where id = ?", id);

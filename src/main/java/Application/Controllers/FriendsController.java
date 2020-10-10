@@ -39,10 +39,13 @@ public class FriendsController {
                 String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
         User friend = userService.findUserByToken(token);
 
-        userService.addFriend(currentUser, friend);
+        if (!currentUser.getId().equals(friend.getId())) {
+            userService.addFriend(currentUser, friend);
 
-        //TODO Добавить оповещение пользователю
-        userService.addFriend(friend, currentUser);
+            //TODO Добавить оповещение пользователю
+            userService.addFriend(friend, currentUser);
+
+        }
 
         return "redirect:/";
     }

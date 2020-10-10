@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Repository
-public class RoleRepository implements DBRepository<Role> {
+public class RoleRepository {
     private JdbcTemplate jdbc;
 
     @Autowired
@@ -17,12 +17,10 @@ public class RoleRepository implements DBRepository<Role> {
         this.jdbc = jdbc;
     }
 
-    @Override
     public Iterable<Role> findAll() {
         return jdbc.query("select id, name from roles", this::mapRowToRole);
     }
 
-    @Override
     public Role findById(Long id) {
         return jdbc.queryForObject("select id, name from roles where id =" + id,
                 this::mapRowToRole, id);
@@ -33,7 +31,6 @@ public class RoleRepository implements DBRepository<Role> {
                 this::mapRowToRole, name);
     }
 
-    @Override
     public Role save(Role role) {
         jdbc.update("insert into roles (name) values (?)",
                 role.getId(),
@@ -41,7 +38,6 @@ public class RoleRepository implements DBRepository<Role> {
         return role;
     }
 
-    @Override
     public Role deleteById(Long id) {
         Role roleToRemove = findById(id);
         jdbc.update("delete from roles where id = ?", id);

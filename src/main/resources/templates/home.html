@@ -63,18 +63,21 @@ All users list:
 </div>
 
 
-<br>
-<a href="/login">Войти</a>
-<br>
-<a href="/registration">Регистрация</a>
-<br>
-<a href="/friends">Друзья</a>
+<div sec:authorize="isAnonymous()">
+    <br>
+    <a href="/login">Войти</a>
+    <br>
+    <a href="/registration">Регистрация</a>
+</div>
 
 <div sec:authorize="hasRole('ADMIN')">
     <a href="/admin">Администрирование</a>
 </div>
 
 <div sec:authorize="isAuthenticated()">
+    <br>
+    <a href="/friends">Друзья</a>
+    <br>
     <form method="POST" modelAttribute="userForm" action="/exit">
         <button type="submit">Выйти</button>
     </form>
