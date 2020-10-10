@@ -4,6 +4,7 @@ drop table roles;
 drop table user_to_role;
 drop table chats;
 drop table messages;
+drop table friends;
 
 create table if not exists users(
   id        serial,
