@@ -152,13 +152,23 @@ public class UserRepository implements DBRepository<User> {
     public User deleteById(Long id) {
         User userToRemove = findById(id);
         jdbc.update("delete from users where id = ?", id);
+        jdbc.update("delete from user_to_role where user_id = ?", id);
         return userToRemove;
     }
 
     public User deleteByUsername(String username) {
         User userToRemove = findByUsername(username);
         jdbc.update("delete from users where username = '?'", username);
+        jdbc.update("delete from user_to_role where user_id = ?", userToRemove.getId());
         return userToRemove;
+    }
+
+    public void makeAdmin(User user) {
+        jdbc.update("update user_to_role set role_id = 2 where user_id = " + user.getId());
+    }
+
+    public void makeUser(User user) {
+        jdbc.update("update user_to_role set role_id = 1 where user_id = " + user.getId());
     }
 
     private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {

@@ -1,13 +1,14 @@
 package Application.Controllers;
 
+import Application.Entities.User;
 import Application.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.stream.StreamSupport;
 
 @Controller
 public class AdminController {
@@ -16,23 +17,37 @@ public class AdminController {
 
     @GetMapping("/admin")
     public String getUserList(Model model) {
-        model.addAttribute("allUsers", userService.allUsers());
+        Iterable<User> users = userService.allUsers();
+
+        model.addAttribute("users", StreamSupport.stream(users.spliterator(), false).toArray());
+
         return "admin";
     }
 
-//    @PostMapping("/admin")
-//    public String deleteUser(@RequestParam(required = true, defaultValue = "" ) Long userId,
-//                              @RequestParam(required = true, defaultValue = "" ) String action,
-//                              Model model) {
-//        if (action.equals("delete")){
-//            userService.deleteUser(userId);
-//        }
-//        return "redirect:/admin";
-//    }
-//
-//    @GetMapping("/admin/get/{userId}")
-//    public String  getUser(@PathVariable("userId") Long userId, Model model) {
-//        model.addAttribute("allUsers", userService.usergtList(userId));
-//        return "admin";
-//    }
+    @GetMapping("/admin/delete/{token}")
+    public String deleteUser(@PathVariable("token") String token) {
+        User userToDelete = userService.findUserByToken(token);
+
+        userService.deleteUser(userToDelete.getId());
+
+        return "redirect:/admin";
+    }
+
+    @GetMapping("/admin/makeAdmin/{token}")
+    public String makeAdmin(@PathVariable("token") String token) {
+        User user = userService.findUserByToken(token);
+
+        userService.makeAdmin(user);
+
+        return "redirect:/admin";
+    }
+
+    @GetMapping("/admin/makeUser/{token}")
+    public String makeUser(@PathVariable("token") String token) {
+        User user = userService.findUserByToken(token);
+
+        userService.makeUser(user);
+
+        return "redirect:/admin";
+    }
 }

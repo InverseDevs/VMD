@@ -67,6 +67,14 @@ public class UserService implements UserDetailsService {
         userRepository.permitUser(token);
     }
 
+    public void makeAdmin(User user) {
+        userRepository.makeAdmin(user);
+    }
+
+    public void makeUser(User user) {
+        userRepository.makeUser(user);
+    }
+
     public void addFriend(User user, User friend) {
         userRepository.addFriend(user, friend.getId());
     }

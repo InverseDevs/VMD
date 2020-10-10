@@ -1,40 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.w3.org/1999/xhtml">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Admin</title>
 </head>
 <body>
+
 <div>
     <table>
         <thead>
         <th>ID</th>
         <th>UserName</th>
         <th>Password</th>
+        <th>Email</th>
+        <th>Token</th>
+        <th>Is permitted</th>
         <th>Roles</th>
         </thead>
-        <th:forEach items="${allUsers}" var="user">
+        <div th:each="user : ${users}">
             <tr>
-                <td>${user.id}</td>
-                <td>${user.username}</td>
-                <td>${user.password}</td>
+                <td><p th:text="${user.id}"></td>
+                <td><p th:text="${user.username}"></td>
+                <td><p th:text="${user.password}"></td>
+                <td><p th:text="${user.email}"></td>
+                <td><p th:text="${user.token}"></td>
+                <td><p th:text="${user.permitted}"></td>
                 <td>
-                    <th:forEach items="${user.roles}" var="role">${role.name}; </th:forEach>
+                    <div th:each="role : ${user.roles}">
+                        <p th:text="${role.name}">
+                    </div>
                 </td>
-                <td>
-                    <!--                    <form action="${pageContext.request.contextPath}/admin" method="post">-->
-                    <!--                        <input type="hidden" name="userId" value="${user.id}"/>-->
-                    <!--                        <input type="hidden" name="action" value="delete"/>-->
-                    <!--                        <button type="submit">Delete</button>-->
-                    <!--                    </form>-->
-                </td>
+                <td> <a th:href="|/admin/delete/${user.token}|"> Удалить </a> </td>
+                <td> <a th:href="|/admin/makeAdmin/${user.token}|"> Повысить до администратора </a> </td>
+                <td> <a th:href="|/admin/makeUser/${user.token}|"> Понизить до пользователя </a> </td>
             </tr>
-        </th:forEach>
+        </div>
     </table>
-    <a href="/">Главная</a>
 </div>
+
+<a href="/">Главная</a>
+
 </body>
 </html>
