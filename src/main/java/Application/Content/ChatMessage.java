@@ -1,15 +1,13 @@
-package Application.Messages;
+package Application.Content;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ChatMessage {
+public class ChatMessage extends Content {
     private Long chatId;
     private MessageType type;
-    private String content;
-    private String sender;
     private String receiver;
 
     public enum MessageType {

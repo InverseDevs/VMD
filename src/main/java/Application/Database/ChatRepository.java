@@ -1,7 +1,7 @@
 package Application.Database;
 
 import Application.Entities.User;
-import Application.Messages.ChatMessage;
+import Application.Content.ChatMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;

@@ -1,7 +1,7 @@
 package Application.Controllers;
 
 import Application.Entities.User;
-import Application.Messages.ChatMessage;
+import Application.Content.ChatMessage;
 import Application.Services.ChatService;
 import Application.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
