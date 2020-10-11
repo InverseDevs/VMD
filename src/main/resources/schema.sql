@@ -5,6 +5,7 @@ drop table user_to_role;
 drop table chats;
 drop table messages;
 drop table friends;
+drop table users_info;
 
 create table if not exists users(
   id        serial,
@@ -40,4 +41,12 @@ create table if not exists messages(
 create table if not exists friends(
   user1_id int,
   user2_id int
+);
+
+create table if not exists users_info(
+  user_id       int,
+  username      varchar(256),
+  name          varchar(256),
+  birth_town    varchar(256),
+  birth_date    date
 );
