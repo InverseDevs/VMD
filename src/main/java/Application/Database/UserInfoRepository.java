@@ -2,11 +2,13 @@ package Application.Database;
 
 import Application.Content.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 @Repository
 public class UserInfoRepository {
@@ -30,11 +32,13 @@ public class UserInfoRepository {
     }
 
     public UserInfo findById(Long userId) {
-        return jdbc.queryForObject(find_query + "where user_id = ?", this::mapRowToUserInfo, userId);
+        List<UserInfo> users = jdbc.query(find_query + "where user_id = ?", this::mapRowToUserInfo, userId);
+        return users.size() == 0 ? null : users.get(0);
     }
 
     public UserInfo findByUsername(String username) {
-        return jdbc.queryForObject(find_query + "where username = ?", this::mapRowToUserInfo, username);
+        List<UserInfo> users = jdbc.query(find_query + "where username = ?", this::mapRowToUserInfo, username);
+        return users.size() == 0 ? null : users.get(0);
     }
 
     public UserInfo save(UserInfo info) {
