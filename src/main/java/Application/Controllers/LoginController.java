@@ -27,7 +27,7 @@ public class LoginController {
     public String postLogin(User user) {
         User userFromDB = (User) userService.loadUserByUsername(user.getUsername());
 
-        if (userFromDB.getPermitted()) {
+        if (userFromDB.getPermitted() && user.getPassword().equals(userFromDB.getPassword())) {
             SecurityContextHolder.getContext().setAuthentication(
                     new UsernamePasswordAuthenticationToken(
                             userFromDB.getUsername(),
