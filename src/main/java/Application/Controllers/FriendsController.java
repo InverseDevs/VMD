@@ -39,7 +39,7 @@ public class FriendsController {
                 String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
         User friend = userService.findUserByToken(token);
 
-        if (!currentUser.getId().equals(friend.getId())) {
+        if (!currentUser.getId().equals(friend.getId()) && !userService.friendExists(currentUser, friend)) {
             userService.addFriend(currentUser, friend);
 
             //TODO Добавить оповещение пользователю

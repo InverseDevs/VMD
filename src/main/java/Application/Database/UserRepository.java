@@ -140,6 +140,17 @@ public class UserRepository {
         jdbc.update("insert into friends (user1_id, user2_id) values (?,?)", user.getId(), friendId);
     }
 
+    public boolean checkFriend(User user, User friend) {
+        List<Long[]> friends = jdbc.query("select " +
+                        "user1_id, " +
+                        "user2_id " +
+                        "from friends " +
+                        "where user1_id =" + user.getId() +
+                        "and user2_id = " + friend.getId(), this::mapRowToFriends);
+
+        return friends.size() != 0;
+    }
+
     public void deleteFriend(User user, Long friendId) {
         jdbc.update("delete from friends where user1_id = ? and user2_id = ?", user.getId(), friendId);
         jdbc.update("delete from friends where user2_id = ? and user1_id = ?", user.getId(), friendId);
@@ -187,5 +198,12 @@ public class UserRepository {
 
         user.setId(resultSet.getLong("id"));
         return user;
+    }
+
+    private Long[] mapRowToFriends(ResultSet resultSet, int rowNum) throws SQLException {
+        Long[] friends = new Long[2];
+        friends[0] = resultSet.getLong("user1_id");
+        friends[1] = resultSet.getLong("user2_id");
+        return friends;
     }
 }
