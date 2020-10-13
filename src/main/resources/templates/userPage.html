@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${curr_info.name}"></title>
+</head>
+<body>
+    <h3 th:text="${curr_info.name}"></h3>
+    <b>Username: </b> <i th:text="${curr_info.username}"></i></br>
+    <b>User id: </b> <i th:text="${curr_info.userId}"></i></br>
+    <b>Birth date: </b> <i th:text="${curr_info.birthDate}"></i></br>
+    <b>Birth town: </b> <i th:text="${curr_info.birthTown}"></i></br>
+</body>
+</html>

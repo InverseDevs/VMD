@@ -37,7 +37,7 @@ public class UserRepository {
                 "left join friends on users.id = friends.user1_id", this::mapRowToUser);
     }
 
-    public User findById(Long id) {
+    private User findByParameter(Object parameter, String parameter_token) {
         List<User> users = jdbc.query("select " +
                         "users.id as id, " +
                         "users.username as username, " +
@@ -52,73 +52,25 @@ public class UserRepository {
                         "inner join user_to_role on users.id = user_to_role.user_id " +
                         "inner join roles on roles.id = user_to_role.role_id " +
                         "left join friends on users.id = friends.user1_id " +
-                        "where users.id =" + id,
-                this::mapRowToUser);
+                        "where users." + parameter_token + " = ? ", this::mapRowToUser, parameter);
 
         return users.size() != 0 ? users.get(0) : null;
+    }
+
+    public User findById(Long id) {
+        return this.findByParameter(id, "id");
     }
 
     public User findByUsername(String username) {
-        List<User> users = jdbc.query("select " +
-                        "users.id as id, " +
-                        "users.username as username, " +
-                        "users.password as password, " +
-                        "users.email as email, " +
-                        "users.token as token, " +
-                        "users.permitted as permitted, " +
-                        "roles.id as role_id, " +
-                        "roles.name as role, " +
-                        "friends.user2_id as friend_id " +
-                        "from users " +
-                        "inner join user_to_role on users.id = user_to_role.user_id " +
-                        "inner join roles on roles.id = user_to_role.role_id " +
-                        "left join friends on users.id = friends.user1_id " +
-                        "where users.username ='" + username + "'",
-                this::mapRowToUser);
-
-        return users.size() != 0 ? users.get(0) : null;
+        return this.findByParameter(username, "username");
     }
 
     public User findByEmail(String email) {
-        List<User> users = jdbc.query("select " +
-                        "users.id as id, " +
-                        "users.username as username, " +
-                        "users.password as password, " +
-                        "users.email as email, " +
-                        "users.token as token, " +
-                        "users.permitted as permitted, " +
-                        "roles.id as role_id, " +
-                        "roles.name as role, " +
-                        "friends.user2_id as friend_id " +
-                        "from users " +
-                        "inner join user_to_role on users.id = user_to_role.user_id " +
-                        "inner join roles on roles.id = user_to_role.role_id " +
-                        "left join friends on users.id = friends.user1_id " +
-                        "where users.email ='" + email + "'",
-                this::mapRowToUser);
-
-        return users.size() != 0 ? users.get(0) : null;
+        return this.findByParameter(email, "email");
     }
 
     public User findByToken(String token) {
-        List<User> users = jdbc.query("select " +
-                        "users.id as id, " +
-                        "users.username as username, " +
-                        "users.password as password, " +
-                        "users.email as email, " +
-                        "users.token as token, " +
-                        "users.permitted as permitted, " +
-                        "roles.id as role_id, " +
-                        "roles.name as role, " +
-                        "friends.user2_id as friend_id " +
-                        "from users " +
-                        "inner join user_to_role on users.id = user_to_role.user_id " +
-                        "inner join roles on roles.id = user_to_role.role_id " +
-                        "left join friends on users.id = friends.user1_id " +
-                        "where users.token ='" + token + "'",
-                this::mapRowToUser);
-
-        return users.size() != 0 ? users.get(0) : null;
+        return this.findByParameter(token, "token");
     }
 
     public void permitUser(String token) {

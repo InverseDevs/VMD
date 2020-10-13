@@ -1,7 +1,9 @@
 package Application.Controllers;
 
+import Application.Content.UserInfo;
 import Application.Email.MailSender;
 import Application.Entities.User;
+import Application.Services.UserInfoService;
 import Application.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,8 @@ public class RegistrationController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserInfoService infoService;
 
     @GetMapping("/registration")
     public String registration(Model model) {
@@ -38,6 +42,13 @@ public class RegistrationController {
             model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
             return "registration";
         }
+
+        // TODO внимание костыль!!!! убрать его!!!!!!!!!!!!!!!!!!!!!
+        User savedUser = userService.findUserByEmail(user.getEmail());
+        UserInfo info = new UserInfo();
+        info.setUsername(savedUser.getUsername());
+        info.setUserId(savedUser.getId());
+        infoService.updateUserInfo(info);
 
         MailSender mailSender = new MailSender();
         mailSender.sendVerification(user);

@@ -53,7 +53,7 @@ All users list:
         <div th:each="user : ${users}">
             <tr>
                 <td> <p th:text="${user.id}"> </td>
-                <td> <p th:text="${user.username}"> </td>
+                <td> <a th:href = "|/user/${user.username}|"> <p th:text="${user.username}"></p></a></td>
                 <td> <p th:text="${user.email}"> </td>
                 <td> <a th:href="|/chat/${user.token}|"> Написать </a> </td>
                 <td> <a th:href="|/friends/${user.token}|"> Добавить в друзья </a> </td>
@@ -77,6 +77,8 @@ All users list:
 <div sec:authorize="isAuthenticated()">
     <br>
     <a href="/friends">Друзья</a>
+    <br>
+    <a href="/settings">Настройки</a>
     <br>
     <form method="POST" modelAttribute="userForm" action="/exit">
         <button type="submit">Выйти</button>
