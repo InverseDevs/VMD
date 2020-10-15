@@ -10,7 +10,8 @@
         <b>Your username:</b><input type="text" readonly th:field="${userInfo.username}" th:value="${userInfo.username}" /><br>
         <b>Your name:</b><input type="text" th:field="${userInfo.name}" th:value="${userInfo.name}" /><br>
         <b>Your birth town:</b><input type="text" th:field="${userInfo.birthTown}" th:value="${userInfo.birthTown}" /><br>
-<!--        <input type="date" th:field="*{birth}" th:value="*{birth}" />-->
+        <b>Your birth date:</b><input type="date" th:field="${userInfo.textBirthDate}" th:value="${userInfo.textBirthDate}" /><br>
+
 
         <input type="submit" value="Edit" />
 </form>
