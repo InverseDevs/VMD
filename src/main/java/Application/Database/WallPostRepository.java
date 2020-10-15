@@ -45,7 +45,7 @@ public class WallPostRepository {
     public WallPost save(WallPost post) {
         jdbc.update("insert into wall_posts(page_type, page_id, sender, message, sent_time) " +
                 "values (?,?,?,?,?)",
-                post.getPageId(), post.getPageType().toString(), post.getPageId(),
+                post.getPageType().toString(), post.getPageId(),
                 post.getSender(), post.getContent(), post.getSentTime());
         return post;
     }
