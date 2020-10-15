@@ -23,3 +23,9 @@ values (3, 'skelantros', 'Alex Egorowski', 'Zelenokumsk', null);
 
 insert into users_info(user_id, username, name, birth_town, birth_date)
 values (2, 'test1', 'Test account', 'VMD Network', null);
+
+insert into wall_posts(id, page_type, page_id, sender, message, sent_time)
+values (1, 'USER', 3, 'skelantros', 'Hello VMD!', '2020-10-14');
+
+insert into wall_posts(id, page_type, page_id, sender, message, sent_time)
+values (2, 'USER', 3, 'test1', 'Hello skelantros!', '2020-10-15');

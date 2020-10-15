@@ -6,6 +6,7 @@ drop table chats;
 drop table messages;
 drop table friends;
 drop table users_info;
+drop table wall_posts;
 
 create table if not exists users(
   id        serial,
@@ -49,4 +50,13 @@ create table if not exists users_info(
   name          varchar(256),
   birth_town    varchar(256),
   birth_date    date
+);
+
+create table if not exists wall_posts(
+  id            serial,
+  page_type     varchar(16),
+  page_id       int,
+  sender        varchar(256),
+  message       varchar(256),
+  sent_time     date
 );
