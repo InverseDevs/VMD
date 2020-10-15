@@ -12,9 +12,15 @@
     <b>Birth date: </b> <i th:text="${curr_info.birthDate}"></i></br>
     <b>Birth town: </b> <i th:text="${curr_info.birthTown}"></i></br>
 
+    <h2>Write something on my page!</h2>
+    <form th:object="${post}" th:method="POST">
+        <input type="text" th:field="${post.content}"/><br>
+        <input type="submit" value="Send a post" />
+    </form>
+
     <h2>Posts: </h2>
     <div th:each="post : ${posts}">
-        <h4 th:text="${post.sender}"></h4>
+        <h3 th:text="${post.sender}"></h3>
         <b>Sent at: </b> <i th:text="${post.sentTime}"></i></br>
         <b>Message: </b> <i th:text="${post.content}"></i></br>
     </div>
