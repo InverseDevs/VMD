@@ -4,6 +4,7 @@
 node/**/
 node/*
 node/**
+node_modules/**
 
 # User-specific stuff
 .idea/**/workspace.xml
