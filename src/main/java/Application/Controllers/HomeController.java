@@ -23,4 +23,9 @@ public class HomeController {
 
         return "home";
     }
+
+    @GetMapping("/chattest")
+    public String getChatIndex(Model model) {
+        return "chatIndex";
+    }
 }
