@@ -61,3 +61,4 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 .idea/discord.xml
 package-lock.json
+src/main/resources/static/built/bundle.js
