@@ -13,7 +13,6 @@
   "scripts": {
     "watch": "webpack --watch -d --output ./target/classes/static/built/bundle.js",
     "dev": "react-scripts start",
-    "start": "webpack --mode development --watch",
     "build": "webpack --mode production",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
