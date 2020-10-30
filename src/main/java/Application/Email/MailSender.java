@@ -11,8 +11,8 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class MailSender {
-    private static final String URL = "https://inversedevs.herokuapp.com/verification/";
-    //private static final String URL = "http://localhost:8080/verification/";
+    //private static final String URL = "https://inversedevs.herokuapp.com/verification/";
+    private static final String URL = "http://localhost:8080/verification/";
 
     private static final String SMTP_SERVER = "smtp.yandex.ru";
     private static final String SMTP_PORT = "465";
