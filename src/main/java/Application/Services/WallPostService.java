@@ -18,7 +18,9 @@ public class WallPostService {
         return repository.findByPage(userId, WallPost.PageType.USER);
     }
 
-    public WallPost postById(Long id) { return repository.findById(id); }
+    public WallPost postById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
 
     public void addPost(WallPost post) {
         post.setSentTime(new Date());
