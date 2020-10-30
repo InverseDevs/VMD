@@ -12,10 +12,7 @@
   },
   "scripts": {
     "watch": "webpack --watch -d --output ./target/classes/static/built/bundle.js",
-    "dev": "react-scripts start",
     "build": "webpack --mode production",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
     "heroku-postbuild": "npm run build"
   },
   "devDependencies": {
