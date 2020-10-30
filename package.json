@@ -12,8 +12,8 @@
   },
   "scripts": {
     "watch": "webpack --watch -d --output ./target/classes/static/built/bundle.js",
-    "build": "webpack --mode production",
-    "heroku-postbuild": "npm run build"
+    "build": "webpack --mode development",
+    "heroku": "npm run build"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
