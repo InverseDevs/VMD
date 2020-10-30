@@ -12,7 +12,7 @@
   },
   "scripts": {
     "watch": "webpack --watch -d --output ./target/classes/static/built/bundle.js",
-    "build": "webpack --mode development",
+    "start": "webpack --mode development --watch",
     "heroku": "npm run build"
   },
   "devDependencies": {
