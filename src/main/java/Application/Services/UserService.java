@@ -8,11 +8,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class UserService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
@@ -35,9 +38,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User findUserById(Long userId) {
-        User user = userRepository.findById(userId);
-
-        return user != null ? user : new User();
+        return userRepository.findById(userId).orElse(new User());
     }
 
     public User findUserByEmail(String email) {
@@ -84,7 +85,8 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean deleteUser(Long userId) {
-        if (userRepository.findById(userId) != null) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
             userRepository.deleteById(userId);
             return true;
         }

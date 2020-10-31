@@ -4,20 +4,27 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
+import javax.persistence.*;
 import java.util.Set;
 
 @Getter
 @Setter
+@Entity
+@Table(name = "roles")
 public class Role implements GrantedAuthority {
+    // TODO на данный момент идентификатор роли не генерируется, в будущем исправить
+    @Id
     private Long id;
+
     private String name;
+
+    @ManyToMany
+    @JoinTable(name = "user_to_role",
+    joinColumns = @JoinColumn(name = "role_id"),
+    inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> users;
 
     public Role() {
-    }
-
-    public Role(Long id) {
-        this.id = id;
     }
 
     public Role(Long id, String name) {

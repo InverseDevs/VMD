@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -23,11 +24,7 @@ public class FriendsController {
         User currentUser = (User) userService.loadUserByUsername(
                 String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
 
-        List<User> friends = new ArrayList<>();
-        for (Long friendId : currentUser.getFriends()) {
-            friends.add(userService.findUserById(friendId));
-        }
-
+        List<User> friends = new ArrayList<>(currentUser.getFriends());
         model.addAttribute("friends", friends.toArray());
 
         return "friends";
