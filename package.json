@@ -14,7 +14,6 @@
     "watch": "webpack --watch -d --output ./target/classes/static/built/bundle.js",
     "build": "webpack -d --watch",
     "heroku": "npm run build",
-
     "client-install": "npm install --prefix client",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
