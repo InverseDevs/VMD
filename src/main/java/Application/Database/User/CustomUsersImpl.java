@@ -1,4 +1,4 @@
-package Application.Database;
+package Application.Database.User;
 
 import Application.Entities.Role;
 import Application.Entities.User;

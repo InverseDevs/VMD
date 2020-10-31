@@ -1,6 +1,6 @@
 package Application;
 import Application.Database.RoleRepository;
-import Application.Database.UserRepository;
+import Application.Database.User.UserRepository;
 import Application.Entities.Role;
 import Application.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.util.ArrayList;
-import java.util.UUID;
 
 @SpringBootApplication
 public class Starter {
