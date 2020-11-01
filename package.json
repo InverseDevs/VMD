@@ -12,7 +12,7 @@
   },
   "scripts": {
     "watch": "webpack --watch --progress --info-verbosity verbose -d --output ./src/main/resources/static/built/bundle.js",
-    "build": "npm run build"
+    "build": "webpack --output ./src/main/resources/static/built/bundle.js"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
