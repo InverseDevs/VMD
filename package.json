@@ -11,8 +11,7 @@
     "simplebar-react": "^2.3.0"
   },
   "scripts": {
-    "build": "webpack --watch -d --output ./target/classes/static/built/bundle.js",
-    "start": "./src/main/java/Application/Starter.java",
+    "build": "webpack -d --output ./target/classes/static/built/bundle.js",
     "postinstall": "webpack -p"
   },
   "devDependencies": {
