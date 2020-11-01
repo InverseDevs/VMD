@@ -12,7 +12,6 @@
   },
   "scripts": {
     "watch": "webpack --watch --progress --info-verbosity verbose -d --output ./src/main/resources/static/built/bundle.js",
-    "build": "webpack -d --watch --progress --info-verbosity verbose"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
