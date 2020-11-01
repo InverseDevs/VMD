@@ -13,8 +13,8 @@
   "scripts": {
     "watch": "webpack --watch -d --output ./target/classes/static/built/bundle.js",
     "build": "webpack -d --watch",
-    "start": "node ./src/main/java/Application/Starter.java",
-    "postinstall": "NODE_ENV=production webpack -p"
+    "start": "./src/main/java/Application/Starter.java",
+    "postinstall": "webpack -p"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
