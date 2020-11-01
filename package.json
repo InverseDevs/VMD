@@ -11,7 +11,7 @@
     "simplebar-react": "^2.3.0"
   },
   "scripts": {
-    "watch": "webpack --watch --progress --info-verbosity verbose -d --output ./src/main/resources/static/built/bundle.js",
+    "watch": "webpack --watch --progress --info-verbosity verbose -d --output ./src/main/resources/static/built/bundle.js"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
