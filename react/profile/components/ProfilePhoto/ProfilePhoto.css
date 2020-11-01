@@ -1,0 +1,25 @@
+.profile-photo{
+    position:relative;
+    top: 40px;
+    left: 10px;
+    width: 200px;
+    height: 240px;
+    background: #C4C4C4;
+}
+
+.profile-btn{
+    position:relative;
+    width: 140px;
+    height: 30px;
+    left: 40px;
+    top: 65px;
+    background: #7CBC5F;
+    border-radius: 50px;
+    border:none;
+    outline:none;
+    font-weight:bold;
+    font-size:14px;
+}
+.profile-btn:active{
+    border:1px solid black;
+}

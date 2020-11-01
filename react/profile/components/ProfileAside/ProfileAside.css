@@ -1,0 +1,17 @@
+
+.profile-friends, .profile-groups, .profile-music, .profile-chats{
+    width: 200px;
+    height: 60px;
+    margin-left: 50px;
+    margin-bottom: 40px;
+    background: #7CBC5F;
+    border-radius: 50px;
+    border:none;
+    outline:none;
+    font-weight:bold;
+    font-size:20px;
+} 
+
+.profile-friends:active, .profile-groups:active, .profile-music:active, .profile-chats:active{
+    border: 1px solid black;
+} 

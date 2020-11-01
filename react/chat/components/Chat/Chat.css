@@ -1,0 +1,20 @@
+.chat{
+    height: 680px;
+    overflow-y: scroll;
+    overflow-x:hidden;
+}
+.chat::-webkit-scrollbar{
+    width: 10px;
+    background: none;
+}
+.chat::-webkit-scrollbar-thumb{
+    background:none;
+}
+.chat::-webkit-scrollbar-thumb:hover{
+    background: #2A9E50;
+    border-radius: 7px;
+}
+.messages-container{
+    margin-bottom: 20px;
+    margin-top: 20px;
+}

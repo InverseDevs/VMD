@@ -1,0 +1,19 @@
+
+.profile-posts{
+    height: 680px;
+    min-width: 665px;
+    margin-right:120px;
+    overflow-y: scroll;
+    overflow-x:hidden;
+}
+.profile-posts::-webkit-scrollbar{
+    width: 10px;
+    background: none;
+}
+.profile-posts::-webkit-scrollbar-thumb{
+    background:none;
+}
+.profile-posts::-webkit-scrollbar-thumb:hover{
+    background: #2A9E50;
+    border-radius: 7px;
+}

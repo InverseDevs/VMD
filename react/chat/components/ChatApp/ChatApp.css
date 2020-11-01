@@ -1,0 +1,54 @@
+body{
+    margin:0;
+    overflow:hidden;
+    font-family: 'Source Serif Pro', sans-serif;
+}
+#chat-logo{
+    margin-left: 22%;
+}
+.chat-page{
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 100%), #92CE76;
+    height: 1007px;
+}
+
+.chat-big-ellipse{
+    position: absolute;
+    width: 440px;
+    height: 440px;
+    border: 1px solid #2B6C34;
+    box-sizing: border-box;
+    border-radius: 50%;
+    z-index: 1;
+}
+.chat-ellipse{
+    position:absolute;
+    width: 100px;
+    height: 100px;
+    background: #EEEEEE;
+    border-radius: 50%;
+    z-index:2;
+}
+#chat-big-1{
+    right:-44px;
+    top: -350px;
+}
+#chat-big-2{
+    right: -286px;
+    top: -12px;
+}
+#chat-1{
+    top: -41px;
+    right: 300px;
+}
+#chat-2{
+    top: 40px;
+    right: 80px;
+}
+#chat-3{
+    top: 220px;
+    right: 105px;
+}
+#chat-4{
+    top: 378px;
+    right: -30px;
+}

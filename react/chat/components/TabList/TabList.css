@@ -1,0 +1,30 @@
+
+.tab-list{
+    background: #92CE76;
+    display:flex;
+    height: 60px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    
+
+}
+.tab-list::-webkit-scrollbar{
+    width: 10px;
+    background: #7CBC5F;
+}
+.tab-list::-webkit-scrollbar-thumb{
+    background: none;
+}
+.tab-list::-webkit-scrollbar-thumb:hover{
+    background:  #2A9E50;
+    border-radius: 7px;
+}
+
+
+.tab-list:last-child .tab{
+    border-right: 0px;
+}
+
+
+
+

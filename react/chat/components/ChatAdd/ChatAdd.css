@@ -1,0 +1,19 @@
+#add-btn{
+    position:fixed;
+    width: 160px;
+    height: 160px;
+    background: #92CE76;
+    border-radius: 50%;
+    outline: none;
+    border: none;
+    margin-left: 20px;
+    overflow:hidden;
+    margin-top: 20px;
+    bottom:60px;
+}
+#add-btn-img{
+    width: 100px;
+    height: 100px;
+    background: #92CE76;
+    margin-left:0px;
+}

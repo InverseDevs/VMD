@@ -1,0 +1,29 @@
+
+.tab {
+    display: flex;
+    flex-direction: row;
+    background: #7CBC5F;
+    min-height: 40px;
+    color: white;
+    min-width: 160px;
+    border-right: 1px solid darkgreen;
+}
+
+.chat-name{
+    margin-left: 13%;
+    margin-top: 6%;
+}
+.close-div{
+    width: 30px;
+    height: 30px;
+    margin-top: 4%;
+    margin-left: 15%;
+    background: #C4C4C4;
+    border-radius: 50%;
+}
+
+.close-icon{
+    margin-left: 24%;
+    margin-top: 23%;
+}
+
