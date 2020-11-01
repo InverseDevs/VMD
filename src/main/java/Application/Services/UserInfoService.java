@@ -5,6 +5,8 @@ import Application.Database.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserInfoService {
     private UserInfoRepository repository;
@@ -15,7 +17,7 @@ public class UserInfoService {
     }
 
     public UserInfo findUserInfo(Long userId) {
-        return repository.findById(userId);
+        return repository.findById(userId).orElse(null);
     }
 
     public UserInfo findUserInfo(String username) {
@@ -23,8 +25,8 @@ public class UserInfoService {
     }
 
     public void updateUserInfo(UserInfo info) {
-        UserInfo prevInfo = repository.findById(info.getUserId());
-        if(prevInfo != null)
+        Optional<UserInfo> prevInfo = repository.findById(info.getUserId());
+        if(prevInfo.isPresent())
             repository.deleteById(info.getUserId());
         repository.save(info);
     }

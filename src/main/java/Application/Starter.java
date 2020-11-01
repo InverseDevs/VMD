@@ -1,6 +1,8 @@
 package Application;
+import Application.Content.UserInfo;
 import Application.Database.RoleRepository;
 import Application.Database.User.UserRepository;
+import Application.Database.UserInfoRepository;
 import Application.Entities.Role;
 import Application.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ public class Starter {
     UserRepository userRepo;
     @Autowired
     RoleRepository roleRepo;
+    @Autowired
+    UserInfoRepository infoRepo;
 
     public static void main(String[] args) {
         SpringApplication.run(Starter.class, args);
@@ -40,6 +44,12 @@ public class Starter {
                 userRepo.save(user);
                 userRepo.makeUser(user);
             }
+            ArrayList<UserInfo> infos = new ArrayList<>();
+            infos.add(new UserInfo(1L, "admin", "Admin", "VMD", null));
+            infos.add(new UserInfo(2L, "test1", "Test Account 1", "VMD", null));
+            infos.add(new UserInfo(3L, "test2", "Test Account 2", "VMD", null));
+            infos.add(new UserInfo(4L, "skelantros", "Alex Egorowski", "Zelenokumsk", null));
+            infos.forEach(i -> infoRepo.save(i));
         };
     }
 }
