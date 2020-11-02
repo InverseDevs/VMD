@@ -11,11 +11,9 @@
     "simplebar-react": "^2.3.0"
   },
   "scripts": {
-    "watch": "webpack --watch --progress --info-verbosity verbose -d --output ./src/main/resources/static/built/bundle.js",
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "watch": "webpack --watch --progress --colors --config webpack.conf.js",
+    "build": "webpack --watch"
+
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
