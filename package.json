@@ -12,9 +12,10 @@
   },
   "scripts": {
     "watch": "webpack --watch --progress --info-verbosity verbose -d --output ./src/main/resources/static/built/bundle.js",
-    "postinstall": "bower install",
-    "build": "webpack --watch"
-
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-scripts eject"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
