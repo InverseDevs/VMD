@@ -1,12 +1,12 @@
 -- TODO УБРАТЬ УБРАТЬ УБРАТЬ ПЕРЕД РЕЛИЗОМ ЭТО ТОЛЬКО ДЛЯ ТЕСТИРОВАНИЯ !!!
-drop table users;
-drop table roles;
-drop table user_to_role;
+--drop table users;
+--drop table roles;
+--drop table user_to_role;
 drop table chats;
 drop table messages;
-drop table friends;
-drop table users_info;
-drop table wall_posts;
+--drop table friends;
+--drop table users_info;
+--drop table wall_posts;
 --
 --create table if not exists users(
 --  id        serial,
