@@ -54,9 +54,9 @@ create table if not exists users_info(
 
 create table if not exists wall_posts(
   id            serial,
-  page_type     varchar(16),
-  page_id       int,
+  pageType     varchar(16),
+  pageId       int,
   sender        varchar(256),
   message       varchar(256),
-  sent_time     date
+  sentTime     date
 );
