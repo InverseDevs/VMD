@@ -1,6 +1,6 @@
 package Application.Controllers;
 
-import Application.Content.UserInfo;
+import Application.Entities.User.UserInfo;
 import Application.Services.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;

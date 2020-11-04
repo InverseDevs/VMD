@@ -1,7 +1,7 @@
-package Application.Entities;
+package Application.Entities.User;
 
+import Application.Entities.Role;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

@@ -1,5 +1,6 @@
 package Application.Entities;
 
+import Application.Entities.User.User;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;

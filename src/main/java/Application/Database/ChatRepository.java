@@ -1,6 +1,6 @@
 package Application.Database;
 
-import Application.Entities.User;
+import Application.Entities.User.User;
 import Application.Content.ChatMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;

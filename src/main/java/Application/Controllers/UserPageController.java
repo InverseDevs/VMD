@@ -1,13 +1,12 @@
 package Application.Controllers;
 
-import Application.Content.UserInfo;
+import Application.Entities.User.UserInfo;
 import Application.Content.WallPost;
-import Application.Entities.User;
+import Application.Entities.User.User;
 import Application.Services.UserInfoService;
 import Application.Services.UserService;
 import Application.Services.WallPostService;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;

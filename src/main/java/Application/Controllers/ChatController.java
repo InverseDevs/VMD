@@ -1,6 +1,6 @@
 package Application.Controllers;
 
-import Application.Entities.User;
+import Application.Entities.User.User;
 import Application.Content.ChatMessage;
 import Application.Services.ChatService;
 import Application.Services.UserService;

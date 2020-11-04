@@ -1,4 +1,4 @@
-package Application.Content;
+package Application.Entities.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

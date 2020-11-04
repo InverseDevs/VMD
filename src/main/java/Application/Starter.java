@@ -1,10 +1,10 @@
 package Application;
-import Application.Content.UserInfo;
+import Application.Entities.User.UserInfo;
 import Application.Database.RoleRepository;
 import Application.Database.User.UserRepository;
 import Application.Database.UserInfoRepository;
 import Application.Entities.Role;
-import Application.Entities.User;
+import Application.Entities.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

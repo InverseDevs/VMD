@@ -1,6 +1,6 @@
 package Application.Database.User;
 
-import Application.Entities.User;
+import Application.Entities.User.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

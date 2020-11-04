@@ -1,6 +1,6 @@
 package Application.Email;
 
-import Application.Entities.User;
+import Application.Entities.User.User;
 import com.sun.mail.smtp.SMTPTransport;
 
 import javax.mail.Message;

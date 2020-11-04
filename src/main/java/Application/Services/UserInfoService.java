@@ -1,6 +1,6 @@
 package Application.Services;
 
-import Application.Content.UserInfo;
+import Application.Entities.User.UserInfo;
 import Application.Database.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
