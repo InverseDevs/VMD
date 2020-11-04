@@ -19,7 +19,7 @@ import java.util.UUID;
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Size(min = 2, message = "Не меньше 2 знаков")
