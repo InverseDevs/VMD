@@ -2,7 +2,7 @@ package Application.Services;
 
 import Application.Database.User.UserRepository;
 import Application.Entities.Role;
-import Application.Entities.User;
+import Application.Entities.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

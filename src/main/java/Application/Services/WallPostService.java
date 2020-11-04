@@ -1,6 +1,6 @@
 package Application.Services;
 
-import Application.Content.WallPost;
+import Application.Entities.Content.WallPost;
 import Application.Database.WallPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

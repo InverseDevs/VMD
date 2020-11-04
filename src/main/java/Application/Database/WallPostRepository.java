@@ -1,6 +1,6 @@
 package Application.Database;
 
-import Application.Content.WallPost;
+import Application.Entities.Content.WallPost;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

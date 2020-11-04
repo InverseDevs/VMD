@@ -1,4 +1,4 @@
-package Application.Content;
+package Application.Entities.Content;
 
 import lombok.Getter;
 import lombok.Setter;

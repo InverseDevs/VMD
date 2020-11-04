@@ -1,7 +1,7 @@
 package Application.Controllers;
 
 import Application.Entities.User.UserInfo;
-import Application.Content.WallPost;
+import Application.Entities.Content.WallPost;
 import Application.Entities.User.User;
 import Application.Services.UserInfoService;
 import Application.Services.UserService;
