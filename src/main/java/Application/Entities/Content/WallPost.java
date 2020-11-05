@@ -1,16 +1,20 @@
 package Application.Entities.Content;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 @Table(name = "wall_posts")
 public class WallPost extends Content {
     private Long pageId;
@@ -33,5 +37,11 @@ public class WallPost extends Content {
                 return PageType.valueOf(s);
             }
         }
+    }
+
+    public WallPost(Long id, String sender, String content, Date sentTime, Long pageId, PageType pageType) {
+        super(id, sender, content, sentTime);
+        this.pageId = pageId;
+        this.pageType = pageType;
     }
 }
