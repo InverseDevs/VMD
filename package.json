@@ -14,7 +14,7 @@
   },
   "scripts": {
     "watch": "webpack --watch --progress --colors --config webpack.conf.js",
-    "build": "CI= npm run build"
+    "build": "CI= webpack --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
