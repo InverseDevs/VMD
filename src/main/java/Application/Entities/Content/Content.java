@@ -22,4 +22,10 @@ public class Content {
     @Column(name = "message")
     private String content;
     private Date sentTime;
+
+    public Content(String sender, String content, Date sentTime) {
+        this.sender = sender;
+        this.content = content;
+        this.sentTime = sentTime;
+    }
 }

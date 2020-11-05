@@ -44,4 +44,10 @@ public class WallPost extends Content {
         this.pageId = pageId;
         this.pageType = pageType;
     }
+
+    public WallPost(String sender, String content, Date sentTime, Long pageId, PageType pageType) {
+        super(sender, content, sentTime);
+        this.pageId = pageId;
+        this.pageType = pageType;
+    }
 }
