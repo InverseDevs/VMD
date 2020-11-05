@@ -56,7 +56,7 @@ public class Starter {
             infos.add(new UserInfo(1L, "admin", "Admin", "VMD", null));
             infos.add(new UserInfo(2L, "test1", "Test Account 1", "VMD", null));
             infos.add(new UserInfo(3L, "test2", "Test Account 2", "VMD", null));
-            infos.add(new UserInfo(4L, "skelantros", "Alex Egorowski", "Zelenokumsk", null));
+            infos.add(new UserInfo(4L, "skelantros", "Alex Egorowski", "Zelenokumsk", new Date(990561600000L)));
             infos.forEach(i -> infoRepo.save(i));
 
             ArrayList<WallPost> posts = new ArrayList<>();
