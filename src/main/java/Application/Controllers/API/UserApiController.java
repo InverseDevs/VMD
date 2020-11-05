@@ -1,5 +1,8 @@
 package Application.Controllers.API;
 
+import Application.Controllers.API.Exceptions.IdChangeAttemptException;
+import Application.Controllers.API.Exceptions.NoUserFoundException;
+import Application.Controllers.API.Exceptions.WrongRequestException;
 import Application.Database.UserInfoRepository;
 import Application.Entities.User.UserInfo;
 import Application.Starter;
@@ -67,17 +70,14 @@ public class UserApiController {
         if(infoOptional.isPresent()) {
             return new InfoWrapper(infoOptional.get());
         }
-        throw new RuntimeException("User with id " + id  + " does not exist");
+        throw new NoUserFoundException();
     }
 
     @PatchMapping
     public InfoWrapper patchOne(@RequestBody InfoWrapper wrapper) {
-        if(wrapper.id == null)
-            throw new RuntimeException("Can't use PATCH without user id");
-        UserInfo info = infoRepository.findById(wrapper.id)
-                .orElseThrow(() -> new RuntimeException("User with id " + wrapper.id + " does not exist"));
-        if(wrapper.username != null)
-            throw new RuntimeException("Can't change username");
+        if(wrapper.id == null) throw new WrongRequestException();
+        UserInfo info = infoRepository.findById(wrapper.id).orElseThrow(RuntimeException::new);
+        if(wrapper.username != null) throw new IdChangeAttemptException();
 
         // TODO костыльный мерж переделать!!!!!!!!!!!!!!!
         if(wrapper.name != null) info.setName(wrapper.name);
