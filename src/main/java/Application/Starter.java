@@ -15,6 +15,9 @@ import java.util.ArrayList;
 
 @SpringBootApplication
 public class Starter {
+    //public static final String homeLink = "http://inversedevs.herokuapp.com";
+    public static final String homeLink = "http://localhost:8080";
+    public static final String apiLink = "/api";
     @Autowired
     UserRepository userRepo;
     @Autowired
