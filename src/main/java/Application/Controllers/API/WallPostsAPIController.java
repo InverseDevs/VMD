@@ -1,18 +1,18 @@
 package Application.Controllers.API;
 
+import Application.Controllers.API.Exceptions.WallPostNotFoundException;
+import Application.Controllers.API.Exceptions.WrongRequestException;
 import Application.Database.WallPostRepository;
 import Application.Entities.Content.WallPost;
 import Application.Starter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -65,5 +65,28 @@ public class WallPostsAPIController {
     @GetMapping
     public List<WallPostWrapper> all() {
         return postRepository.findAll().stream().map(WallPostWrapper::new).collect(Collectors.toList());
+    }
+
+    @GetMapping("/{id}")
+    public WallPostWrapper one(@PathVariable long id) {
+        return new WallPostWrapper(postRepository.findById(id).orElseThrow(WallPostNotFoundException::new));
+    }
+
+    @GetMapping("page/{pageId}")
+    public List<WallPostWrapper> allPostsByPageId(@PathVariable long pageId,
+                                                  @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+                                                  @RequestParam(name = "page", defaultValue = "0") int currPage) {
+        return postRepository.findByPageId(pageId, PageRequest.of(currPage, pageSize))
+                .stream().map(WallPostWrapper::new).collect(Collectors.toList());
+    }
+
+    @PostMapping
+    public WallPostWrapper addPost(@RequestBody WallPostWrapper wrapper) {
+        if(wrapper.sender == null || wrapper.sentTime < 0
+                || wrapper.pageId == null || wrapper.message == null)
+            throw new WrongRequestException();
+        WallPost post = new WallPost(null, wrapper.sender, wrapper.message, new Date(),
+                wrapper.pageId, WallPost.PageType.USER);
+        return new WallPostWrapper(postRepository.save(post));
     }
 }
