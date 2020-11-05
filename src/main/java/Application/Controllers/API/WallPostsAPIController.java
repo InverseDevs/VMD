@@ -34,6 +34,8 @@ public class WallPostsAPIController {
         private Long pageId;
         private String pageType;
 
+        private String _href;
+
         public WallPostWrapper(WallPost post) {
             this.id = post.getId();
             this.sender = post.getSender();
@@ -42,6 +44,8 @@ public class WallPostsAPIController {
 
             this.pageId = post.getPageId();
             this.pageType = post.getPageType().toString();
+
+            this._href = Starter.homeLink + Starter.apiLink + apiWallPosts + "/" + id;
         }
 
         public WallPost toWallPost() {
@@ -58,6 +62,7 @@ public class WallPostsAPIController {
                     "sentTime=" + this.sentTime + "'" +
                     "pageId=" + this.pageId + "'" +
                     "pageType='" + this.pageType + "'" +
+                    "_href='" + this._href + "'" +
                     "}";
         }
     }
