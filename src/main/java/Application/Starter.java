@@ -1,4 +1,6 @@
 package Application;
+import Application.Database.WallPostRepository;
+import Application.Entities.Content.WallPost;
 import Application.Entities.User.UserInfo;
 import Application.Database.RoleRepository;
 import Application.Database.User.UserRepository;
@@ -12,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @SpringBootApplication
 public class Starter {
@@ -24,6 +27,8 @@ public class Starter {
     RoleRepository roleRepo;
     @Autowired
     UserInfoRepository infoRepo;
+    @Autowired
+    WallPostRepository postRepo;
 
     public static void main(String[] args) {
         SpringApplication.run(Starter.class, args);
@@ -53,6 +58,16 @@ public class Starter {
             infos.add(new UserInfo(3L, "test2", "Test Account 2", "VMD", null));
             infos.add(new UserInfo(4L, "skelantros", "Alex Egorowski", "Zelenokumsk", null));
             infos.forEach(i -> infoRepo.save(i));
+
+            ArrayList<WallPost> posts = new ArrayList<>();
+            WallPost.PageType type = WallPost.PageType.USER;
+            posts.add(new WallPost("skelantros", "Hello admin!", new Date(), 1L, type));
+            posts.add(new WallPost("test1", "thx for making me alive!", new Date(), 1L, type));
+            posts.add(new WallPost("test2", "u a de best", new Date(), 1L, type));
+            posts.add(new WallPost("admin", "Hello skelantros!", new Date(), 4L, type));
+            posts.add(new WallPost("test2", "hey twin!", new Date(), 2L, type));
+            posts.add(new WallPost("test1", "hi there!", new Date(), 3L, type));
+            posts.forEach(postRepo::save);
         };
     }
 }
