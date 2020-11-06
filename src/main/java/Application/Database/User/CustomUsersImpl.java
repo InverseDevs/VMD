@@ -1,7 +1,7 @@
 package Application.Database.User;
 
 import Application.Entities.Role;
-import Application.Entities.User.User;
+import Application.Entities.User;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;

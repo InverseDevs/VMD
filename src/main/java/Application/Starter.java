@@ -4,7 +4,7 @@ import Application.Entities.Content.WallPost;
 import Application.Database.RoleRepository;
 import Application.Database.User.UserRepository;
 import Application.Entities.Role;
-import Application.Entities.User.User;
+import Application.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

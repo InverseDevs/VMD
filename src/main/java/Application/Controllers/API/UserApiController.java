@@ -4,7 +4,7 @@ import Application.Controllers.API.Exceptions.IdChangeAttemptException;
 import Application.Controllers.API.Exceptions.NoUserFoundException;
 import Application.Controllers.API.Exceptions.WrongRequestException;
 import Application.Database.User.UserRepository;
-import Application.Entities.User.User;
+import Application.Entities.User;
 import Application.Starter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,7 @@
 package Application.Controllers;
 
 import Application.Email.MailSender;
-import Application.Entities.User.User;
+import Application.Entities.User;
 import Application.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

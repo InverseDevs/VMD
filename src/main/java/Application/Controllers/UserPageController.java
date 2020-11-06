@@ -1,7 +1,7 @@
 package Application.Controllers;
 
 import Application.Entities.Content.WallPost;
-import Application.Entities.User.User;
+import Application.Entities.User;
 import Application.Services.UserService;
 import Application.Services.WallPostService;
 import lombok.extern.slf4j.Slf4j;

@@ -1,8 +1,7 @@
 package Application.Controllers;
 
 import Application.Database.User.UserRepository;
-import Application.Entities.User.User;
-import Application.Services.UserService;
+import Application.Entities.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
