@@ -5,12 +5,12 @@
     <title>Settings</title>
 </head>
 <body>
-<form th:object="${userInfo}" th:method="POST">
-        <b>Your ID:</b><input type="number" readonly th:field="${userInfo.userId}" th:value="${userInfo.userId}" /><br>
-        <b>Your username:</b><input type="text" readonly th:field="${userInfo.username}" th:value="${userInfo.username}" /><br>
-        <b>Your name:</b><input type="text" th:field="${userInfo.name}" th:value="${userInfo.name}" /><br>
-        <b>Your birth town:</b><input type="text" th:field="${userInfo.birthTown}" th:value="${userInfo.birthTown}" /><br>
-        <b>Your birth date:</b><input type="date" th:field="${userInfo.textBirthDate}" th:value="${userInfo.textBirthDate}" /><br>
+<form th:object="${currUser}" th:method="POST">
+        <b>Your ID:</b><input type="number" readonly th:field="${currUser.id}" th:value="${currUser.id}" /><br>
+        <b>Your username:</b><input type="text" readonly th:field="${currUser.username}" th:value="${currUser.username}" /><br>
+        <b>Your name:</b><input type="text" th:field="${currUser.name}" th:value="${currUser.name}" /><br>
+        <b>Your birth town:</b><input type="text" th:field="${currUser.birthTown}" th:value="${currUser.birthTown}" /><br>
+        <b>Your birth date:</b><input type="date" th:field="${currUser.textBirthDate}" th:value="${currUser.textBirthDate}" /><br>
 
 
         <input type="submit" value="Edit" />

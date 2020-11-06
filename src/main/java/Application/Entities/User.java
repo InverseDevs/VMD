@@ -1,6 +1,5 @@
-package Application.Entities.User;
+package Application.Entities;
 
-import Application.Entities.Role;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -33,6 +33,10 @@ public class User implements UserDetails {
     @Transient
     private String passwordConfirm;
 
+    private String name;
+    private String birthTown;
+    private Date birthDate;
+
     public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
@@ -40,6 +44,14 @@ public class User implements UserDetails {
         this.permitted = true;
         this.token = UUID.randomUUID().toString().replace("-", "");
         this.passwordConfirm = null;
+    }
+
+    public User(String username, String password, String email,
+                String name, String birthTown, Date birthDate) {
+        this(username, password, email);
+        this.name = name;
+        this.birthDate = birthDate;
+        this.birthTown = birthTown;
     }
 
     @ManyToMany
@@ -102,10 +114,12 @@ public class User implements UserDetails {
                 '}';
     }
 
-    // TODO временное решение! переписать!
     @Override
     public boolean equals(Object o) {
         if(!(o instanceof User)) return false;
-        return ((User) o).id.equals(this.id);
+        User user = (User) o;
+        return user.username.equals(this.username)
+                && user.email.equals(this.email)
+                && user.token.equals(this.token);
     }
 }

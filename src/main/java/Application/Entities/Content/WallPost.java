@@ -1,14 +1,12 @@
 package Application.Entities.Content;
 
+import Application.Entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -17,7 +15,9 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "wall_posts")
 public class WallPost extends Content {
+    @Column(name = "page_id")
     private Long pageId;
+    @Column(name = "page_type")
     private PageType pageType;
 
     public enum PageType {
@@ -39,13 +39,13 @@ public class WallPost extends Content {
         }
     }
 
-    public WallPost(Long id, String sender, String content, Date sentTime, Long pageId, PageType pageType) {
+    public WallPost(Long id, User sender, String content, Date sentTime, Long pageId, PageType pageType) {
         super(id, sender, content, sentTime);
         this.pageId = pageId;
         this.pageType = pageType;
     }
 
-    public WallPost(String sender, String content, Date sentTime, Long pageId, PageType pageType) {
+    public WallPost(User sender, String content, Date sentTime, Long pageId, PageType pageType) {
         super(sender, content, sentTime);
         this.pageId = pageId;
         this.pageType = pageType;
