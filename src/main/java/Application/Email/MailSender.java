@@ -1,6 +1,7 @@
 package Application.Email;
 
-import Application.Entities.User.User;
+import Application.Entities.User;
+import Application.Starter;
 import com.sun.mail.smtp.SMTPTransport;
 
 import javax.mail.Message;
@@ -11,8 +12,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class MailSender {
-    private static final String URL = "https://inversedevs.herokuapp.com/verification/";
-    //private static final String URL = "http://localhost:8080/verification/";
+    private static final String URL = Starter.homeLink + "/verification/";
 
     private static final String SMTP_SERVER = "smtp.yandex.ru";
     private static final String SMTP_PORT = "465";

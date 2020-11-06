@@ -1,6 +1,6 @@
 package Application.Database.User;
 
-import Application.Entities.User.User;
+import Application.Entities.User;
 
 public interface CustomUsers {
     void addFriend(User user, Long friendId);

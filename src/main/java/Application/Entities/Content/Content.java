@@ -1,5 +1,6 @@
 package Application.Entities.Content;
 
+import Application.Entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,12 +19,15 @@ public class Content {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String sender;
+    @ManyToOne
+    @JoinColumn(name="sender")
+    private User sender;
+
     @Column(name = "message")
     private String content;
     private Date sentTime;
 
-    public Content(String sender, String content, Date sentTime) {
+    public Content(User sender, String content, Date sentTime) {
         this.sender = sender;
         this.content = content;
         this.sentTime = sentTime;

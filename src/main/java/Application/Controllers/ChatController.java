@@ -1,6 +1,6 @@
 package Application.Controllers;
 
-import Application.Entities.User.User;
+import Application.Entities.User;
 import Application.Entities.Content.ChatMessage;
 import Application.Services.ChatService;
 import Application.Services.UserService;
@@ -26,8 +26,8 @@ public class ChatController {
     @MessageMapping("/chat.sendMessage")
     @SendTo("/chat/topic/public")
     public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
-        User sender = (User) userService.loadUserByUsername(chatMessage.getSender());
-        User receiver = (User) userService.loadUserByUsername(chatMessage.getReceiver());
+        User sender = chatMessage.getSender();
+        User receiver = chatMessage.getReceiver();
 
         long chatId = chatService.getChat(sender.getId(), receiver.getId());
         chatMessage.setChatId(chatId);
@@ -52,8 +52,8 @@ public class ChatController {
         User receiver = userService.findUserByToken(token);
 
         ChatMessage message = new ChatMessage();
-        message.setSender(sender.getUsername());
-        message.setReceiver(receiver.getUsername());
+        message.setSender(sender);
+        message.setReceiver(receiver);
 
         long chatId = chatService.getChat(sender.getId(), receiver.getId());
 

@@ -1,6 +1,6 @@
 package Application.Controllers;
 
-import Application.Entities.User.User;
+import Application.Entities.User;
 import Application.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;

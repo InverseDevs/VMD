@@ -2,8 +2,10 @@ package Application.Controllers.API;
 
 import Application.Controllers.API.Exceptions.WallPostNotFoundException;
 import Application.Controllers.API.Exceptions.WrongRequestException;
+import Application.Database.User.UserRepository;
 import Application.Database.WallPostRepository;
 import Application.Entities.Content.WallPost;
+import Application.Services.UserService;
 import Application.Starter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,12 +24,14 @@ public class WallPostsAPIController {
 
     @Autowired
     private WallPostRepository postRepository;
+    @Autowired
+    private UserService userService;
 
     @NoArgsConstructor
     @Getter
-    private static class WallPostWrapper {
+    private class WallPostWrapper {
         private Long id;
-        private String sender;
+        private Long senderId;
         private String message;
         private long sentTime;
 
@@ -38,7 +42,7 @@ public class WallPostsAPIController {
 
         public WallPostWrapper(WallPost post) {
             this.id = post.getId();
-            this.sender = post.getSender();
+            this.senderId = post.getSender().getId();
             this.message = post.getContent();
             this.sentTime = post.getSentTime() != null ? post.getSentTime().getTime() : 0;
 
@@ -49,7 +53,7 @@ public class WallPostsAPIController {
         }
 
         public WallPost toWallPost() {
-            return new WallPost(this.id, this.sender, this.message, new Date(this.sentTime),
+            return new WallPost(this.id, userService.findUserById(senderId), this.message, new Date(this.sentTime),
                                 this.pageId, WallPost.PageType.valueOf(pageType));
         }
 
@@ -57,7 +61,7 @@ public class WallPostsAPIController {
         public String toString() {
             return "WallPostWrapper{" +
                     "id=" + this.id +
-                    "sender='" + this.sender + "'" +
+                    "senderId='" + this.senderId + "'" +
                     "message='" + this.message + "'" +
                     "sentTime=" + this.sentTime + "'" +
                     "pageId=" + this.pageId + "'" +
@@ -87,10 +91,10 @@ public class WallPostsAPIController {
 
     @PostMapping
     public WallPostWrapper addPost(@RequestBody WallPostWrapper wrapper) {
-        if(wrapper.sender == null || wrapper.sentTime < 0
+        if(wrapper.senderId == null || wrapper.sentTime < 0
                 || wrapper.pageId == null || wrapper.message == null)
             throw new WrongRequestException();
-        WallPost post = new WallPost(null, wrapper.sender, wrapper.message, new Date(),
+        WallPost post = new WallPost(null, userService.findUserById(wrapper.senderId), wrapper.message, new Date(),
                 wrapper.pageId, WallPost.PageType.USER);
         return new WallPostWrapper(postRepository.save(post));
     }
