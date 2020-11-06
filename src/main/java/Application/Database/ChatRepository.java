@@ -1,5 +1,6 @@
 package Application.Database;
 
+import Application.Database.Chat.ChatMessageRepository;
 import Application.Entities.User;
 import Application.Entities.Content.ChatMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,16 +10,15 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 @Repository
 public class ChatRepository {
-    private JdbcTemplate jdbc;
-
     @Autowired
-    public ChatRepository(JdbcTemplate jdbc) {
-        this.jdbc = jdbc;
-    }
+    private JdbcTemplate jdbc;
+    @Autowired
+    private ChatMessageRepository messageRepository;
 
     public Long getChat(Long senderId, Long receiverId) throws EmptyResultDataAccessException {
         return jdbc.queryForObject("select " +
@@ -39,8 +39,8 @@ public class ChatRepository {
         jdbc.update("delete from chats where id = ?", id);
     }
 
-    public void saveMessage(Long chatId, String sender, String message) {
-        jdbc.update("insert into messages (chat_id, sender, message) values (?,?,?)", chatId, sender, message);
+    public void saveMessage(Long chatId, User sender, String message) {
+        messageRepository.save(new ChatMessage(sender, message, new Date(), chatId));
     }
 
     public void deleteMessageById(Long chatId) {
@@ -48,20 +48,7 @@ public class ChatRepository {
     }
 
     public List<ChatMessage> getMessages(Long chatId) {
-        return jdbc.query("select messages.sender as sender, " +
-                        "messages.message as message " +
-                        "from messages " +
-                        "where messages.chat_id = " + chatId,
-                this::mapRowToMessage);
-    }
-
-    private ChatMessage mapRowToMessage(ResultSet resultSet, int rowNum) throws SQLException {
-        ChatMessage message = new ChatMessage();
-
-        message.setSender(resultSet.getString("sender"));
-        message.setContent(resultSet.getString("message"));
-
-        return message;
+        return messageRepository.findByChatId(chatId);
     }
 
     private Long mapRowToChat(ResultSet resultSet, int rowNum) throws SQLException {

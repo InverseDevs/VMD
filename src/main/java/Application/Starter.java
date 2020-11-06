@@ -55,12 +55,12 @@ public class Starter {
 
             ArrayList<WallPost> posts = new ArrayList<>();
             WallPost.PageType type = WallPost.PageType.USER;
-            posts.add(new WallPost("skelantros", "Hello admin!", new Date(), 1L, type));
-            posts.add(new WallPost("test1", "thx for making me alive!", new Date(), 1L, type));
-            posts.add(new WallPost("test2", "u a de best", new Date(), 1L, type));
-            posts.add(new WallPost("admin", "Hello skelantros!", new Date(), 4L, type));
-            posts.add(new WallPost("test2", "hey twin!", new Date(), 2L, type));
-            posts.add(new WallPost("test1", "hi there!", new Date(), 3L, type));
+            posts.add(new WallPost(users.get(2), "Hello admin!", new Date(), 1L, type));
+            posts.add(new WallPost(users.get(0), "thx for making me alive!", new Date(), 1L, type));
+            posts.add(new WallPost(users.get(2), "u a de best", new Date(), 1L, type));
+            posts.add(new WallPost(admin, "Hello skelantros!", new Date(), 4L, type));
+            posts.add(new WallPost(users.get(2), "hey twin!", new Date(), 2L, type));
+            posts.add(new WallPost(users.get(1), "hi there!", new Date(), 3L, type));
             posts.forEach(postRepo::save);
         };
     }

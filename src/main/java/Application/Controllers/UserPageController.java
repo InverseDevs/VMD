@@ -42,9 +42,10 @@ public class UserPageController {
             return "redirect:/user/{token}";
         }
         String sender_username = String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        User sender = (User) userService.loadUserByUsername(sender_username);
         post.setPageId(this.getUserByToken(token).getId());
         post.setPageType(WallPost.PageType.USER);
-        post.setSender(sender_username);
+        post.setSender(sender);
         post.setSentTime(new Date());
         postService.addPost(post);
         return "redirect:/user/{token}";

@@ -2,6 +2,7 @@ package Application.Services;
 
 import Application.Entities.Content.WallPost;
 import Application.Database.WallPostRepository;
+import Application.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,13 +28,8 @@ public class WallPostService {
         repository.save(post);
     }
 
-    public void addPost(String message, String sender, WallPost.PageType pageType, Long pageId) {
-        WallPost post = new WallPost();
-        post.setSentTime(new Date());
-        post.setSender(sender);
-        post.setContent(message);
-        post.setPageType(pageType);
-        post.setPageId(pageId);
+    public void addPost(String message, User sender, WallPost.PageType pageType, Long pageId) {
+        WallPost post = new WallPost(sender, message, new Date(), pageId, pageType);
         repository.save(post);
     }
 

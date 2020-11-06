@@ -1,5 +1,6 @@
 package Application.Entities.Content;
 
+import Application.Entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,13 +39,13 @@ public class WallPost extends Content {
         }
     }
 
-    public WallPost(Long id, String sender, String content, Date sentTime, Long pageId, PageType pageType) {
+    public WallPost(Long id, User sender, String content, Date sentTime, Long pageId, PageType pageType) {
         super(id, sender, content, sentTime);
         this.pageId = pageId;
         this.pageType = pageType;
     }
 
-    public WallPost(String sender, String content, Date sentTime, Long pageId, PageType pageType) {
+    public WallPost(User sender, String content, Date sentTime, Long pageId, PageType pageType) {
         super(sender, content, sentTime);
         this.pageId = pageId;
         this.pageType = pageType;
