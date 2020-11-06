@@ -1,17 +1,19 @@
 package Application.Controllers;
 
-import Application.Entities.User.UserInfo;
 import Application.Email.MailSender;
 import Application.Entities.User.User;
+import Application.Entities.User.UserInfo;
 import Application.Services.UserInfoService;
 import Application.Services.UserService;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Controller
 public class RegistrationController {
@@ -21,26 +23,34 @@ public class RegistrationController {
     @Autowired
     private UserInfoService infoService;
 
-    @GetMapping("/registration")
-    public String registration(Model model) {
-        model.addAttribute("user", new User());
-
-        return "registration";
-    }
-
-    @PostMapping("/registration")
-    public String addUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult, Model model) {
-
-        if (bindingResult.hasErrors()) {
-            return "registration";
+    @RequestMapping(value = "/registration", method = RequestMethod.POST)
+    @ResponseBody
+    public String register(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        StringBuilder data = new StringBuilder();
+        try {
+            String line;
+            while ((line = request.getReader().readLine()) != null) {
+                data.append(line);
+            }
+        } catch (IOException e) {
+            throw new IOException("Error while parsing http request, " + this.getClass() + ", register");
         }
-        if (!user.getPassword().equals(user.getPasswordConfirm())){
-            model.addAttribute("passwordError", "Пароли не совпадают");
-            return "registration";
-        }
-        if (!userService.saveUser(user)){
-            model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
-            return "registration";
+        JSONObject jsonObject = new JSONObject(data.toString());
+        String username = jsonObject.getString("username");
+        String email = jsonObject.getString("email");
+        String password = jsonObject.getString("password");
+
+        User user = new User(username, password, email);
+
+        JSONObject result = new JSONObject();
+
+        if (!userService.saveUser(user)) {
+            result.put("status", "user already exists");
+        } else {
+            MailSender mailSender = new MailSender();
+            mailSender.sendVerification(user);
+
+            result.put("status", "registered");
         }
 
         // TODO внимание костыль!!!! убрать его!!!!!!!!!!!!!!!!!!!!!
@@ -50,16 +60,26 @@ public class RegistrationController {
         info.setUserId(savedUser.getId());
         infoService.updateUserInfo(info);
 
-        MailSender mailSender = new MailSender();
-        mailSender.sendVerification(user);
-
-        return "login";
+        return result.toString();
     }
 
-    @GetMapping("/verification/{token}")
-    public String verificationToken(@PathVariable("token") String token){
+    @RequestMapping(value = "/verification/{token}", method = RequestMethod.GET)
+    @ResponseBody
+    public String verify(@PathVariable("token") String token) {
         userService.permitUser(token);
 
-        return "verification";
+        JSONObject result = new JSONObject();
+        result.put("status", "verified");
+
+        return result.toString();
+    }
+
+    //TODO Удалить всё, что идёт ниже
+
+    @GetMapping("/registration")
+    public String registration(Model model) {
+        model.addAttribute("user", new User());
+
+        return "registration";
     }
 }
