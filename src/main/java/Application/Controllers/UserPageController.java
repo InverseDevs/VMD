@@ -1,9 +1,7 @@
 package Application.Controllers;
 
-import Application.Entities.User.UserInfo;
 import Application.Entities.Content.WallPost;
 import Application.Entities.User.User;
-import Application.Services.UserInfoService;
 import Application.Services.UserService;
 import Application.Services.WallPostService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,24 +18,17 @@ import java.util.Date;
 @RequestMapping("/user/{token}")
 @Slf4j
 public class UserPageController {
-    private UserInfoService infoService;
-    private WallPostService postService;
-    private UserService userService;
-
     @Autowired
-    public UserPageController(UserInfoService infoService, WallPostService postService, UserService userService) {
-        this.infoService = infoService;
-        this.postService = postService;
-        this.userService = userService;
-    }
+    private WallPostService postService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     public String userPage(@PathVariable("token") String token, Model model) {
         User user = this.getUserByToken(token);
-        UserInfo info = infoService.findUserInfo(user.getId());
         Iterable<WallPost> posts = postService.allUserpagePosts(user.getId());
 
-        model.addAttribute("curr_info", info);
+        model.addAttribute("currUser", user);
         model.addAttribute("posts", posts);
         model.addAttribute("post", new WallPost());
         return "userPage";

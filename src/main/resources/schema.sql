@@ -9,12 +9,15 @@ drop table users_info;
 drop table wall_posts;
 
 create table if not exists users(
-  id        serial,
-  username  varchar(256),
-  password  varchar(256),
-  email     varchar(256),
-  token     varchar(256),
-  permitted boolean
+  id            serial,
+  username      varchar(256),
+  password      varchar(256),
+  email         varchar(256),
+  token         varchar(256),
+  permitted     boolean,
+  name          varchar(256),
+  birth_town    varchar(256),
+  birth_date    date
 );
 
 create table if not exists roles(
@@ -42,14 +45,6 @@ create table if not exists messages(
 create table if not exists friends(
   user1_id int,
   user2_id int
-);
-
-create table if not exists users_info(
-  user_id       int,
-  username      varchar(256),
-  name          varchar(256),
-  birth_town    varchar(256),
-  birth_date    date
 );
 
 create table if not exists wall_posts(

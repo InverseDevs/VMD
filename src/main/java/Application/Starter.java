@@ -1,10 +1,8 @@
 package Application;
 import Application.Database.WallPostRepository;
 import Application.Entities.Content.WallPost;
-import Application.Entities.User.UserInfo;
 import Application.Database.RoleRepository;
 import Application.Database.User.UserRepository;
-import Application.Database.UserInfoRepository;
 import Application.Entities.Role;
 import Application.Entities.User.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +24,6 @@ public class Starter {
     @Autowired
     RoleRepository roleRepo;
     @Autowired
-    UserInfoRepository infoRepo;
-    @Autowired
     WallPostRepository postRepo;
 
     public static void main(String[] args) {
@@ -40,24 +36,22 @@ public class Starter {
             roleRepo.save(new Role(1L, "ROLE_USER"));
             roleRepo.save(new Role(2L, "ROLE_ADMIN"));
 
-            User admin = new User("admin", "admin", "admin@vmd.com");
+            User admin = new User("admin", "admin", "admin@vmd.com",
+                    "Admin", "VMD", null);
             userRepo.save(admin);
             userRepo.makeAdmin(admin);
 
             ArrayList<User> users = new ArrayList<>();
-            users.add(new User("test1", "1234", "test1@vmd.com"));
-            users.add(new User("test2", "1234", "test2@vmd.com"));
-            users.add(new User("skelantros", "23052001", "skelantros@vmd.com"));
+            users.add(new User("test1", "1234", "test1@vmd.com",
+                    "Test Account 1", "VMD", null));
+            users.add(new User("test2", "1234", "test2@vmd.com",
+                    "Test Account 2", "VMD", null));
+            users.add(new User("skelantros", "23052001", "skelantros@vmd.com",
+                    "Alex Egorowski", "Zelenokumsk", new Date(990561600000L)));
             for(User user : users) {
                 userRepo.save(user);
                 userRepo.makeUser(user);
             }
-            ArrayList<UserInfo> infos = new ArrayList<>();
-            infos.add(new UserInfo(1L, "admin", "Admin", "VMD", null));
-            infos.add(new UserInfo(2L, "test1", "Test Account 1", "VMD", null));
-            infos.add(new UserInfo(3L, "test2", "Test Account 2", "VMD", null));
-            infos.add(new UserInfo(4L, "skelantros", "Alex Egorowski", "Zelenokumsk", new Date(990561600000L)));
-            infos.forEach(i -> infoRepo.save(i));
 
             ArrayList<WallPost> posts = new ArrayList<>();
             WallPost.PageType type = WallPost.PageType.USER;

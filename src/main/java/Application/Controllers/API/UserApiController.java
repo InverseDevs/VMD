@@ -3,8 +3,8 @@ package Application.Controllers.API;
 import Application.Controllers.API.Exceptions.IdChangeAttemptException;
 import Application.Controllers.API.Exceptions.NoUserFoundException;
 import Application.Controllers.API.Exceptions.WrongRequestException;
-import Application.Database.UserInfoRepository;
-import Application.Entities.User.UserInfo;
+import Application.Database.User.UserRepository;
+import Application.Entities.User.User;
 import Application.Starter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ public class UserApiController {
     public final static String userApiLink = "/users";
 
     @Autowired
-    UserInfoRepository infoRepository;
+    UserRepository repository;
 
     @NoArgsConstructor
     @Getter
@@ -34,17 +34,13 @@ public class UserApiController {
         private long birthDate;
         private String _href;
 
-        public InfoWrapper(UserInfo info) {
-            this.id = info.getUserId();
-            this.username = info.getUsername();
-            this.name = info.getName();
-            this.birthTown = info.getBirthTown();
-            this.birthDate = info.getBirthDate() != null ? info.getBirthDate().getTime() : 0;
-            this._href = Starter.homeLink + Starter.apiLink + userApiLink + "/" + info.getUserId();
-        }
-
-        public UserInfo toUserInfo() {
-            return new UserInfo(id, username, name, birthTown, new Date(birthDate));
+        public InfoWrapper(User user) {
+            this.id = user.getId();
+            this.username = user.getUsername();
+            this.name = user.getName();
+            this.birthTown = user.getBirthTown();
+            this.birthDate = user.getBirthDate() != null ? user.getBirthDate().getTime() : 0;
+            this._href = Starter.homeLink + Starter.apiLink + userApiLink + "/" + user.getId();
         }
 
         @Override
@@ -61,14 +57,14 @@ public class UserApiController {
 
     @GetMapping
     public List<InfoWrapper> all() {
-        return infoRepository.findAll().stream().map(InfoWrapper::new).collect(Collectors.toList());
+        return repository.findAll().stream().map(InfoWrapper::new).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public InfoWrapper one(@PathVariable long id) {
-        Optional<UserInfo> infoOptional = infoRepository.findById(id);
-        if(infoOptional.isPresent()) {
-            return new InfoWrapper(infoOptional.get());
+        Optional<User> userOptional = repository.findById(id);
+        if(userOptional.isPresent()) {
+            return new InfoWrapper(userOptional.get());
         }
         throw new NoUserFoundException();
     }
@@ -76,14 +72,14 @@ public class UserApiController {
     @PatchMapping
     public InfoWrapper patchOne(@RequestBody InfoWrapper wrapper) {
         if(wrapper.id == null) throw new WrongRequestException();
-        UserInfo info = infoRepository.findById(wrapper.id).orElseThrow(RuntimeException::new);
+        User user = repository.findById(wrapper.id).orElseThrow(NoUserFoundException::new);
         if(wrapper.username != null) throw new IdChangeAttemptException();
 
         // TODO костыльный мерж переделать!!!!!!!!!!!!!!!
-        if(wrapper.name != null) info.setName(wrapper.name);
-        if(wrapper.birthTown != null) info.setBirthTown(wrapper.birthTown);
-        if(wrapper.birthDate >= 0) info.setBirthDate(new Date(wrapper.birthDate));
+        if(wrapper.name != null) user.setName(wrapper.name);
+        if(wrapper.birthTown != null) user.setBirthTown(wrapper.birthTown);
+        if(wrapper.birthDate >= 0) user.setBirthDate(new Date(wrapper.birthDate));
 
-        return new InfoWrapper(infoRepository.save(info));
+        return new InfoWrapper(repository.save(user));
     }
 }
