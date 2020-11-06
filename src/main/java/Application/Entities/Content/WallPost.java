@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -17,7 +14,9 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "wall_posts")
 public class WallPost extends Content {
+    @Column(name = "page_id")
     private Long pageId;
+    @Column(name = "page_type")
     private PageType pageType;
 
     public enum PageType {
