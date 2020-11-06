@@ -1,8 +1,8 @@
 package Application.Controllers;
 
-import Application.Content.UserInfo;
+import Application.Entities.User.UserInfo;
 import Application.Email.MailSender;
-import Application.Entities.User;
+import Application.Entities.User.User;
 import Application.Services.UserInfoService;
 import Application.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

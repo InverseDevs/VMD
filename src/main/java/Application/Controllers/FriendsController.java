@@ -1,6 +1,6 @@
 package Application.Controllers;
 
-import Application.Entities.User;
+import Application.Entities.User.User;
 import Application.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,11 +23,7 @@ public class FriendsController {
         User currentUser = (User) userService.loadUserByUsername(
                 String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
 
-        List<User> friends = new ArrayList<>();
-        for (Long friendId : currentUser.getFriends()) {
-            friends.add(userService.findUserById(friendId));
-        }
-
+        List<User> friends = new ArrayList<>(currentUser.getFriends());
         model.addAttribute("friends", friends.toArray());
 
         return "friends";

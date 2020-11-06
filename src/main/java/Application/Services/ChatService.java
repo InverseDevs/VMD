@@ -1,7 +1,7 @@
 package Application.Services;
 
 import Application.Database.ChatRepository;
-import Application.Content.ChatMessage;
+import Application.Entities.Content.ChatMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
