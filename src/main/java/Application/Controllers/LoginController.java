@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -80,6 +81,8 @@ public class LoginController {
             responseJson.put("status", "incorrect request body");
         } catch (UsernameNotFoundException e) {
             responseJson.put("status", "user not found");
+        } catch (MessagingException e) {
+            responseJson.put("status", "incorrect email");
         } catch (Exception e) {
             responseJson.put("status", "unknown error");
         }
