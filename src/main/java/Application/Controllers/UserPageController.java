@@ -27,25 +27,15 @@ public class UserPageController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/user/{token}", method = RequestMethod.GET)
+    @RequestMapping(value = "/posts/{token}", method = RequestMethod.GET)
     @ResponseBody
-    public String userPage(@PathVariable("token") String token, HttpServletRequest request, HttpServletResponse response) {
+    public String getPosts(@PathVariable("token") String token, HttpServletRequest request, HttpServletResponse response) {
         String jwt = request.getHeader("Authorization").substring(7);
         JSONObject result = new JSONObject();
 
         if (JwtProvider.validateToken(jwt)) {
             User user = userService.findUserByToken(token);
             Iterable<WallPost> posts = postService.allUserpagePosts(user.getId());
-
-            // TODO хм, а это точно нужно передавать ещё раз?.. логин и так вернёт всю информацию о пользователе...
-            result.put("id", user.getId());
-            result.put("username", user.getUsername());
-            result.put("email", user.getEmail());
-            result.put("name", user.getName());
-            result.put("birth_town", user.getBirthTown());
-            result.put("birth_date", user.getBirthDate());
-            result.put("roles", user.getRoles().toString());
-            result.put("friends", user.getFriends().toString());
 
             int idx = 0;
             for (WallPost post : posts) {
@@ -67,9 +57,9 @@ public class UserPageController {
         return result.toString();
     }
 
-    @RequestMapping(value = "/user/{token}", method = RequestMethod.POST)
+    @RequestMapping(value = "/posts/{token}", method = RequestMethod.POST)
     @ResponseBody
-    public String writePost(@PathVariable("token") String token,
+    public String addPost(@PathVariable("token") String token,
                             HttpServletRequest request, HttpServletResponse response) throws IOException {
         String jwt = request.getHeader("Authorization").substring(7);
         JSONObject result = new JSONObject();
