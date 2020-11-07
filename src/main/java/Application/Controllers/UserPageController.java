@@ -34,10 +34,7 @@ public class UserPageController {
         JSONObject result = new JSONObject();
 
         if (JwtProvider.validateToken(jwt)) {
-            User user = this.getUserByToken(token);
-
-            System.out.println("test" + user);
-
+            User user = userService.findUserByToken(token);
             Iterable<WallPost> posts = postService.allUserpagePosts(user.getId());
 
             // TODO хм, а это точно нужно передавать ещё раз?.. логин и так вернёт всю информацию о пользователе...
@@ -60,7 +57,7 @@ public class UserPageController {
                 postJson.put("content", post.getContent());
                 postJson.put("sent_time", post.getSentTime().toString());
 
-                result.put("post_" + ++idx, postJson.toString());
+                result.put("post_" + ++idx, postJson);
             }
         } else {
             result.put("status", "user not authorized");
@@ -92,7 +89,14 @@ public class UserPageController {
             String content = jsonObject.getString("content");
             User user = (User) userService.loadUserByUsername(sender);
 
-            postService.addPost(new WallPost(user, content, new Date(), this.getUserByToken(token).getId(), WallPost.PageType.USER));
+            System.out.println(user);
+
+            postService.addPost(new WallPost(
+                    user,
+                    content,
+                    new Date(),
+                    userService.findUserByToken(token).getId(),
+                    WallPost.PageType.USER));
 
             result.put("status", "post created");
         } else {
@@ -100,11 +104,5 @@ public class UserPageController {
         }
 
         return result.toString();
-    }
-
-    private User getUserByToken(String token) {
-        System.out.println("test " + token);
-        if (token.startsWith("id")) return userService.findUserById(Long.parseLong(token.substring(2)));
-        else return (User) userService.loadUserByUsername(token);
     }
 }

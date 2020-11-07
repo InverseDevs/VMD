@@ -23,26 +23,15 @@ public class FriendsController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "/friends", method = RequestMethod.GET)
+    @RequestMapping(value = "/friends/{token}", method = RequestMethod.GET)
     @ResponseBody
-    public String getFriends(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public String getFriends(@PathVariable("token") String token,
+                             HttpServletRequest request, HttpServletResponse response) throws IOException {
         String jwt = request.getHeader("Authorization").substring(7);
         JSONObject result = new JSONObject();
 
         if (JwtProvider.validateToken(jwt)) {
-            StringBuilder data = new StringBuilder();
-            try {
-                String line;
-                while ((line = request.getReader().readLine()) != null) {
-                    data.append(line);
-                }
-            } catch (IOException e) {
-                throw new IOException("Error while parsing http request, " + this.getClass() + ", register");
-            }
-            JSONObject jsonObject = new JSONObject(data.toString());
-            String username = jsonObject.getString("username");
-            User user = (User) userService.loadUserByUsername(username);
-
+            User user = userService.findUserByToken(token);
             Set<User> friends = new HashSet<>(user.getFriends());
 
             int idx = 0;
@@ -57,7 +46,7 @@ public class FriendsController {
                 friendJson.put("roles", friend.getRoles().toString());
                 friendJson.put("friends", friend.getFriends().toString());
 
-                result.put("friend_" + ++idx, friendJson.toString());
+                result.put("friend_" + ++idx, friendJson);
             }
         } else {
             result.put("status", "user not authorized");
@@ -66,7 +55,7 @@ public class FriendsController {
         return result.toString();
     }
 
-    @RequestMapping(value = "/friends/{token}", method = RequestMethod.GET)
+    @RequestMapping(value = "/friends/{token}", method = RequestMethod.POST)
     @ResponseBody
     public String addFriend(@PathVariable("token") String token,
                             HttpServletRequest request, HttpServletResponse response) throws IOException {
