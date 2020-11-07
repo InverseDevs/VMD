@@ -3,18 +3,19 @@ package Application.Controllers;
 import Application.Email.MailSender;
 import Application.Entities.User;
 import Application.Services.UserService;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @Controller
 public class RegistrationController {
@@ -23,56 +24,53 @@ public class RegistrationController {
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
     @ResponseBody
-    public String register(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
-        StringBuilder data = new StringBuilder();
+    public String register(HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
         try {
+            StringBuilder data = new StringBuilder();
             String line;
             while ((line = request.getReader().readLine()) != null) {
                 data.append(line);
             }
-        } catch (IOException e) {
-            throw new IOException("Error while parsing http request, " + this.getClass() + ", register");
+            JSONObject receivedDataJson = new JSONObject(data.toString());
+            User user = new User(
+                    receivedDataJson.getString("username"),
+                    receivedDataJson.getString("password"),
+                    receivedDataJson.getString("email"),
+                    receivedDataJson.getString("name"),
+                    receivedDataJson.getString("birth_town"),
+                    new SimpleDateFormat("yyyy-MM-dd").parse(receivedDataJson.getString("birth_date")));
+
+            if (!userService.saveUser(user)) {
+                responseJson.put("status", "user already exists");
+            } else {
+                MailSender mailSender = new MailSender();
+                mailSender.sendVerification(user);
+
+                responseJson.put("status", "success");
+            }
+        } catch (JSONException | IOException e) {
+            responseJson.put("status", "incorrect request body");
+        } catch (UsernameNotFoundException e) {
+            responseJson.put("status", "user not found");
+        } catch (Exception e) {
+            responseJson.put("status", "unknown error");
         }
-        JSONObject jsonObject = new JSONObject(data.toString());
-        String username = jsonObject.getString("username");
-        String email = jsonObject.getString("email");
-        String password = jsonObject.getString("password");
-        String name = jsonObject.getString("name");
-        String birthTown = jsonObject.getString("birth_town");
-        Date birthDate = new SimpleDateFormat("yyyy-MM-dd").parse(jsonObject.getString("birth_date"));
 
-        User user = new User(username, password, email, name, birthTown, birthDate);
-
-        JSONObject result = new JSONObject();
-        if (!userService.saveUser(user)) {
-            result.put("status", "user already exists");
-        } else {
-            MailSender mailSender = new MailSender();
-            mailSender.sendVerification(user);
-
-            result.put("status", "registered");
-        }
-
-        return result.toString();
+        return responseJson.toString();
     }
 
     @RequestMapping(value = "/verification/{token}", method = RequestMethod.GET)
     @ResponseBody
     public String verify(@PathVariable("token") String token) {
-        userService.permitUser(token);
+        JSONObject responseJson = new JSONObject();
+        try {
+            userService.permitUser(token);
+            responseJson.put("status", "success");
+        } catch (Exception e) {
+            responseJson.put("status", "unknown error");
+        }
 
-        JSONObject result = new JSONObject();
-        result.put("status", "verified");
-
-        return result.toString();
-    }
-
-    //TODO Удалить всё, что идёт ниже
-
-    @GetMapping("/registration")
-    public String registration(Model model) {
-        model.addAttribute("user", new User());
-
-        return "registration";
+        return responseJson.toString();
     }
 }

@@ -17,7 +17,7 @@ public class MailSender {
     private static final String SMTP_SERVER = "smtp.yandex.ru";
     private static final String SMTP_PORT = "465";
     private static final String USERNAME = "kaa5843771@yandex.ru";
-    private static final String PASSWORD = "starwars2001";
+    private static final String PASSWORD = "dream122813";
     private static final String EMAIL_FROM = "kaa5843771@yandex.ru";
     private static final String EMAIL_SUBJECT = "VMD registration";
 

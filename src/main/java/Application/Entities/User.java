@@ -1,6 +1,7 @@
 package Application.Entities;
 
 import lombok.*;
+import org.json.JSONObject;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -110,8 +111,25 @@ public class User implements UserDetails {
                 ", email='" + email + '\'' +
                 ", token='" + token + '\'' +
                 ", permitted=" + permitted +
-                ", passwordConfirm='" + passwordConfirm + '\'' +
+                ", name='" + name + '\'' +
+                ", birthTown='" + birthTown + '\'' +
+                ", birthDate=" + birthDate +
                 '}';
+    }
+
+    public JSONObject toJson() {
+        JSONObject user = new JSONObject();
+        user.put("id", this.getId());
+        user.put("username", this.getUsername());
+        user.put("email", this.getEmail());
+        user.put("token", this.getToken());
+        user.put("name", this.getName());
+        user.put("birth_town", this.getBirthTown());
+        user.put("birth_date", this.getBirthDate());
+        user.put("role", this.getRoles().toString());
+        user.put("friends", this.getFriends().toString());
+
+        return user;
     }
 
     @Override
