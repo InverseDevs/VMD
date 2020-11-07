@@ -1,7 +1,7 @@
 package Application.Controllers;
 
 import Application.Email.MailSender;
-import Application.Entities.User.User;
+import Application.Entities.User;
 import Application.Security.JwtProvider;
 import Application.Services.UserService;
 import org.json.JSONObject;
@@ -50,7 +50,7 @@ public class LoginController {
             result.put("role", user.getRoles().toString());
             result.put("friends", user.getFriends().toString());
         } else {
-            result.put("status", "user not found");
+            result.put("status", "incorrect password");
         }
         return result.toString();
     }
