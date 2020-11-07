@@ -4,13 +4,16 @@ import Application.Email.MailSender;
 import Application.Entities.User;
 import Application.Security.JwtProvider;
 import Application.Services.UserService;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,89 +25,68 @@ public class LoginController {
 
     @RequestMapping(value = "/authorization", method = RequestMethod.POST)
     @ResponseBody
-    public String login(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        StringBuilder data = new StringBuilder();
+    public String login(HttpServletRequest request, HttpServletResponse response) {
+        JSONObject responseJson = new JSONObject();
         try {
+            StringBuilder data = new StringBuilder();
             String line;
             while ((line = request.getReader().readLine()) != null) {
                 data.append(line);
             }
-        } catch (IOException e) {
-            throw new IOException("Error while parsing http request, " + this.getClass() + ", login");
+            JSONObject receivedDataJson = new JSONObject(data.toString());
+            String username = receivedDataJson.get("username").toString();
+            String password = receivedDataJson.get("password").toString();
+
+            User user = (User) userService.loadUserByUsername(username);
+
+            if (user.getPermitted() && password.equals(user.getPassword())) {
+                String token = JwtProvider.generateToken(username, password);
+                response.setHeader("Authorization", "Bearer " + token);
+
+                responseJson = user.toJson();
+            } else {
+                responseJson.put("status", "incorrect password");
+            }
+
+        } catch (JSONException | IOException e) {
+            responseJson.put("status", "incorrect request body");
+        } catch (UsernameNotFoundException e) {
+            responseJson.put("status", "user not found");
+        } catch (Exception e) {
+            responseJson.put("status", "unknown error");
         }
-        JSONObject jsonObject = new JSONObject(data.toString());
-        String username = jsonObject.get("username").toString();
-        String password = jsonObject.get("password").toString();
 
-        User user = (User) userService.loadUserByUsername(username);
-        JSONObject result = new JSONObject();
-
-        if (user.getPermitted() && password.equals(user.getPassword())) {
-            String token = JwtProvider.generateToken(username, password);
-            response.setHeader("Authorization", "Bearer " + token);
-
-            result.put("id", user.getId());
-            result.put("username", user.getUsername());
-            result.put("email", user.getEmail());
-            result.put("token", user.getToken());
-            result.put("role", user.getRoles().toString());
-            result.put("friends", user.getFriends().toString());
-        } else {
-            result.put("status", "incorrect password");
-        }
-        return result.toString();
+        return responseJson.toString();
     }
 
     @RequestMapping(value = "/forgot_password", method = RequestMethod.POST)
     @ResponseBody
-    public String forgotPassword(HttpServletRequest request) throws IOException {
-        StringBuilder data = new StringBuilder();
+    public String forgotPassword(HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
         try {
+            StringBuilder data = new StringBuilder();
             String line;
             while ((line = request.getReader().readLine()) != null) {
                 data.append(line);
             }
-        } catch (IOException e) {
-            throw new IOException("Error while parsing http request, " + this.getClass() + ", forgotPassword");
-        }
-        JSONObject jsonObject = new JSONObject(data.toString());
-        User user = userService.findUserByEmail(jsonObject.getString("email"));
+            JSONObject receivedDataJson = new JSONObject(data.toString());
 
-        JSONObject result = new JSONObject();
+            User user = userService.findUserByEmail(receivedDataJson.getString("email"));
 
-        // TODO Возвращать null-user, а не делать вот так
-        if (user.getEmail() != null) {
             MailSender mailSender = new MailSender();
             mailSender.sendPassword(user);
 
-            result.put("status", "ok");
-        } else {
-            result.put("status", "user not found");
+            responseJson.put("status", "success");
+        } catch (JSONException | IOException e) {
+            responseJson.put("status", "incorrect request body");
+        } catch (UsernameNotFoundException e) {
+            responseJson.put("status", "user not found");
+        } catch (MessagingException e) {
+            responseJson.put("status", "incorrect email");
+        } catch (Exception e) {
+            responseJson.put("status", "unknown error");
         }
 
-        return result.toString();
-    }
-
-
-    // TODO Удалить всё, что идёт ниже
-
-    @GetMapping("/login")
-    public String getLogin(Model model) {
-        model.addAttribute("user", new User());
-
-        return "/login";
-    }
-
-    @PostMapping("/exit")
-    public String exit() {
-        SecurityContextHolder.getContext().setAuthentication(null);
-        return "redirect:/";
-    }
-
-    @GetMapping("/forgot_password")
-    public String forgetPassword(Model model) {
-        model.addAttribute("user", new User());
-
-        return "forgot_password";
+        return responseJson.toString();
     }
 }

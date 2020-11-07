@@ -31,20 +31,28 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public User findUserByToken(String token) {
+    public User findUserByToken(String token) throws UsernameNotFoundException {
         User user = userRepository.findByToken(token);
 
-        return user != null ? user : new User();
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return user;
     }
 
     public User findUserById(Long userId) {
         return userRepository.findById(userId).orElse(new User());
     }
 
-    public User findUserByEmail(String email) {
+    public User findUserByEmail(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email);
 
-        return user != null ? user : new User();
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return user;
     }
 
     public Iterable<User> allUsers() {
