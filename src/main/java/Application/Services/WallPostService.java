@@ -1,13 +1,13 @@
 package Application.Services;
 
 import Application.Controllers.API.Exceptions.WallPostNotFoundException;
-import Application.Entities.Content.WallPost;
 import Application.Database.WallPostRepository;
+import Application.Entities.Content.WallPost;
 import Application.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Date;
 
 @Service
@@ -15,20 +15,34 @@ public class WallPostService {
     @Autowired
     private WallPostRepository repository;
 
-    public Iterable<WallPost> allPosts() { return repository.findAll(); }
+    public Iterable<WallPost> allPosts() {
+        Iterable<WallPost> posts = repository.findAll();
+
+        if (posts == null) {
+            throw new WallPostNotFoundException("No posts found");
+        }
+
+        return posts;
+    }
 
     public Iterable<WallPost> allUserPagePosts(Long userId) throws WallPostNotFoundException {
         Iterable<WallPost> posts = repository.findByPage(userId, WallPost.PageType.USER);
 
         if (posts == null) {
-            throw new UsernameNotFoundException("No posts found");
+            throw new WallPostNotFoundException("No posts found");
         }
 
         return posts;
     }
 
     public WallPost postById(Long id) {
-        return repository.findById(id).orElse(null);
+        WallPost post = repository.findById(id).orElse(null);
+
+        if (post == null) {
+            throw new WallPostNotFoundException("Post not found");
+        }
+
+        return post;
     }
 
     public void addPost(WallPost post) {
