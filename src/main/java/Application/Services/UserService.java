@@ -92,6 +92,10 @@ public class UserService implements UserDetailsService {
         return userRepository.checkFriend(user, friend);
     }
 
+    public void updateAvatar(User user, byte[] avatar) {
+        userRepository.updateAvatar(user.getId(), avatar);
+    }
+
     public boolean deleteUser(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
