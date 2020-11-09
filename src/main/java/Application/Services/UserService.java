@@ -92,9 +92,9 @@ public class UserService implements UserDetailsService {
         return userRepository.checkFriend(user, friend);
     }
 
-    public void updateAvatar(User user, byte[] avatar) {
-        userRepository.updateAvatar(user, avatar);
-    }
+//    public void updateAvatar(User user, byte[] avatar) {
+//        userRepository.updateAvatar(user, avatar);
+//    }
 
     public boolean deleteUser(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
