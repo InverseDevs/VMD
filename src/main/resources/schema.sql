@@ -31,15 +31,21 @@ create table if not exists user_to_role(
 );
 
 create table if not exists chats(
-  id          serial,
-  sender_id   int,
-  receiver_id int
+  id          serial
+);
+
+create table if not exists chats_to_users(
+  chat_id   int,
+  user_id   int
 );
 
 create table if not exists messages(
-  chat_id  int,
-  sender   varchar(256),
-  message  varchar(256)
+  id        serial,
+  sender_id int,
+  type      varchar(64),
+  chat_id   int,
+  message   varchar(256),
+  sent_time date
 );
 
 create table if not exists friends(
@@ -51,7 +57,7 @@ create table if not exists wall_posts(
   id            serial,
   page_type     varchar(16),
   page_id       int,
-  sender        varchar(256),
+  sender_id     int,
   message       varchar(256),
   sent_time     date
 );

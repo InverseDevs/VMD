@@ -20,11 +20,12 @@ public class Content {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="sender")
+    @JoinColumn(name="sender_id")
     private User sender;
 
     @Column(name = "message")
     private String content;
+    @Column(name = "sent_time")
     private Date sentTime;
 
     public Content(User sender, String content, Date sentTime) {
