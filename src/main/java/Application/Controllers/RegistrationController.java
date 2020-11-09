@@ -62,9 +62,9 @@ public class RegistrationController {
     }
 
     @RequestMapping(value = "/verification/{token}", method = RequestMethod.GET)
-    @ResponseBody
     public String verify(@PathVariable("token") String token) {
         userService.permitUser(token);
+
         return "verification";
     }
 }
