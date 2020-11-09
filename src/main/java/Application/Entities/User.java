@@ -39,9 +39,9 @@ public class User implements UserDetails {
     private String birthTown;
     private Date birthDate;
 
-    @Lob
-    @Column(columnDefinition = "BLOB")
-    private byte[] avatar;
+//    @Lob
+//    @Column(columnDefinition = "BLOB")
+//    private byte[] avatar;
 
     public User(String username, String password, String email) {
         this.username = username;
@@ -131,7 +131,7 @@ public class User implements UserDetails {
         user.put("name", this.getName());
         user.put("birth_town", this.getBirthTown());
         user.put("birth_date", this.getBirthDate());
-        user.put("avatar", new String(avatar));
+//        user.put("avatar", new String(avatar));
         user.put("role", this.getRoles().toString());
         user.put("friends", this.getFriends().toString());
 
