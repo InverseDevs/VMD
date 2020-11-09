@@ -1,10 +1,7 @@
 package Application.Entities;
 
 import Application.Entities.Content.ChatMessage;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -21,6 +18,7 @@ import java.util.Set;
 public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.PRIVATE)
     private Long id;
 
     @OneToMany(mappedBy="chat")
