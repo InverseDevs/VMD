@@ -17,8 +17,7 @@ create table if not exists users(
   permitted     boolean,
   name          varchar(256),
   birth_town    varchar(256),
-  birth_date    date,
-  avatar        blob
+  birth_date    date
 );
 
 create table if not exists roles(
