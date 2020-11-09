@@ -34,7 +34,7 @@ public class User implements UserDetails {
     @Transient
     private String passwordConfirm;
 
-    private byte[] avatar;
+    //private byte[] avatar;
     private String name;
     private String birthTown;
     private Date birthDate;
@@ -127,7 +127,7 @@ public class User implements UserDetails {
         user.put("name", this.getName());
         user.put("birth_town", this.getBirthTown());
         user.put("birth_date", this.getBirthDate());
-        user.put("avatar", new String(avatar));
+        //user.put("avatar", new String(avatar));
         user.put("role", this.getRoles().toString());
         user.put("friends", this.getFriends().toString());
 

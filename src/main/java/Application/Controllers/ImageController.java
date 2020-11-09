@@ -36,7 +36,7 @@ public class ImageController {
                 User user = userService.findUserByToken(token);
                 byte[] avatar = Base64.encodeBase64(multipartFile.getBytes());
 
-                userService.updateAvatar(user, avatar);
+                //userService.updateAvatar(user, avatar);
 
                 responseJson.put("status", "success");
             } else {
