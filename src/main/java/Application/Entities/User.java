@@ -39,6 +39,10 @@ public class User implements UserDetails {
     private String birthTown;
     private Date birthDate;
 
+    @Lob
+    @Column(name = "avatar")
+    private byte[] avatar;
+
     public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
