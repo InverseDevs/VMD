@@ -21,7 +21,7 @@ import java.util.UUID;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.PRIVATE)
+    //@Setter(AccessLevel.PRIVATE)
     private Long id;
 
     @Size(min = 2, message = "Не меньше 2 знаков")
