@@ -19,7 +19,7 @@
 Main VMD page
 
 Image test
-<form method="POST" modelAttribute="sampleDetails" enctype="multipart/form-data">
+<form method="POST" modelAttribute="sampleDetails" enctype="multipart/form-data" action="/avatar">
     <input type="file" name="image" id="uploadInput" required="">
     <input type="submit" name="inputButton" value="Import file" id="">
 </form>
@@ -91,6 +91,6 @@ All users list:
 </div>
 
 
-<script th:src="@{/js/image.js}"></script>
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

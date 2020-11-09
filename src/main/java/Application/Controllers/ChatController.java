@@ -27,10 +27,10 @@ public class ChatController {
     @SendTo("/chat/topic/public")
     public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
         User sender = chatMessage.getSender();
-        User receiver = chatMessage.getReceiver();
+        //User receiver = chatMessage.getReceiver();
 
-        long chatId = chatService.getChat(sender.getId(), receiver.getId());
-        chatMessage.setChatId(chatId);
+        //long chatId = chatService.getChat(sender.getId(), receiver.getId());
+        //chatMessage.setChatId(chatId);
 
         chatService.saveMessage(chatMessage);
 
@@ -53,7 +53,7 @@ public class ChatController {
 
         ChatMessage message = new ChatMessage();
         message.setSender(sender);
-        message.setReceiver(receiver);
+        //message.setReceiver(receiver);
 
         long chatId = chatService.getChat(sender.getId(), receiver.getId());
 

@@ -35,10 +35,13 @@ public class User implements UserDetails {
     @Transient
     private String passwordConfirm;
 
-    //private byte[] avatar;
     private String name;
     private String birthTown;
     private Date birthDate;
+
+    @Lob
+    @Column(columnDefinition = "BLOB")
+    private byte[] avatar;
 
     public User(String username, String password, String email) {
         this.username = username;
@@ -59,14 +62,14 @@ public class User implements UserDetails {
 
     @ManyToMany
     @JoinTable(name = "user_to_role",
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "role_id"))
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
     @ManyToMany
     @JoinTable(name = "friends",
-    joinColumns = @JoinColumn(name = "user1_id"),
-    inverseJoinColumns = @JoinColumn(name = "user2_id"))
+            joinColumns = @JoinColumn(name = "user1_id"),
+            inverseJoinColumns = @JoinColumn(name = "user2_id"))
     private Set<User> friends; // friends' ids
 
     @Override
@@ -128,7 +131,7 @@ public class User implements UserDetails {
         user.put("name", this.getName());
         user.put("birth_town", this.getBirthTown());
         user.put("birth_date", this.getBirthDate());
-        //user.put("avatar", new String(avatar));
+        user.put("avatar", new String(avatar));
         user.put("role", this.getRoles().toString());
         user.put("friends", this.getFriends().toString());
 
@@ -137,7 +140,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean equals(Object o) {
-        if(!(o instanceof User)) return false;
+        if (!(o instanceof User)) return false;
         User user = (User) o;
         return user.username.equals(this.username)
                 && user.email.equals(this.email)

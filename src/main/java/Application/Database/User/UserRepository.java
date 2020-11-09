@@ -15,8 +15,4 @@ public interface UserRepository extends JpaRepository<User, Long>, CustomUsers {
     @Modifying
     @Query("UPDATE User u Set u.permitted = true WHERE token = :token")
     void permitUser(@Param("token") String token);
-
-//    @Modifying
-//    @Query("UPDATE User u Set u.avatar = :avatar WHERE id = :id")
-//    void updateAvatar(@Param("id") Long id, @Param("avatar") byte[] avatar);
 }
