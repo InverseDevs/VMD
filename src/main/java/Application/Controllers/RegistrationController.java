@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders="Authorization")
+@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
 @Controller
 public class RegistrationController {
     @Autowired
@@ -64,14 +64,7 @@ public class RegistrationController {
     @RequestMapping(value = "/verification/{token}", method = RequestMethod.GET)
     @ResponseBody
     public String verify(@PathVariable("token") String token) {
-        JSONObject responseJson = new JSONObject();
-        try {
-            userService.permitUser(token);
-            responseJson.put("status", "success");
-        } catch (Exception e) {
-            responseJson.put("status", "unknown error");
-        }
-
-        return responseJson.toString();
+        userService.permitUser(token);
+        return "verification";
     }
 }
