@@ -11,16 +11,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class ChatService {
     @Autowired
-    ChatRepository chatRepository;
+    private ChatRepository chatRepository;
     @Autowired
-    ChatMessageRepository messageRepository;
+    private ChatMessageRepository messageRepository;
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     /** Сохраняет сообщение в базу данных
      * @param message сообщение, которое необходимо сохранить
@@ -81,7 +82,7 @@ public class ChatService {
      * В случае, если чата между пользователями не существует, создает его, сохраняет в базу данных и возвращает
      * соответствующий объект.
      * @see ChatService#getChat(User, User)
-     * @param users список пользователей
+     * @param users список объектов, соответствующих пользователям
      * @return чат между пользователями
      */
     public Chat getChat(Set<User> users) {
@@ -94,8 +95,8 @@ public class ChatService {
     /**
      * "Частный случай" {@link ChatService#getChat(Set)} для двух пользователей.
      * @see ChatService#getChat(Set)
-     * @param sender отправитель
-     * @param receiver получатель
+     * @param sender объект, соответствующий отправителю
+     * @param receiver объект, соответствующий получателю
      * @return чат между пользователями
      */
     public Chat getChat(User sender, User receiver) {
@@ -108,8 +109,8 @@ public class ChatService {
      * Находит в базе данных объект, соответствующий чату-параметру, и возвращает его.
      * В случае, если чат-параметр не существует в базе данных (т.е. если у него нет идентификатора),
      * возвращает null.
-     * @param oldChat объект чата
-     * @return обновлённый объект чата или null (если чат-параметр не существует в базе данных)
+     * @param oldChat устаревший объект, соответствующий чатуа
+     * @return обновленный объект, соответствующий чату, или null (если чат-параметр не существует в базе данных)
      */
     public Chat refreshChat(Chat oldChat) {
         if(oldChat.getId() == null) return null;
@@ -120,8 +121,8 @@ public class ChatService {
      * Обновляет чат, находящийся в базе данных, в соответствии с отправленным параметром.
      * Если чат-параметр не существует в базе данных (т.е. если у него нет идентификатора),
      * возвращает null.
-     * @param updatedChat объект обновленного чата
-     * @return обновленный чат или null (если чат-параметр не существует в базе данных)
+     * @param updatedChat обновленный объект, соответствующий чату
+     * @return обновленный объект, соответствующий чату, или null, если чат-параметр не существует в базе данных
      */
     public Chat updateChat(Chat updatedChat) {
         if(updatedChat.getId() == null) return null;
@@ -130,8 +131,8 @@ public class ChatService {
 
     /**
      * Добавляет пользователя в чат. Возвращает обновленный объект чата.
-     * @param chat объект чата
-     * @param user объект пользователя, которого нужно добавить
+     * @param chat объект, соответствующий чату
+     * @param user объект, соответствующий пользователю, которого нужно добавить
      * @return обновленный объект чата
      */
     public Chat addUserToChat(Chat chat, User user) {
@@ -141,12 +142,24 @@ public class ChatService {
 
     /**
      * Удаляет пользователя из чата. Возвращает обновленный объект чата.
-     * @param chat объект чата
-     * @param user объект пользователя, которого нужно удалить
+     * @param chat объект, соответствующий чату
+     * @param user объект, соответствующий пользователю, которого нужно удалить
      * @return обновленный объект чата
      */
     public Chat removeUserFromChat(Chat chat, User user) {
         chat.getUsers().remove(user);
         return chatRepository.save(chat);
+    }
+
+    /**
+     * Возвращает множество чатов, в которых участвует пользователь.
+     * Если пользователь не существует в базе данных (т.е. его идентификатор равен null),
+     * возвращает null.
+     * @param user объект, соответствующий пользователю
+     * @return множество чатов пользователя или null, если пользователь не существует в БД
+     */
+    public Set<Chat> getAllChatsByUser(User user) {
+        if(user.getId() == null) return null;
+        return chatRepository.findAll().stream().filter(c -> c.getUsers().contains(user)).collect(Collectors.toSet());
     }
 }
