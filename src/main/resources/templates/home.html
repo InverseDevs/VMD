@@ -12,21 +12,17 @@
 </head>
 <body>
 
-
-
-<script type="text/javascript" th:inline="javascript">
-        var image = new Image();
-        image.src = 'data:image/jpeg;base64,' + [[${bytes}]];
-        document.body.appendChild(image);
-</script>
-
-
-
 <div id="root"></div>
 
 <!--<script type="text/babel" th:src="@{/js/test.js}"></script>-->
 
 Main VMD page
+
+Image test
+<form method="POST" modelAttribute="sampleDetails" enctype="multipart/form-data">
+    <input type="file" name="image" id="uploadInput" required="">
+    <input type="submit" name="inputButton" value="Import file" id="">
+</form>
 
 <div sec:authorize="isAuthenticated()">
     <!--    Authenticated username:-->
@@ -49,7 +45,6 @@ Main VMD page
 <div sec:authorize="hasRole('USER')">
     This content is only shown to users. 2
 </div>
-
 
 <br>
 All users list:
@@ -95,5 +90,7 @@ All users list:
     </form>
 </div>
 
+
+<script th:src="@{/js/image.js}"></script>
 </body>
 </html>

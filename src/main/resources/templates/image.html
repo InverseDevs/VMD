@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Image</title>
+</head>
+<body>
+
+<script type="text/javascript" th:inline="javascript">
+        var image = new Image();
+        image.src = 'data:image/jpeg;base64,' + [[${bytes}]];
+        document.body.appendChild(image);
+</script>
+</body>
+</html>
