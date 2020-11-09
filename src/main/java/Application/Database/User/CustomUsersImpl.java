@@ -52,12 +52,12 @@ public class CustomUsersImpl implements CustomUsers {
         return userInDb;
     }
 
-    @Override
-    public User updateAvatar(User user, byte[] avatar) {
-        User userInDb = findInDb(user);
-        userInDb.setAvatar(avatar);
-        return userInDb;
-    }
+//    @Override
+//    public User updateAvatar(User user, byte[] avatar) {
+//        User userInDb = findInDb(user);
+//        userInDb.setAvatar(avatar);
+//        return userInDb;
+//    }
 
     @Override
     public User makeUser(User user) {
