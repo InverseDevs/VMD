@@ -32,9 +32,6 @@ public class User implements UserDetails {
     private String email;
     private String token;
     private Boolean permitted;
-    // TODO убрать этот великолепный костыль, когда фронтэнд будет к этому готов
-    @Transient
-    private String passwordConfirm;
 
     private String name;
     private String birthTown;
@@ -50,7 +47,6 @@ public class User implements UserDetails {
         this.email = email;
         this.permitted = true;
         this.token = UUID.randomUUID().toString().replace("-", "");
-        this.passwordConfirm = null;
     }
 
     public User(String username, String password, String email,
