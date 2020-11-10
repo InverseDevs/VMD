@@ -1,6 +1,7 @@
 package Application.Entities;
 
 import lombok.*;
+import org.hibernate.annotations.Type;
 import org.json.JSONObject;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,6 +41,7 @@ public class User implements UserDetails {
     private Date birthDate;
 
     @Lob
+    @Type(type="org.hibernate.type.PrimitiveByteArrayBlobType")
     private byte[] avatar;
 
     public User(String username, String password, String email) {
