@@ -66,7 +66,7 @@ public class UserApiController {
 
     @GetMapping
     @ResponseBody
-    public String all(HttpServletRequest request) {
+    public String getAllUsers(HttpServletRequest request) {
         JSONObject responseJson = new JSONObject();
         try {
             String header = request.getHeader("Authorization");
@@ -97,12 +97,36 @@ public class UserApiController {
     }
 
     @GetMapping("/{id}")
-    public InfoWrapper one(@PathVariable long id) {
-        Optional<User> userOptional = repository.findById(id);
-        if(userOptional.isPresent()) {
-            return new InfoWrapper(userOptional.get());
+    @ResponseBody
+    public String getUserById(@PathVariable("id") long id, HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            String header = request.getHeader("Authorization");
+            if (header == null) {
+                throw new MissingRequestHeaderException("Authorization", null);
+            }
+            String jwt = header.substring(7);
+
+            if (JwtProvider.validateToken(jwt)) {
+                Optional<User> userOptional = repository.findById(id);
+
+                if (!userOptional.isPresent()) {
+                    throw new NoUserFoundException();
+                } else {
+                    responseJson = userOptional.get().toJson();
+                }
+            } else {
+                responseJson.put("status", "user not authorized");
+            }
+        } catch (MissingRequestHeaderException e) {
+            responseJson.put("status", "incorrect request headers");
+        } catch (NoUserFoundException e) {
+            responseJson.put("status", "no users found");
+        } catch (Exception e) {
+            responseJson.put("status", "unknown error");
         }
-        throw new NoUserFoundException();
+
+        return responseJson.toString();
     }
 
     @PatchMapping
