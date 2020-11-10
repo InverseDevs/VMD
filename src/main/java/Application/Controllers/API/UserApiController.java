@@ -4,13 +4,21 @@ import Application.Controllers.API.Exceptions.IdChangeAttemptException;
 import Application.Controllers.API.Exceptions.NoUserFoundException;
 import Application.Controllers.API.Exceptions.WrongRequestException;
 import Application.Database.User.UserRepository;
+import Application.Entities.Content.WallPost;
 import Application.Entities.User;
+import Application.Security.JwtProvider;
 import Application.Starter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -51,13 +59,41 @@ public class UserApiController {
                     "name='" + name + "'" + '\n' +
                     "birthTown='" + birthTown + "'" + '\n' +
                     "birthDate=" + birthDate + "" + '\n' +
-                    "_href='" + _href + "\n'}";
+                    "_href='" + _href +
+                    "\n'}";
         }
     }
 
     @GetMapping
-    public List<InfoWrapper> all() {
-        return repository.findAll().stream().map(InfoWrapper::new).collect(Collectors.toList());
+    @ResponseBody
+    public String all(HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            String header = request.getHeader("Authorization");
+            if (header == null) {
+                throw new MissingRequestHeaderException("Authorization", null);
+            }
+            String jwt = header.substring(7);
+
+            if (JwtProvider.validateToken(jwt)) {
+                List<User> users = repository.findAll();
+
+                int idx = 0;
+                for (User user : users) {
+                    responseJson.put("user_" + ++idx, user.toJson());
+                }
+            } else {
+                responseJson.put("status", "user not authorized");
+            }
+        } catch (MissingRequestHeaderException e) {
+            responseJson.put("status", "incorrect request headers");
+        } catch (UsernameNotFoundException e) {
+            responseJson.put("status", "no users found");
+        } catch (Exception e) {
+            responseJson.put("status", "unknown error");
+        }
+
+        return responseJson.toString();
     }
 
     @GetMapping("/{id}")

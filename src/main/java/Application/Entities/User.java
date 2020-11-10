@@ -132,7 +132,7 @@ public class User implements UserDetails {
         user.put("name", this.getName());
         user.put("birth_town", this.getBirthTown());
         user.put("birth_date", this.getBirthDate());
-        user.put("avatar", new String(avatar));
+        user.put("avatar", avatar == null ? "" : new String(avatar));
         user.put("role", this.getRoles().toString());
         user.put("friends", this.getFriends().toString());
 
