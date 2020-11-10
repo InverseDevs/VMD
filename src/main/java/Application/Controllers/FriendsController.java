@@ -24,9 +24,9 @@ public class FriendsController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "/friends/{token}", method = RequestMethod.GET)
+    @RequestMapping(value = "/friends/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String getFriends(@PathVariable("token") String token, HttpServletRequest request) {
+    public String getFriends(@PathVariable("id") Long id, HttpServletRequest request) {
         JSONObject responseJson = new JSONObject();
         try {
             String header = request.getHeader("Authorization");
@@ -36,7 +36,7 @@ public class FriendsController {
             String jwt = header.substring(7);
 
             if (JwtProvider.validateToken(jwt)) {
-                User user = userService.findUserByToken(token);
+                User user = userService.findUserById(id);
                 Set<User> friends = new HashSet<>(user.getFriends());
 
                 int idx = 0;
@@ -60,9 +60,9 @@ public class FriendsController {
         return responseJson.toString();
     }
 
-    @RequestMapping(value = "/friends/{token}", method = RequestMethod.POST)
+    @RequestMapping(value = "/friends/{id}", method = RequestMethod.POST)
     @ResponseBody
-    public String addFriend(@PathVariable("token") String token, HttpServletRequest request) {
+    public String addFriend(@PathVariable("id") Long id, HttpServletRequest request) {
         JSONObject responseJson = new JSONObject();
         try {
             String header = request.getHeader("Authorization");
@@ -81,7 +81,7 @@ public class FriendsController {
                 JSONObject jsonObject = new JSONObject(data.toString());
                 String username = jsonObject.getString("username");
                 User user = (User) userService.loadUserByUsername(username);
-                User friend = userService.findUserByToken(token);
+                User friend = userService.findUserById(id);
 
                 if (!user.getId().equals(friend.getId()) && !userService.friendExists(user, friend)) {
                     userService.addFriend(user, friend);

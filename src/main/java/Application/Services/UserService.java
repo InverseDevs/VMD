@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -31,18 +30,14 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public User findUserByToken(String token) throws UsernameNotFoundException {
-        User user = userRepository.findByToken(token);
+    public User findUserById(Long id) {
+        Optional<User> user = userRepository.findById(id);
 
-        if (user == null) {
+        if (!user.isPresent()) {
             throw new UsernameNotFoundException("User not found");
         }
 
-        return user;
-    }
-
-    public User findUserById(Long userId) {
-        return userRepository.findById(userId).orElse(new User());
+        return user.get();
     }
 
     public User findUserByEmail(String email) throws UsernameNotFoundException {
@@ -67,13 +62,12 @@ public class UserService implements UserDetailsService {
         }
 
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
-        user.setToken(generateToken());
         userRepository.save(user);
         return true;
     }
 
-    public void permitUser(String token) {
-        userRepository.permitUser(token);
+    public void permitUser(Long id) {
+        userRepository.permitUser(id);
     }
 
     public void makeAdmin(User user) {
@@ -103,9 +97,5 @@ public class UserService implements UserDetailsService {
             return true;
         }
         return false;
-    }
-
-    private String generateToken() {
-        return UUID.randomUUID().toString().replace("-", "");
     }
 }

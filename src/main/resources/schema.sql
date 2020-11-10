@@ -13,7 +13,6 @@ create table if not exists users(
   username      varchar(256),
   password      varchar(256),
   email         varchar(256),
-  token         varchar(256),
   permitted     boolean,
   name          varchar(256),
   birth_town    varchar(256),

@@ -28,9 +28,9 @@ public class UserPageController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(value = "/posts/{token}", method = RequestMethod.GET)
+    @RequestMapping(value = "/posts/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String getPosts(@PathVariable("token") String token, HttpServletRequest request) {
+    public String getPosts(@PathVariable("id") Long id, HttpServletRequest request) {
         JSONObject responseJson = new JSONObject();
         try {
             String header = request.getHeader("Authorization");
@@ -40,7 +40,7 @@ public class UserPageController {
             String jwt = header.substring(7);
 
             if (JwtProvider.validateToken(jwt)) {
-                User user = userService.findUserByToken(token);
+                User user = userService.findUserById(id);
                 Iterable<WallPost> posts = postService.allUserPagePosts(user.getId());
 
                 int idx = 0;
@@ -68,9 +68,9 @@ public class UserPageController {
         return responseJson.toString();
     }
 
-    @RequestMapping(value = "/posts/{token}", method = RequestMethod.POST)
+    @RequestMapping(value = "/posts/{id}", method = RequestMethod.POST)
     @ResponseBody
-    public String addPost(@PathVariable("token") String token, HttpServletRequest request) {
+    public String addPost(@PathVariable("id") Long id, HttpServletRequest request) {
         JSONObject responseJson = new JSONObject();
         try {
             String header = request.getHeader("Authorization");
@@ -95,7 +95,7 @@ public class UserPageController {
                         user,
                         content,
                         new Date(),
-                        userService.findUserByToken(token).getId(),
+                        userService.findUserById(id).getId(),
                         WallPost.PageType.USER));
 
                 responseJson.put("status", "success");

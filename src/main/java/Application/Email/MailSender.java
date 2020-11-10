@@ -40,12 +40,12 @@ public class MailSender {
     public void sendVerification(User user) throws MessagingException {
         String name = user.getUsername();
         String mail = user.getEmail();
-        String token = user.getToken();
+        Long id = user.getId();
 
         String emailText = "Здравствуйте, " + name + "!<br>" +
                 "Благодарим за проявленный к нашему сервису интерес <br>" +
                 "Для завершения регистрации, пожалуйста, перейдите по ссылке ниже<br>" +
-                "<a href=\"" + URL + token + "\">" + URL + token + "</a>";
+                "<a href=\"" + URL + id + "\">" + URL + id + "</a>";
 
         send(emailText, mail);
     }

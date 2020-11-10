@@ -24,9 +24,9 @@ public class ImageController {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "/avatar/{token}", method = RequestMethod.POST)
+    @RequestMapping(value = "/avatar/{id}", method = RequestMethod.POST)
     @ResponseBody
-    public String setAvatar(@PathVariable("token") String token, HttpServletRequest request) {
+    public String setAvatar(@PathVariable("id") Long id, HttpServletRequest request) {
         JSONObject responseJson = new JSONObject();
         try {
             String header = request.getHeader("Authorization");
@@ -51,7 +51,7 @@ public class ImageController {
                 // Потом может убрать
                 avatar = Base64.encodeBase64(avatar);
 
-                User user = userService.findUserByToken(token);
+                User user = userService.findUserById(id);
 
                 userService.updateAvatar(user, avatar);
 

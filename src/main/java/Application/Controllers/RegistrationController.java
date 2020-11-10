@@ -67,9 +67,9 @@ public class RegistrationController {
         return responseJson.toString();
     }
 
-    @RequestMapping(value = "/verification/{token}", method = RequestMethod.GET)
-    public String verify(@PathVariable("token") String token) {
-        userService.permitUser(token);
+    @RequestMapping(value = "/verification/{id}", method = RequestMethod.GET)
+    public String verify(@PathVariable("id") Long id) {
+        userService.permitUser(id);
 
         return "verification";
     }

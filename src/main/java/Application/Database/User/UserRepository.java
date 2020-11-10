@@ -9,10 +9,9 @@ import org.springframework.data.repository.query.Param;
 public interface UserRepository extends JpaRepository<User, Long>, CustomUsers {
     User findByUsername(String username);
     User findByEmail(String email);
-    User findByToken(String token);
     User deleteByUsername(String username);
 
     @Modifying
-    @Query("UPDATE User u Set u.permitted = true WHERE token = :token")
-    void permitUser(@Param("token") String token);
+    @Query("UPDATE User u Set u.permitted = true WHERE id = :id")
+    void permitUser(@Param("id") Long id);
 }

@@ -1,6 +1,9 @@
 package Application.Entities;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.json.JSONObject;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,7 +14,6 @@ import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -30,7 +32,6 @@ public class User implements UserDetails {
     @Size(min = 2, message = "Не меньше 2 знаков")
     private String password;
     private String email;
-    private String token;
     private Boolean permitted;
 
     private String name;
@@ -46,7 +47,6 @@ public class User implements UserDetails {
         this.password = password;
         this.email = email;
         this.permitted = true;
-        this.token = UUID.randomUUID().toString().replace("-", "");
     }
 
     public User(String username, String password, String email,
@@ -111,7 +111,6 @@ public class User implements UserDetails {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
-                ", token='" + token + '\'' +
                 ", permitted=" + permitted +
                 ", name='" + name + '\'' +
                 ", birthTown='" + birthTown + '\'' +
@@ -124,7 +123,6 @@ public class User implements UserDetails {
         user.put("id", this.getId());
         user.put("username", this.getUsername());
         user.put("email", this.getEmail());
-        user.put("token", this.getToken());
         user.put("name", this.getName());
         user.put("birth_town", this.getBirthTown());
         user.put("birth_date", this.getBirthDate());
@@ -139,8 +137,6 @@ public class User implements UserDetails {
     public boolean equals(Object o) {
         if (!(o instanceof User)) return false;
         User user = (User) o;
-        return user.username.equals(this.username)
-                && user.email.equals(this.email)
-                && user.token.equals(this.token);
+        return user.id.equals(this.id);
     }
 }
