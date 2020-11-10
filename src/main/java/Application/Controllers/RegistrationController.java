@@ -37,10 +37,7 @@ public class RegistrationController {
             User user = new User(
                     receivedDataJson.getString("username"),
                     receivedDataJson.getString("password"),
-                    receivedDataJson.getString("email"),
-                    receivedDataJson.getString("name"),
-                    receivedDataJson.getString("birth_town"),
-                    new SimpleDateFormat("yyyy-MM-dd").parse(receivedDataJson.getString("birth_date")));
+                    receivedDataJson.getString("email"));
 
             if (!userService.saveUser(user)) {
                 responseJson.put("status", "user already exists");
