@@ -45,11 +45,11 @@ public class ChatController {
         return chatMessage;
     }
 
-    @GetMapping("/chat/{token}")
-    public String getChat(@PathVariable("token") String token, Model model) {
+    @GetMapping("/chat/{id}")
+    public String getChat(@PathVariable("id") Long id, Model model) {
         User sender = (User) userService.loadUserByUsername(
                 String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
-        User receiver = userService.findUserByToken(token);
+        User receiver = userService.findUserById(id);
 
         ChatMessage message = new ChatMessage();
         message.setSender(sender);
