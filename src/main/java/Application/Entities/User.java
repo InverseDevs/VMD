@@ -40,7 +40,6 @@ public class User implements UserDetails {
     private Date birthDate;
 
     @Lob
-    @Column(columnDefinition = "BYTEA")
     private byte[] avatar;
 
     public User(String username, String password, String email) {
