@@ -87,8 +87,6 @@ public class UserApiController {
             }
         } catch (MissingRequestHeaderException e) {
             responseJson.put("status", "incorrect request headers");
-        } catch (UsernameNotFoundException e) {
-            responseJson.put("status", "no users found");
         } catch (Exception e) {
             responseJson.put("status", "unknown error");
         }
