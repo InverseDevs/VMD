@@ -41,7 +41,7 @@ public class User implements UserDetails {
     private Date birthDate;
 
     @Lob
-    @Type(type="org.hibernate.type.PrimitiveByteArrayBlobType")
+    @Type(type = "org.hibernate.type.BinaryType")
     private byte[] avatar;
 
     public User(String username, String password, String email) {
