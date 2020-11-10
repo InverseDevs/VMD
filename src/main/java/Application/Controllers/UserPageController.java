@@ -19,9 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Date;
 
+@Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders="Authorization")
 @Controller
-@Slf4j
 public class UserPageController {
     @Autowired
     private WallPostService postService;
@@ -48,15 +48,20 @@ public class UserPageController {
                     responseJson.put("post_" + ++idx, post.toJson());
                 }
             } else {
+                log.info("user not authorized");
                 responseJson.put("status", "user not authorized");
             }
         } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
             responseJson.put("status", "incorrect request headers");
         } catch (UsernameNotFoundException e) {
+            log.error("user not found: " + e.getMessage());
             responseJson.put("status", "user not found");
         } catch (WallPostNotFoundException e) {
+            log.error("posts not found: " + e.getMessage());
             responseJson.put("status", "posts not found");
         } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");
         }
 
@@ -95,15 +100,20 @@ public class UserPageController {
 
                 responseJson.put("status", "success");
             } else {
+                log.info("user not authorized");
                 responseJson.put("status", "user not authorized");
             }
         } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
             responseJson.put("status", "incorrect request headers");
         } catch (JSONException | IOException e) {
+            log.error("incorrect request body: " + e.getMessage());
             responseJson.put("status", "incorrect request body");
         } catch (UsernameNotFoundException e) {
+            log.error("user not found: " + e.getMessage());
             responseJson.put("status", "user not found");
         } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");
         }
 

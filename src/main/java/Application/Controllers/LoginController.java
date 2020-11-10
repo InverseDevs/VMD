@@ -4,6 +4,7 @@ import Application.Email.MailSender;
 import Application.Entities.User;
 import Application.Security.JwtProvider;
 import Application.Services.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders="Authorization")
 @Controller
 public class LoginController {
@@ -51,10 +53,13 @@ public class LoginController {
             }
 
         } catch (JSONException | IOException e) {
+            log.error("incorrect request body: " + e.getMessage());
             responseJson.put("status", "incorrect request body");
         } catch (UsernameNotFoundException e) {
+            log.error("user not found: " + e.getMessage());
             responseJson.put("status", "user not found");
         } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");
         }
 
@@ -80,12 +85,16 @@ public class LoginController {
 
             responseJson.put("status", "success");
         } catch (JSONException | IOException e) {
+            log.error("incorrect request body: " + e.getMessage());
             responseJson.put("status", "incorrect request body");
         } catch (UsernameNotFoundException e) {
+            log.error("user not found: " + e.getMessage());
             responseJson.put("status", "user not found");
         } catch (MessagingException e) {
+            log.error("incorrect email: " + e.getMessage());
             responseJson.put("status", "incorrect email");
         } catch (Exception e) {
+            log.error("unknown error:" + e.getMessage());
             responseJson.put("status", "unknown error");
         }
 

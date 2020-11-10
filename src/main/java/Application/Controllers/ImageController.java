@@ -3,6 +3,7 @@ package Application.Controllers;
 import Application.Entities.User;
 import Application.Security.JwtProvider;
 import Application.Services.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+@Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
 @Controller
 public class ImageController {
@@ -55,17 +57,23 @@ public class ImageController {
 
                 responseJson.put("status", "success");
             } else {
+                log.info("user not authorized");
                 responseJson.put("status", "user not authorized");
             }
         } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
             responseJson.put("status", "incorrect request headers");
-        } catch (UsernameNotFoundException e) {
-            responseJson.put("status", "user not found");
         } catch (JSONException e) {
+            log.error("incorrect request body: " + e.getMessage());
             responseJson.put("status", "incorrect request body");
-        }catch (IOException e) {
+        } catch (IOException e) {
+            log.error("incorrect byte sequence: " + e.getMessage());
             responseJson.put("status", "incorrect byte sequence");
+        } catch (UsernameNotFoundException e) {
+            log.error("user not found: " + e.getMessage());
+            responseJson.put("status", "user not found");
         } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");
         }
 

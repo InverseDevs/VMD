@@ -4,26 +4,23 @@ import Application.Controllers.API.Exceptions.IdChangeAttemptException;
 import Application.Controllers.API.Exceptions.NoUserFoundException;
 import Application.Controllers.API.Exceptions.WrongRequestException;
 import Application.Database.User.UserRepository;
-import Application.Entities.Content.WallPost;
 import Application.Entities.User;
 import Application.Security.JwtProvider;
 import Application.Starter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.json.JSONException;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping(Starter.apiLink + UserApiController.userApiLink)
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
@@ -84,11 +81,14 @@ public class UserApiController {
                     responseJson.put("user_" + ++idx, user.toJson());
                 }
             } else {
+                log.info("user not authorized");
                 responseJson.put("status", "user not authorized");
             }
         } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
             responseJson.put("status", "incorrect request headers");
         } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");
         }
 
@@ -115,13 +115,17 @@ public class UserApiController {
                     responseJson = userOptional.get().toJson();
                 }
             } else {
+                log.info("user not authorized");
                 responseJson.put("status", "user not authorized");
             }
         } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
             responseJson.put("status", "incorrect request headers");
         } catch (NoUserFoundException e) {
+            log.error("no users found: " + e.getMessage());
             responseJson.put("status", "no users found");
         } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");
         }
 
@@ -130,14 +134,14 @@ public class UserApiController {
 
     @PatchMapping
     public InfoWrapper patchOne(@RequestBody InfoWrapper wrapper) {
-        if(wrapper.id == null) throw new WrongRequestException();
+        if (wrapper.id == null) throw new WrongRequestException();
         User user = repository.findById(wrapper.id).orElseThrow(NoUserFoundException::new);
-        if(wrapper.username != null) throw new IdChangeAttemptException();
+        if (wrapper.username != null) throw new IdChangeAttemptException();
 
         // TODO костыльный мерж переделать!!!!!!!!!!!!!!!
-        if(wrapper.name != null) user.setName(wrapper.name);
-        if(wrapper.birthTown != null) user.setBirthTown(wrapper.birthTown);
-        if(wrapper.birthDate >= 0) user.setBirthDate(new Date(wrapper.birthDate));
+        if (wrapper.name != null) user.setName(wrapper.name);
+        if (wrapper.birthTown != null) user.setBirthTown(wrapper.birthTown);
+        if (wrapper.birthDate >= 0) user.setBirthDate(new Date(wrapper.birthDate));
 
         return new InfoWrapper(repository.save(user));
     }
