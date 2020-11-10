@@ -5,6 +5,7 @@ import Application.Security.JwtProvider;
 import Application.Services.UserService;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -60,7 +61,9 @@ public class ImageController {
             responseJson.put("status", "incorrect request headers");
         } catch (UsernameNotFoundException e) {
             responseJson.put("status", "user not found");
-        } catch (IOException e) {
+        } catch (JSONException e) {
+            responseJson.put("status", "incorrect request body");
+        }catch (IOException e) {
             responseJson.put("status", "incorrect byte sequence");
         } catch (Exception e) {
             responseJson.put("status", "unknown error");

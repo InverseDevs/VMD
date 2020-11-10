@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(Starter.apiLink + UserApiController.userApiLink)
+@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
 public class UserApiController {
     public final static String userApiLink = "/users";
 
