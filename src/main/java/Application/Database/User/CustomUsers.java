@@ -8,5 +8,5 @@ public interface CustomUsers {
     User deleteFriend(User user, Long friendId);
     User makeAdmin(User user);
     User makeUser(User user);
-    //User updateAvatar(User user, byte[] avatar);
+    User updateAvatar(User user, byte[] avatar);
 }

@@ -50,7 +50,7 @@ public class ImageController {
 
                 User user = userService.findUserByToken(token);
 
-                //userService.updateAvatar(user, avatar);
+                userService.updateAvatar(user, avatar);
 
                 responseJson.put("status", "success");
             } else {
