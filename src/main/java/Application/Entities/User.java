@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
@@ -36,7 +38,7 @@ public class User implements UserDetails {
 
     private String name;
     private String birthTown;
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")
@@ -50,7 +52,7 @@ public class User implements UserDetails {
     }
 
     public User(String username, String password, String email,
-                String name, String birthTown, Date birthDate) {
+                String name, String birthTown, LocalDate birthDate) {
         this(username, password, email);
         this.name = name;
         this.birthDate = birthDate;
@@ -125,7 +127,7 @@ public class User implements UserDetails {
         user.put("email", this.getEmail());
         user.put("name", this.getName());
         user.put("birth_town", this.getBirthTown());
-        user.put("birth_date", this.getBirthDate());
+        user.put("birth_date", this.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         user.put("avatar", avatar == null ? "" : new String(avatar));
         user.put("role", this.getRoles().toString());
         user.put("friends", this.getFriends().toString());

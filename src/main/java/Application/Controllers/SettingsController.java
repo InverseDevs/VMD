@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -35,7 +36,7 @@ public class SettingsController {
         private String username;
         private String name;
         private String birthTown;
-        private Date birthDate;
+        private LocalDate birthDate;
         private final static SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd");
 
         public SettingsWrapper(User user) {
@@ -58,7 +59,7 @@ public class SettingsController {
         }
         public void setTextBirthDate(String textDate) throws ParseException {
             if(textDate == null) birthDate = null;
-            else birthDate = dateParser.parse(textDate);
+            else birthDate = LocalDate.parse(textDate);
         }
     }
 

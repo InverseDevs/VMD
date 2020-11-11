@@ -17,6 +17,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -59,7 +60,7 @@ public class Starter {
             users.add(new User("test2", "1234", "test2@vmd.com",
                     "Test Account 2", "VMD", null));
             users.add(new User("skelantros", "23052001", "skelantros@vmd.com",
-                    "Alex Egorowski", "Zelenokumsk", new Date(990561600000L)));
+                    "Alex Egorowski", "Zelenokumsk", LocalDate.parse("1990-12-12")));
             for(User user : users) {
                 userRepo.save(user);
                 userRepo.makeUser(user);

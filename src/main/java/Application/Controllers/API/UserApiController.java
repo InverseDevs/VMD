@@ -16,6 +16,7 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +38,7 @@ public class UserApiController {
         private String username;
         private String name;
         private String birthTown;
-        private long birthDate;
+        private LocalDate birthDate;
         private String _href;
 
         public InfoWrapper(User user) {
@@ -45,7 +46,8 @@ public class UserApiController {
             this.username = user.getUsername();
             this.name = user.getName();
             this.birthTown = user.getBirthTown();
-            this.birthDate = user.getBirthDate() != null ? user.getBirthDate().getTime() : 0;
+            //TODO Убрать этот костыль, а лучше и всю обёртку вообще
+            this.birthDate = user.getBirthDate();
             this._href = Starter.homeLink + Starter.apiLink + userApiLink + "/" + user.getId();
         }
 
@@ -141,7 +143,7 @@ public class UserApiController {
         // TODO костыльный мерж переделать!!!!!!!!!!!!!!!
         if (wrapper.name != null) user.setName(wrapper.name);
         if (wrapper.birthTown != null) user.setBirthTown(wrapper.birthTown);
-        if (wrapper.birthDate >= 0) user.setBirthDate(new Date(wrapper.birthDate));
+        user.setBirthDate(wrapper.birthDate);
 
         return new InfoWrapper(repository.save(user));
     }
