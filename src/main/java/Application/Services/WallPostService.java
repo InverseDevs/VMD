@@ -1,47 +1,53 @@
 package Application.Services;
 
 import Application.Controllers.API.Exceptions.WallPostNotFoundException;
+import Application.Database.User.UserRepository;
+import Application.Database.Wall.UserWallRepository;
 import Application.Entities.Content.WallPost;
 import Application.Database.WallPostRepository;
 import Application.Entities.User;
+import Application.Entities.Wall.Wall;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
+@Deprecated
 public class WallPostService {
     @Autowired
-    private WallPostRepository repository;
+    private WallPostRepository postRepository;
+    @Autowired
+    private UserWallRepository userWallRepository;
+    @Autowired
+    UserRepository userRepository;
 
-    public Iterable<WallPost> allPosts() { return repository.findAll(); }
+    public Iterable<WallPost> allPosts() { return postRepository.findAll(); }
 
-    public Iterable<WallPost> allUserPagePosts(Long userId) throws WallPostNotFoundException {
-        Iterable<WallPost> posts = repository.findByPage(userId, WallPost.PageType.USER);
-
-        if (posts == null) {
-            throw new UsernameNotFoundException("No posts found");
-        }
-
-        return posts;
+    @Deprecated
+    public Iterable<WallPost> findAllUserPagePosts(Long userId) throws WallPostNotFoundException {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if(!userOptional.isPresent()) return null;
+        else return new ArrayList<>(userWallRepository.findByUser(userOptional.get()).getPosts());
     }
 
     public WallPost postById(Long id) {
-        return repository.findById(id).orElse(null);
+        return postRepository.findById(id).orElse(null);
     }
 
     public void addPost(WallPost post) {
         post.setSentTime(new Date());
-        repository.save(post);
+        postRepository.save(post);
     }
 
-    public void addPost(String message, User sender, WallPost.PageType pageType, Long pageId) {
-        WallPost post = new WallPost(sender, message, new Date(), pageId, pageType);
-        repository.save(post);
+    public void addPost(String message, User sender, Wall wall) {
+        WallPost post = new WallPost(sender, message, new Date(), wall);
+        postRepository.save(post);
     }
 
     public void delete(Long id) {
-        repository.deleteById(id);
+        postRepository.deleteById(id);
     }
 }

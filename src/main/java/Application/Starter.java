@@ -7,7 +7,10 @@ import Application.Database.RoleRepository;
 import Application.Database.User.UserRepository;
 import Application.Entities.Role;
 import Application.Entities.User;
+import Application.Entities.Wall.Wall;
 import Application.Services.ChatService;
+import Application.Services.UserService;
+import Application.Services.WallService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,9 +35,11 @@ public class Starter {
     @Autowired
     RoleRepository roleRepo;
     @Autowired
-    WallPostRepository postRepo;
-    @Autowired
     ChatService chatService;
+    @Autowired
+    WallService wallService;
+    @Autowired
+    UserService userService;
 
     Logger logger = LoggerFactory.getLogger(Starter.class);
 
@@ -50,8 +55,8 @@ public class Starter {
 
             User admin = new User("admin", "admin", "admin@vmd.com",
                     "Admin", "VMD", null);
-            userRepo.save(admin);
-            userRepo.makeAdmin(admin);
+            userService.createUser(admin);
+            userService.makeAdmin(admin);
 
             ArrayList<User> users = new ArrayList<>();
             users.add(new User("test1", "1234", "test1@vmd.com",
@@ -60,20 +65,23 @@ public class Starter {
                     "Test Account 2", "VMD", null));
             users.add(new User("skelantros", "23052001", "skelantros@vmd.com",
                     "Alex Egorowski", "Zelenokumsk", new Date(990561600000L)));
-            for(User user : users) {
-                userRepo.save(user);
-                userRepo.makeUser(user);
+            for(int i = 0; i < users.size(); ++i) {
+                users.set(i, userService.createUser(users.get(i)));
             }
 
             ArrayList<WallPost> posts = new ArrayList<>();
-            WallPost.PageType type = WallPost.PageType.USER;
-            posts.add(new WallPost(users.get(2), "Hello admin!", new Date(), 1L, type));
-            posts.add(new WallPost(users.get(0), "thx for making me alive!", new Date(), 1L, type));
-            posts.add(new WallPost(users.get(2), "u a de best", new Date(), 1L, type));
-            posts.add(new WallPost(admin, "Hello skelantros!", new Date(), 4L, type));
-            posts.add(new WallPost(users.get(2), "hey twin!", new Date(), 2L, type));
-            posts.add(new WallPost(users.get(1), "hi there!", new Date(), 3L, type));
-            posts.forEach(postRepo::save);
+
+            posts.add(wallService.addPost(users.get(2), "Hello admin!", admin));
+            posts.add(wallService.addPost(admin, "Hello skelantros!", users.get(2)));
+            posts.add(wallService.addPost(users.get(0), "thx for making me alive!", admin));
+            posts.add(wallService.addPost(users.get(2), "u a de best", admin));
+            posts.add(wallService.addPost(users.get(1), "hey twin!", users.get(0)));
+            posts.add(wallService.addPost(users.get(0), "hi there!", users.get(1)));
+
+            wallService.setUserWallPostAccess(users.get(2), Wall.AccessType.FRIENDS);
+            posts.add(wallService.addPost(users.get(0), "This post won't be sent because we are not friends", users.get(2)));
+            userService.addFriend(users.get(2), users.get(0));
+            posts.add(wallService.addPost(users.get(0), "This post will be sent because we are friends!", users.get(2)));
 
             Chat p2pChat = chatService.getChat(admin, users.get(2));
             chatService.saveMessage(new ChatMessage("Hello admin", new Date(), users.get(2), p2pChat));

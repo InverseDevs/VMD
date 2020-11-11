@@ -1,6 +1,7 @@
 package Application.Entities.Content;
 
 import Application.Entities.User;
+import Application.Entities.Wall.Wall;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,47 +17,25 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "wall_posts")
 public class WallPost extends Content {
-    @Column(name = "page_id")
-    private Long pageId;
-    @Column(name = "page_type")
-    private PageType pageType;
+    @ManyToOne
+    @JoinColumn(name = "wall_id")
+    private Wall wall;
 
-    public enum PageType {
-        USER, GROUP;
-
-        @Converter(autoApply = true)
-        public static class PageTypeConverter implements AttributeConverter<PageType, String> {
-            @Override
-            public String convertToDatabaseColumn(PageType pageType) {
-                if(pageType == null) return null;
-                return pageType.toString();
-            }
-
-            @Override
-            public PageType convertToEntityAttribute(String s) {
-                if(s == null) return null;
-                return PageType.valueOf(s);
-            }
-        }
-    }
-
-    public WallPost(Long id, User sender, String content, Date sentTime, Long pageId, PageType pageType) {
+    public WallPost(Long id, User sender, String content, Date sentTime, Wall wall) {
         super(id, sender, content, sentTime);
-        this.pageId = pageId;
-        this.pageType = pageType;
+        this.wall = wall;
     }
 
-    public WallPost(User sender, String content, Date sentTime, Long pageId, PageType pageType) {
+    public WallPost(User sender, String content, Date sentTime, Wall wall) {
         super(sender, content, sentTime);
-        this.pageId = pageId;
-        this.pageType = pageType;
+        this.wall = wall;
     }
 
     public JSONObject toJson() {
         JSONObject post = new JSONObject();
-        post.put("page_id", this.getPageId());
+        //post.put("page_id", this.getPageId());
         post.put("id", this.getId());
-        post.put("page_type", this.getPageType().toString());
+        //post.put("page_type", this.getPageType().toString());
         post.put("sender", this.getSender().getUsername());
         post.put("content", this.getContent());
         post.put("sent_time", this.getSentTime().toString());

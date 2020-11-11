@@ -1,5 +1,7 @@
 package Application.Entities;
 
+import Application.Entities.Wall.UserWall;
+import Application.Entities.Wall.Wall;
 import lombok.*;
 import org.json.JSONObject;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,6 +40,10 @@ public class User implements UserDetails {
     private String name;
     private String birthTown;
     private Date birthDate;
+
+    @OneToOne
+    @JoinColumn(name = "wall_id")
+    private UserWall wall;
 
     @Lob
     @Column(name = "avatar")
