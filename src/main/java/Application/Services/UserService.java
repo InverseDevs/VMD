@@ -1,8 +1,11 @@
 package Application.Services;
 
+import Application.Database.RoleRepository;
 import Application.Database.User.UserRepository;
+import Application.Database.Wall.UserWallRepository;
 import Application.Entities.Role;
 import Application.Entities.User;
+import Application.Entities.Wall.UserWall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,6 +22,10 @@ import java.util.UUID;
 public class UserService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    UserWallRepository wallRepository;
+    @Autowired
+    RoleRepository roleRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -66,10 +73,20 @@ public class UserService implements UserDetailsService {
             return false;
         }
 
+        user.setWall(wallRepository.save(new UserWall(user)));
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
         user.setToken(generateToken());
         userRepository.save(user);
         return true;
+    }
+
+    public User createUser(User user) {
+        if(userRepository.findByUsername(user.getUsername()) != null) return null;
+        this.makeUser(user);
+        user.setToken(generateToken());
+        userRepository.save(user);
+        user.setWall(wallRepository.save(new UserWall(user)));
+        return userRepository.save(user);
     }
 
     public void permitUser(String token) {
