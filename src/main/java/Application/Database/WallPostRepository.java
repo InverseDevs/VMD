@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.List;
 
 public interface WallPostRepository extends JpaRepository<WallPost, Long> {
@@ -21,4 +22,14 @@ public interface WallPostRepository extends JpaRepository<WallPost, Long> {
     @Transactional
     @Query(value = "INSERT INTO likes (post_id, user_id) VALUES (:post, :user)", nativeQuery = true)
     int addLike(@Param("post") Long postId, @Param("user") Long userId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM likes WHERE post_id = :post AND user_id = :user", nativeQuery = true)
+    int removeLike(@Param("post") Long postId, @Param("user") Long userId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "SELECT * FROM likes WHERE post_id = :post AND user_id = :user", nativeQuery = true)
+    Collection<Integer> checkLike(@Param("post") Long postId, @Param("user") Long userId);
 }

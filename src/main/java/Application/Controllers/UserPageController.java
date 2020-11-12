@@ -143,7 +143,11 @@ public class UserPageController {
                 User user = userService.findUserById(userId);
                 WallPost post = postService.postById(postId);
 
-                postService.like(post, user);
+                if (postService.checkLike(post, user)) {
+                    postService.like(post, user);
+                } else {
+                    postService.removeLike(post, user);
+                }
 
                 responseJson.put("status", "success");
             } else {
