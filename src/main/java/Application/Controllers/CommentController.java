@@ -143,6 +143,9 @@ public class CommentController {
         } catch (WallPostNotFoundException e) {
             log.error("post not found: " + e.getMessage());
             responseJson.put("status", "post not found");
+        } catch (CommentNotFoundException e) {
+            log.error("comment not found: " + e.getMessage());
+            responseJson.put("status", "comment not found");
         } catch (Exception e) {
             log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");

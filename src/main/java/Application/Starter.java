@@ -61,6 +61,8 @@ public class Starter {
                     "Test Account 2", "VMD", null));
             users.add(new User("skelantros", "23052001", "skelantros@vmd.com",
                     "Alex Egorowski", "Zelenokumsk", LocalDate.parse("1990-12-12")));
+            users.add(new User("NixoN", "67562211", "mythtics2001@mail.ru",
+                    "Andrew Zhukov", "Ishim", LocalDate.parse("2001-02-15")));
             for(User user : users) {
                 userRepo.save(user);
                 userRepo.makeUser(user);

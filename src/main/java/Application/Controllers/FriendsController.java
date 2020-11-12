@@ -144,8 +144,8 @@ public class FriendsController {
 
                     responseJson.put("status", "success");
                 } else {
-                    log.info("cannot create friend");
-                    responseJson.put("status", "cannot create friend");
+                    log.info("cannot remove friend");
+                    responseJson.put("status", "cannot remove friend");
                 }
             } else {
                 log.info("user not authorized");
