@@ -145,11 +145,11 @@ public class UserPageController {
 
                 if (postService.checkLike(post, user)) {
                     postService.like(post, user);
+                    responseJson.put("status", "added");
                 } else {
                     postService.removeLike(post, user);
+                    responseJson.put("status", "removed");
                 }
-
-                responseJson.put("status", "success");
             } else {
                 log.info("user not authorized");
                 responseJson.put("status", "user not authorized");
