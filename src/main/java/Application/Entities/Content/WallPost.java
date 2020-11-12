@@ -9,6 +9,8 @@ import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -20,6 +22,12 @@ public class WallPost extends Content {
     private Long pageId;
     @Column(name = "page_type")
     private PageType pageType;
+
+    @ManyToMany
+    @JoinTable(name = "likes",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> likes; //user id's
 
     public enum PageType {
         USER, GROUP;
@@ -60,6 +68,12 @@ public class WallPost extends Content {
         post.put("sender", this.getSender().getUsername());
         post.put("content", this.getContent());
         post.put("sent_time", this.getSentTime().toString());
+
+        Set<Long> likedUserId = new HashSet<>();
+        for (User user : likes) {
+            likedUserId.add(user.getId());
+        }
+        post.put("likes", likedUserId.toString());
 
         return post;
     }
