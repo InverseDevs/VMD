@@ -1,7 +1,6 @@
 package Application.Entities.Content;
 
 import Application.Entities.User;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,6 +28,22 @@ public class WallPost extends Content {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> likes; //user id's
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Comment> comments;
+
+    // Близнец-костыль, но не слишком серьёзный. По крайней, мере структуру проекта он не ломает :)
+    public Set<Comment> getComments() {
+        Set<Comment> comments = new HashSet<>();
+
+        for (Comment comment : this.comments) {
+            if (comment.getType() == Comment.CommentType.POST) {
+                comments.add(comment);
+            }
+        }
+
+        return comments;
+    }
+
     public enum PageType {
         USER, GROUP;
 
@@ -36,13 +51,13 @@ public class WallPost extends Content {
         public static class PageTypeConverter implements AttributeConverter<PageType, String> {
             @Override
             public String convertToDatabaseColumn(PageType pageType) {
-                if(pageType == null) return null;
+                if (pageType == null) return null;
                 return pageType.toString();
             }
 
             @Override
             public PageType convertToEntityAttribute(String s) {
-                if(s == null) return null;
+                if (s == null) return null;
                 return PageType.valueOf(s);
             }
         }
@@ -69,11 +84,15 @@ public class WallPost extends Content {
         post.put("content", this.getContent());
         post.put("sent_time", this.getSentTime().toString());
 
-        Set<Long> likedUserId = new HashSet<>();
+        int userIdx = 0;
         for (User user : likes) {
-            likedUserId.add(user.getId());
+            post.put("like_" + ++userIdx, user.toJson());
         }
-        post.put("likes", likedUserId.toString());
+
+        int commentIdx = 0;
+        for (Comment comment : this.getComments()) {
+            post.put("comment_" + ++commentIdx, comment.toJson());
+        }
 
         return post;
     }

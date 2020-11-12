@@ -67,7 +67,7 @@ public class WallPostService {
         return repository.checkLike(post.getId(), user.getId()).size() == 0;
     }
 
-    public void delete(Long id) {
-        repository.deleteById(id);
+    public void deletePost(Long postId) {
+        repository.deleteById(postId);
     }
 }
