@@ -54,10 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .logoutSuccessUrl("/");
 
-        httpSecurity.headers().frameOptions().disable();
-//        httpSecurity
-//                .headers()
-//                .addHeaderWriter(new StaticHeadersWriter("Authorization"));
+        httpSecurity.headers().addHeaderWriter(new StaticHeadersWriter("Authorization"));
     }
 
     @Autowired
