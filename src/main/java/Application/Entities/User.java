@@ -126,10 +126,11 @@ public class User implements UserDetails {
         user.put("email", this.getEmail());
         user.put("name", this.getName());
         user.put("birth_town", this.getBirthTown());
-        user.put("birth_date", this.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        user.put("avatar", avatar == null ? "" : new String(avatar));
-        user.put("role", this.getRoles().toString());
-        user.put("friends", this.getFriends().toString());
+        user.put("birth_date", this.getBirthDate() == null ? "" :
+                this.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        user.put("avatar", this.avatar == null ? "" : new String(avatar));
+        user.put("role", this.getRoles() == null ? "" : this.getRoles().toString());
+        user.put("friends", this.getFriends() == null ? "" : this.getFriends().toString());
 
         return user;
     }

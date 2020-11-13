@@ -77,10 +77,10 @@ public class Comment extends Content {
     public JSONObject toJson() {
         JSONObject commentJson = new JSONObject();
         commentJson.put("id", this.getId());
-        commentJson.put("sender", this.getSender().getUsername());
+        commentJson.put("sender", this.getSender() == null ? "" : this.getSender().getUsername());
         commentJson.put("content", this.getContent());
-        commentJson.put("sent_time", this.getSentTime().toString());
-        commentJson.put("post_id", this.getPost().getId());
+        commentJson.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
+        commentJson.put("post_id", this.getPost() == null ? "" : this.getPost().getId());
 
         int userIdx = 0;
         for (User user : likes) {

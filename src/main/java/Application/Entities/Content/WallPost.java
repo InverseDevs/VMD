@@ -79,10 +79,10 @@ public class WallPost extends Content {
         JSONObject post = new JSONObject();
         post.put("page_id", this.getPageId());
         post.put("id", this.getId());
-        post.put("page_type", this.getPageType().toString());
-        post.put("sender", this.getSender().getUsername());
+        post.put("page_type", this.getPageType() == null ? "" : this.getPageType().toString());
+        post.put("sender", this.getSender() == null ? "": this.getSender().getUsername());
         post.put("content", this.getContent());
-        post.put("sent_time", this.getSentTime().toString());
+        post.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
 
         int userIdx = 0;
         for (User user : likes) {
