@@ -61,3 +61,8 @@ create table if not exists wall_posts(
   message       varchar(256),
   sent_time     date
 );
+
+create table if not exists likes(
+  post_id int,
+  user_id int
+);
