@@ -45,6 +45,7 @@ public class LoginController {
 
             if (user.getPermitted() && password.equals(user.getPassword())) {
                 String token = JwtProvider.generateToken(username, password);
+                response.addHeader("Access-Control-Expose-Headers", "Authorization");
                 response.addHeader("Authorization", "Bearer " + token);
 
                 responseJson = user.toJson();
