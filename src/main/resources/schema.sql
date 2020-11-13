@@ -8,7 +8,8 @@ drop table friends;
 drop table users_info;
 drop table wall_posts;
 
-create table if not exists users(
+create table if not exists users
+(
   id            serial,
   username      varchar(256),
   password      varchar(256),
@@ -20,26 +21,31 @@ create table if not exists users(
   avatar        bytea
 );
 
-create table if not exists roles(
+create table if not exists roles
+(
   id       serial,
   name     varchar(256)
 );
 
-create table if not exists user_to_role(
+create table if not exists user_to_role
+(
   user_id int,
   role_id int
 );
 
-create table if not exists chats(
+create table if not exists chats
+(
   id          serial
 );
 
-create table if not exists chats_to_users(
+create table if not exists chats_to_users
+(
   chat_id   int,
   user_id   int
 );
 
-create table if not exists messages(
+create table if not exists messages
+(
   id        serial,
   sender_id int,
   type      varchar(64),
@@ -48,12 +54,14 @@ create table if not exists messages(
   sent_time date
 );
 
-create table if not exists friends(
+create table if not exists friends
+(
   user1_id int,
   user2_id int
 );
 
-create table if not exists wall_posts(
+create table if not exists wall_posts
+(
   id            serial,
   page_type     varchar(16),
   page_id       int,
@@ -62,7 +70,19 @@ create table if not exists wall_posts(
   sent_time     date
 );
 
-create table if not exists likes(
+create table if not exists likes
+(
   post_id int,
   user_id int
+);
+
+create table if not exists comments
+(
+  id                serial,
+  message           varchar(256),
+  sent_time         timestamp,
+  type              varchar(256),
+  sender_id         bigint,
+  reference_comment bigint,
+  post_id           bigint
 );
