@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
@@ -29,7 +29,7 @@ public class LoginController {
 
     @RequestMapping(value = "/authorization", method = RequestMethod.POST)
     @ResponseBody
-    public String login(HttpServletRequest request, HttpServletResponse response) {
+    public String login(HttpServletRequest request, ServerHttpResponse response) {
         JSONObject responseJson = new JSONObject();
         try {
             StringBuilder data = new StringBuilder();
@@ -45,7 +45,7 @@ public class LoginController {
 
             if (user.getPermitted() && password.equals(user.getPassword())) {
                 String token = JwtProvider.generateToken(username, password);
-                response.setHeader("Authorization", "Bearer " + token);
+                response.getHeaders().add("Authorization", "Bearer " + token);
 
                 responseJson = user.toJson();
             } else {
