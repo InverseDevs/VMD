@@ -1,11 +1,12 @@
 package Application.Database.User;
 
-import Application.Entities.User.User;
+import Application.Entities.User;
 
 public interface CustomUsers {
-    void addFriend(User user, Long friendId);
+    User addFriend(User user, Long friendId);
     boolean checkFriend(User user, User friend);
-    void deleteFriend(User user, Long friendId);
-    void makeAdmin(User user);
-    void makeUser(User user);
+    User deleteFriend(User user, Long friendId);
+    User makeAdmin(User user);
+    User makeUser(User user);
+    User updateAvatar(User user, byte[] avatar);
 }

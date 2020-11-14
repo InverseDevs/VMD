@@ -1,10 +1,13 @@
 package Application.Services;
 
-import Application.Entities.Content.WallPost;
+import Application.Controllers.API.Exceptions.WallPostNotFoundException;
 import Application.Database.WallPostRepository;
+import Application.Entities.Content.WallPost;
+import Application.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Date;
 
 @Service
@@ -12,14 +15,34 @@ public class WallPostService {
     @Autowired
     private WallPostRepository repository;
 
-    public Iterable<WallPost> allPosts() { return repository.findAll(); }
+    public Iterable<WallPost> allPosts() {
+        Iterable<WallPost> posts = repository.findAll();
 
-    public Iterable<WallPost> allUserpagePosts(Long userId) {
-        return repository.findByPage(userId, WallPost.PageType.USER);
+        if (posts == null) {
+            throw new WallPostNotFoundException("No posts found");
+        }
+
+        return posts;
+    }
+
+    public Iterable<WallPost> allUserPagePosts(Long userId) throws WallPostNotFoundException {
+        Iterable<WallPost> posts = repository.findByPage(userId, WallPost.PageType.USER);
+
+        if (posts == null) {
+            throw new WallPostNotFoundException("No posts found");
+        }
+
+        return posts;
     }
 
     public WallPost postById(Long id) {
-        return repository.findById(id).orElse(null);
+        WallPost post = repository.findById(id).orElse(null);
+
+        if (post == null) {
+            throw new WallPostNotFoundException("Post not found");
+        }
+
+        return post;
     }
 
     public void addPost(WallPost post) {
@@ -27,17 +50,24 @@ public class WallPostService {
         repository.save(post);
     }
 
-    public void addPost(String message, String sender, WallPost.PageType pageType, Long pageId) {
-        WallPost post = new WallPost();
-        post.setSentTime(new Date());
-        post.setSender(sender);
-        post.setContent(message);
-        post.setPageType(pageType);
-        post.setPageId(pageId);
+    public void addPost(String message, User sender, WallPost.PageType pageType, Long pageId) {
+        WallPost post = new WallPost(sender, message, new Date(), pageId, pageType);
         repository.save(post);
     }
 
-    public void delete(Long id) {
-        repository.deleteById(id);
+    public void like(WallPost post, User user) {
+        repository.addLike(post.getId(), user.getId());
+    }
+
+    public void removeLike(WallPost post, User user) {
+        repository.removeLike(post.getId(), user.getId());
+    }
+
+    public boolean checkLike(WallPost post, User user) {
+        return repository.checkLike(post.getId(), user.getId()).size() == 0;
+    }
+
+    public void deletePost(Long postId) {
+        repository.deleteById(postId);
     }
 }

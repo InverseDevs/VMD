@@ -3,14 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${curr_info.name}"></title>
+    <title th:text="${currUser.name}"></title>
 </head>
 <body>
-    <h2 th:text="${curr_info.name}"></h2>
-    <b>Username: </b> <i th:text="${curr_info.username}"></i></br>
-    <b>User id: </b> <i th:text="${curr_info.userId}"></i></br>
-    <b>Birth date: </b> <i th:text="${curr_info.birthDate}"></i></br>
-    <b>Birth town: </b> <i th:text="${curr_info.birthTown}"></i></br>
+    <h2 th:text="${currUser.name}"></h2>
+    <b>Username: </b> <i th:text="${currUser.username}"></i></br>
+    <b>User id: </b> <i th:text="${currUser.id}"></i></br>
+    <b>Birth date: </b> <i th:text="${currUser.birthDate}"></i></br>
+    <b>Birth town: </b> <i th:text="${currUser.birthTown}"></i></br>
 
     <h2>Write something on my page!</h2>
     <form th:object="${post}" th:method="POST">

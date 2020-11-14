@@ -1,6 +1,6 @@
 package Application.Entities;
 
-import Application.Entities.User.User;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,6 +15,7 @@ import java.util.Set;
 public class Role implements GrantedAuthority {
     // TODO на данный момент идентификатор роли не генерируется, в будущем исправить
     @Id
+    @Setter(AccessLevel.PRIVATE)
     private Long id;
 
     private String name;

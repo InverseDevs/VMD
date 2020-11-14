@@ -18,6 +18,12 @@
 
 Main VMD page
 
+Image test
+<form method="POST" modelAttribute="sampleDetails" enctype="multipart/form-data" action="/avatar">
+    <input type="file" name="image" id="uploadInput" required="">
+    <input type="submit" name="inputButton" value="Import file" id="">
+</form>
+
 <div sec:authorize="isAuthenticated()">
     <!--    Authenticated username:-->
     <!--    <div sec:authentication="name"></div>-->
@@ -39,7 +45,6 @@ Main VMD page
 <div sec:authorize="hasRole('USER')">
     This content is only shown to users. 2
 </div>
-
 
 <br>
 All users list:
@@ -85,5 +90,7 @@ All users list:
     </form>
 </div>
 
+
+<script th:src="@{/js/main.js}"></script>
 </body>
 </html>

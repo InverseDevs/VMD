@@ -1,65 +1,104 @@
 package Application.Controllers;
 
 import Application.Email.MailSender;
-import Application.Entities.User.User;
+import Application.Entities.User;
+import Application.Security.JwtProvider;
 import Application.Services.UserService;
+import lombok.extern.slf4j.Slf4j;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@Slf4j
+@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders="Authorization")
 @Controller
 public class LoginController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/login")
-    public String getLogin(Model model) {
-        model.addAttribute("user", new User());
+    @RequestMapping(value = "/authorization", method = RequestMethod.POST)
+    @ResponseBody
+    public String login(HttpServletRequest request, HttpServletResponse response) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            StringBuilder data = new StringBuilder();
+            String line;
+            while ((line = request.getReader().readLine()) != null) {
+                data.append(line);
+            }
+            JSONObject receivedDataJson = new JSONObject(data.toString());
+            String username = receivedDataJson.get("username").toString();
+            String password = receivedDataJson.get("password").toString();
 
-        return "/login";
-    }
+            User user = (User) userService.loadUserByUsername(username);
 
-    @PostMapping("/authorization")
-    public String postLogin(User user) {
-        User userFromDB = (User) userService.loadUserByUsername(user.getUsername());
+            if (user.getPermitted() && password.equals(user.getPassword())) {
+                String token = JwtProvider.generateToken(username, password);
+                response.addHeader("Access-Control-Expose-Headers", "Authorization");
+                response.addHeader("Authorization", "Bearer " + token);
 
-        if (userFromDB.getPermitted() && user.getPassword().equals(userFromDB.getPassword())) {
-            SecurityContextHolder.getContext().setAuthentication(
-                    new UsernamePasswordAuthenticationToken(
-                            userFromDB.getUsername(),
-                            userFromDB.getPassword(),
-                            userFromDB.getRoles())
-            );
-            return "redirect:/";
-        } else {
-            return "/login";
+                responseJson = user.toJson();
+            } else {
+                responseJson.put("status", "incorrect password");
+            }
+
+        } catch (JSONException | IOException e) {
+            log.error("incorrect request body: " + e.getMessage());
+            responseJson.put("status", "incorrect request body");
+        } catch (UsernameNotFoundException e) {
+            log.error("user not found: " + e.getMessage());
+            responseJson.put("status", "user not found");
+        } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
+            responseJson.put("status", "unknown error");
         }
+
+        return responseJson.toString();
     }
 
-    @PostMapping("/exit")
-    public String exit() {
-        SecurityContextHolder.getContext().setAuthentication(null);
-        return "redirect:/";
-    }
+    @RequestMapping(value = "/forgot_password", method = RequestMethod.POST)
+    @ResponseBody
+    public String forgotPassword(HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            StringBuilder data = new StringBuilder();
+            String line;
+            while ((line = request.getReader().readLine()) != null) {
+                data.append(line);
+            }
+            JSONObject receivedDataJson = new JSONObject(data.toString());
 
-    @GetMapping("/forgot_password")
-    public String forgotPassword(Model model) {
-        model.addAttribute("user", new User());
+            User user = userService.findUserByEmail(receivedDataJson.getString("email"));
 
-        return "forgot_password";
-    }
+            MailSender mailSender = new MailSender();
+            mailSender.sendPassword(user);
 
-    @PostMapping("/forgot_password")
-    public String sendPassword(User user) {
-        User userFromDB = userService.findUserByEmail(user.getEmail());
+            responseJson.put("status", "success");
+        } catch (JSONException | IOException e) {
+            log.error("incorrect request body: " + e.getMessage());
+            responseJson.put("status", "incorrect request body");
+        } catch (UsernameNotFoundException e) {
+            log.error("user not found: " + e.getMessage());
+            responseJson.put("status", "user not found");
+        } catch (MessagingException e) {
+            log.error("incorrect email: " + e.getMessage());
+            responseJson.put("status", "incorrect email");
+        } catch (Exception e) {
+            log.error("unknown error:" + e.getMessage());
+            responseJson.put("status", "unknown error");
+        }
 
-        MailSender mailSender = new MailSender();
-        mailSender.sendPassword(userFromDB);
-
-        return "/login";
+        return responseJson.toString();
     }
 }

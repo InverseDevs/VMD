@@ -1,6 +1,6 @@
 package Application.Controllers;
 
-import Application.Entities.User.User;
+import Application.Entities.User;
 import Application.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,27 +24,27 @@ public class AdminController {
         return "admin";
     }
 
-    @GetMapping("/admin/delete/{token}")
-    public String deleteUser(@PathVariable("token") String token) {
-        User userToDelete = userService.findUserByToken(token);
+    @GetMapping("/admin/delete/{id}")
+    public String deleteUser(@PathVariable("id") Long id) {
+        User userToDelete = userService.findUserById(id);
 
         userService.deleteUser(userToDelete.getId());
 
         return "redirect:/admin";
     }
 
-    @GetMapping("/admin/makeAdmin/{token}")
-    public String makeAdmin(@PathVariable("token") String token) {
-        User user = userService.findUserByToken(token);
+    @GetMapping("/admin/makeAdmin/{id}")
+    public String makeAdmin(@PathVariable("id") Long id) {
+        User user = userService.findUserById(id);
 
         userService.makeAdmin(user);
 
         return "redirect:/admin";
     }
 
-    @GetMapping("/admin/makeUser/{token}")
-    public String makeUser(@PathVariable("token") String token) {
-        User user = userService.findUserByToken(token);
+    @GetMapping("/admin/makeUser/{id}")
+    public String makeUser(@PathVariable("id") Long id) {
+        User user = userService.findUserById(id);
 
         userService.makeUser(user);
 

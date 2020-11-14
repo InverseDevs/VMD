@@ -1,6 +1,6 @@
 package Application.Email;
 
-import Application.Entities.User.User;
+import Application.Entities.User;
 import Application.Starter;
 import com.sun.mail.smtp.SMTPTransport;
 
@@ -37,20 +37,20 @@ public class MailSender {
         msg = new MimeMessage(session);
     }
 
-    public void sendVerification(User user) {
+    public void sendVerification(User user) throws MessagingException {
         String name = user.getUsername();
         String mail = user.getEmail();
-        String token = user.getToken();
+        Long id = user.getId();
 
         String emailText = "Здравствуйте, " + name + "!<br>" +
                 "Благодарим за проявленный к нашему сервису интерес <br>" +
                 "Для завершения регистрации, пожалуйста, перейдите по ссылке ниже<br>" +
-                "<a href=\"" + URL + token + "\">" + URL + token + "</a>";
+                "<a href=\"" + URL + id + "\">" + URL + id + "</a>";
 
         send(emailText, mail);
     }
 
-    public void sendPassword(User user) {
+    public void sendPassword(User user) throws MessagingException {
         String name = user.getUsername();
         String mail = user.getEmail();
         String login = user.getUsername();
@@ -63,26 +63,21 @@ public class MailSender {
         send(emailText, mail);
     }
 
-    private void send(String emailText, String mail) {
-        try {
-            msg.setFrom(new InternetAddress(EMAIL_FROM));
+    private void send(String emailText, String mail) throws MessagingException {
+        msg.setFrom(new InternetAddress(EMAIL_FROM));
 
-            msg.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse(mail, false));
+        msg.setRecipients(Message.RecipientType.TO,
+                InternetAddress.parse(mail, false));
 
-            msg.setSubject(EMAIL_SUBJECT);
+        msg.setSubject(EMAIL_SUBJECT);
 
-            msg.setContent(emailText, "text/html; charset=utf-8");
+        msg.setContent(emailText, "text/html; charset=utf-8");
 
-            SMTPTransport t = (SMTPTransport) session.getTransport("smtp");
+        SMTPTransport t = (SMTPTransport) session.getTransport("smtp");
 
-            t.connect(SMTP_SERVER, USERNAME, PASSWORD);
-            t.sendMessage(msg, msg.getAllRecipients());
+        t.connect(SMTP_SERVER, USERNAME, PASSWORD);
+        t.sendMessage(msg, msg.getAllRecipients());
 
-            t.close();
-
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
+        t.close();
     }
 }

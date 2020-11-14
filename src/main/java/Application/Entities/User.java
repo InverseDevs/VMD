@@ -1,15 +1,20 @@
-package Application.Entities.User;
+package Application.Entities;
 
-import Application.Entities.Role;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.Type;
+import org.json.JSONObject;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Set;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -20,6 +25,7 @@ import java.util.UUID;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Setter(AccessLevel.PRIVATE)
     private Long id;
 
     @Size(min = 2, message = "Не меньше 2 знаков")
@@ -27,31 +33,41 @@ public class User implements UserDetails {
     @Size(min = 2, message = "Не меньше 2 знаков")
     private String password;
     private String email;
-    private String token;
     private Boolean permitted;
-    // TODO убрать этот великолепный костыль, когда фронтэнд будет к этому готов
-    @Transient
-    private String passwordConfirm;
+
+    private String name;
+    private String birthTown;
+    private LocalDate birthDate;
+
+    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
+    private byte[] avatar;
 
     public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.permitted = true;
-        this.token = UUID.randomUUID().toString().replace("-", "");
-        this.passwordConfirm = null;
+    }
+
+    public User(String username, String password, String email,
+                String name, String birthTown, LocalDate birthDate) {
+        this(username, password, email);
+        this.name = name;
+        this.birthDate = birthDate;
+        this.birthTown = birthTown;
     }
 
     @ManyToMany
     @JoinTable(name = "user_to_role",
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "role_id"))
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
     @ManyToMany
     @JoinTable(name = "friends",
-    joinColumns = @JoinColumn(name = "user1_id"),
-    inverseJoinColumns = @JoinColumn(name = "user2_id"))
+            joinColumns = @JoinColumn(name = "user1_id"),
+            inverseJoinColumns = @JoinColumn(name = "user2_id"))
     private Set<User> friends; // friends' ids
 
     @Override
@@ -96,16 +112,33 @@ public class User implements UserDetails {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
-                ", token='" + token + '\'' +
                 ", permitted=" + permitted +
-                ", passwordConfirm='" + passwordConfirm + '\'' +
+                ", name='" + name + '\'' +
+                ", birthTown='" + birthTown + '\'' +
+                ", birthDate=" + birthDate +
                 '}';
     }
 
-    // TODO временное решение! переписать!
+    public JSONObject toJson() {
+        JSONObject user = new JSONObject();
+        user.put("id", this.getId());
+        user.put("username", this.getUsername());
+        user.put("email", this.getEmail());
+        user.put("name", this.getName());
+        user.put("birth_town", this.getBirthTown());
+        user.put("birth_date", this.getBirthDate() == null ? "" :
+                this.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        user.put("avatar", this.avatar == null ? "" : new String(avatar));
+        user.put("role", this.getRoles() == null ? "" : this.getRoles().toString());
+        user.put("friends", this.getFriends() == null ? "" : this.getFriends().toString());
+
+        return user;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if(!(o instanceof User)) return false;
-        return ((User) o).id.equals(this.id);
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return user.id.equals(this.id);
     }
 }

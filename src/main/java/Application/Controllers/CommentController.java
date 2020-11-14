@@ -1,9 +1,12 @@
 package Application.Controllers;
 
+import Application.Controllers.API.Exceptions.CommentNotFoundException;
 import Application.Controllers.API.Exceptions.WallPostNotFoundException;
+import Application.Entities.Content.Comment;
 import Application.Entities.Content.WallPost;
 import Application.Entities.User;
 import Application.Security.JwtProvider;
+import Application.Services.CommentService;
 import Application.Services.UserService;
 import Application.Services.WallPostService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,57 +23,19 @@ import java.io.IOException;
 import java.util.Date;
 
 @Slf4j
-@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
+@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders="Authorization")
 @Controller
-public class UserPageController {
+public class CommentController {
     @Autowired
-    private WallPostService postService;
+    CommentService commentService;
     @Autowired
-    private UserService userService;
+    UserService userService;
+    @Autowired
+    WallPostService wallPostService;
 
-    @RequestMapping(value = "/posts/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/comment/post/{post_id}", method = RequestMethod.POST)
     @ResponseBody
-    public String getPosts(@PathVariable("id") Long id, HttpServletRequest request) {
-        JSONObject responseJson = new JSONObject();
-        try {
-            String header = request.getHeader("Authorization");
-            if (header == null) {
-                throw new MissingRequestHeaderException("Authorization", null);
-            }
-            String jwt = header.substring(7);
-
-            if (JwtProvider.validateToken(jwt)) {
-                User user = userService.findUserById(id);
-                Iterable<WallPost> posts = postService.allUserPagePosts(user.getId());
-
-                int idx = 0;
-                for (WallPost post : posts) {
-                    responseJson.put("post_" + ++idx, post.toJson());
-                }
-            } else {
-                log.info("user not authorized");
-                responseJson.put("status", "user not authorized");
-            }
-        } catch (MissingRequestHeaderException e) {
-            log.error("incorrect request headers: " + e.getMessage());
-            responseJson.put("status", "incorrect request headers");
-        } catch (UsernameNotFoundException e) {
-            log.error("user not found: " + e.getMessage());
-            responseJson.put("status", "user not found");
-        } catch (WallPostNotFoundException e) {
-            log.error("posts not found: " + e.getMessage());
-            responseJson.put("status", "posts not found");
-        } catch (Exception e) {
-            log.error("unknown error: " + e.getMessage());
-            responseJson.put("status", "unknown error");
-        }
-
-        return responseJson.toString();
-    }
-
-    @RequestMapping(value = "/post/{id}", method = RequestMethod.POST)
-    @ResponseBody
-    public String addPost(@PathVariable("id") Long id, HttpServletRequest request) {
+    public String commentPost(@PathVariable("post_id") Long post_id, HttpServletRequest request) {
         JSONObject responseJson = new JSONObject();
         try {
             String header = request.getHeader("Authorization");
@@ -90,13 +55,15 @@ public class UserPageController {
                 String sender = receivedDataJson.getString("sender");
                 String content = receivedDataJson.getString("content");
                 User user = (User) userService.loadUserByUsername(sender);
+                WallPost post = wallPostService.postById(post_id);
 
-                postService.addPost(new WallPost(
+                commentService.addComment(new Comment(
                         user,
                         content,
                         new Date(),
-                        userService.findUserById(id).getId(),
-                        WallPost.PageType.USER));
+                        post,
+                        Comment.CommentType.POST
+                ));
 
                 responseJson.put("status", "success");
             } else {
@@ -112,36 +79,6 @@ public class UserPageController {
         } catch (UsernameNotFoundException e) {
             log.error("user not found: " + e.getMessage());
             responseJson.put("status", "user not found");
-        } catch (Exception e) {
-            log.error("unknown error: " + e.getMessage());
-            responseJson.put("status", "unknown error");
-        }
-
-        return responseJson.toString();
-    }
-
-    @RequestMapping(value = "/post/delete/{post_id}", method = RequestMethod.POST)
-    @ResponseBody
-    public String deletePost(@PathVariable("post_id") Long postId, HttpServletRequest request) {
-        JSONObject responseJson = new JSONObject();
-        try {
-            String header = request.getHeader("Authorization");
-            if (header == null) {
-                throw new MissingRequestHeaderException("Authorization", null);
-            }
-            String jwt = header.substring(7);
-
-            if (JwtProvider.validateToken(jwt)) {
-                postService.deletePost(postId);
-
-                responseJson.put("status", "success");
-            } else {
-                log.info("user not authorized");
-                responseJson.put("status", "user not authorized");
-            }
-        } catch (MissingRequestHeaderException e) {
-            log.error("incorrect request headers: " + e.getMessage());
-            responseJson.put("status", "incorrect request headers");
         } catch (WallPostNotFoundException e) {
             log.error("post not found: " + e.getMessage());
             responseJson.put("status", "post not found");
@@ -153,9 +90,73 @@ public class UserPageController {
         return responseJson.toString();
     }
 
-    @RequestMapping(value = "/like/post/{post_id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/comment/comment/{comment_id}", method = RequestMethod.POST)
     @ResponseBody
-    public String likePost(@PathVariable("post_id") Long postId, HttpServletRequest request) {
+    public String commentComment(@PathVariable("comment_id") Long comment_id, HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            String header = request.getHeader("Authorization");
+            if (header == null) {
+                throw new MissingRequestHeaderException("Authorization", null);
+            }
+            String jwt = header.substring(7);
+
+            if (JwtProvider.validateToken(jwt)) {
+                StringBuilder data = new StringBuilder();
+                String line;
+                while ((line = request.getReader().readLine()) != null) {
+                    data.append(line);
+                }
+
+                JSONObject receivedDataJson = new JSONObject(data.toString());
+                String sender = receivedDataJson.getString("sender");
+                String content = receivedDataJson.getString("content");
+                User user = (User) userService.loadUserByUsername(sender);
+                Comment comment = commentService.findById(comment_id);
+                WallPost post = wallPostService.postById(comment.getPost().getId());
+
+                Comment newComment = new Comment(
+                        user,
+                        content,
+                        new Date(),
+                        post,
+                        Comment.CommentType.COMMENT
+                );
+                newComment.setComment(comment);
+
+                commentService.addComment(newComment);
+
+                responseJson.put("status", "success");
+            } else {
+                log.info("user not authorized");
+                responseJson.put("status", "user not authorized");
+            }
+        } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
+            responseJson.put("status", "incorrect request headers");
+        } catch (JSONException | IOException e) {
+            log.error("incorrect request body: " + e.getMessage());
+            responseJson.put("status", "incorrect request body");
+        } catch (UsernameNotFoundException e) {
+            log.error("user not found: " + e.getMessage());
+            responseJson.put("status", "user not found");
+        } catch (WallPostNotFoundException e) {
+            log.error("post not found: " + e.getMessage());
+            responseJson.put("status", "post not found");
+        } catch (CommentNotFoundException e) {
+            log.error("comment not found: " + e.getMessage());
+            responseJson.put("status", "comment not found");
+        } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
+            responseJson.put("status", "unknown error");
+        }
+
+        return responseJson.toString();
+    }
+
+    @RequestMapping(value = "/like/comment/{comment_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String likeComment(@PathVariable("comment_id") Long commentId, HttpServletRequest request) {
         JSONObject responseJson = new JSONObject();
         try {
             String header = request.getHeader("Authorization");
@@ -174,13 +175,13 @@ public class UserPageController {
                 JSONObject receivedDataJson = new JSONObject(data.toString());
                 Long userId = receivedDataJson.getLong("userId");
                 User user = userService.findUserById(userId);
-                WallPost post = postService.postById(postId);
+                Comment comment = commentService.findById(commentId);
 
-                if (postService.checkLike(post, user)) {
-                    postService.like(post, user);
+                if (commentService.checkLike(comment, user)) {
+                    commentService.like(comment, user);
                     responseJson.put("status", "added");
                 } else {
-                    postService.removeLike(post, user);
+                    commentService.removeLike(comment, user);
                     responseJson.put("status", "removed");
                 }
             } else {
@@ -196,9 +197,42 @@ public class UserPageController {
         } catch (UsernameNotFoundException e) {
             log.error("user not found: " + e.getMessage());
             responseJson.put("status", "user not found");
-        } catch (WallPostNotFoundException e) {
-            log.error("post not found: " + e.getMessage());
-            responseJson.put("status", "post not found");
+        } catch (CommentNotFoundException e) {
+            log.error("comment not found: " + e.getMessage());
+            responseJson.put("status", "comment not found");
+        } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
+            responseJson.put("status", "unknown error");
+        }
+
+        return responseJson.toString();
+    }
+
+    @RequestMapping(value = "/comment/delete/{comment_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteComment(@PathVariable("comment_id") Long commentId, HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            String header = request.getHeader("Authorization");
+            if (header == null) {
+                throw new MissingRequestHeaderException("Authorization", null);
+            }
+            String jwt = header.substring(7);
+
+            if (JwtProvider.validateToken(jwt)) {
+                commentService.deleteComment(commentId);
+
+                responseJson.put("status", "success");
+            } else {
+                log.info("user not authorized");
+                responseJson.put("status", "user not authorized");
+            }
+        } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
+            responseJson.put("status", "incorrect request headers");
+        } catch (CommentNotFoundException e) {
+            log.error("comment not found: " + e.getMessage());
+            responseJson.put("status", "comment not found");
         } catch (Exception e) {
             log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");
