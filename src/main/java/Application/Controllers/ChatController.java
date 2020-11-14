@@ -1,7 +1,7 @@
 package Application.Controllers;
 
 import Application.Entities.User;
-import Application.Content.ChatMessage;
+import Application.Entities.Content.ChatMessage;
 import Application.Services.ChatService;
 import Application.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +26,11 @@ public class ChatController {
     @MessageMapping("/chat.sendMessage")
     @SendTo("/chat/topic/public")
     public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
-        User sender = (User) userService.loadUserByUsername(chatMessage.getSender());
-        User receiver = (User) userService.loadUserByUsername(chatMessage.getReceiver());
+        User sender = chatMessage.getSender();
+        //User receiver = chatMessage.getReceiver();
 
-        long chatId = chatService.getChat(sender.getId(), receiver.getId());
-        chatMessage.setChatId(chatId);
+        //long chatId = chatService.getChat(sender.getId(), receiver.getId());
+        //chatMessage.setChatId(chatId);
 
         chatService.saveMessage(chatMessage);
 
@@ -45,15 +45,15 @@ public class ChatController {
         return chatMessage;
     }
 
-    @GetMapping("/chat/{token}")
-    public String getChat(@PathVariable("token") String token, Model model) {
+    @GetMapping("/chat/{id}")
+    public String getChat(@PathVariable("id") Long id, Model model) {
         User sender = (User) userService.loadUserByUsername(
                 String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
-        User receiver = userService.findUserByToken(token);
+        User receiver = userService.findUserById(id);
 
         ChatMessage message = new ChatMessage();
-        message.setSender(sender.getUsername());
-        message.setReceiver(receiver.getUsername());
+        message.setSender(sender);
+        //message.setReceiver(receiver);
 
         long chatId = chatService.getChat(sender.getId(), receiver.getId());
 

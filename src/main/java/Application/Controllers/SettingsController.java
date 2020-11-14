@@ -1,7 +1,10 @@
 package Application.Controllers;
 
-import Application.Content.UserInfo;
-import Application.Services.UserInfoService;
+import Application.Database.User.UserRepository;
+import Application.Entities.User;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,37 +16,74 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
 
 
 @Controller
 @Slf4j
 @RequestMapping("/settings")
 public class SettingsController {
-    private UserInfoService infoService;
-    private Logger logger = LoggerFactory.getLogger(SettingsController.class);
-
     @Autowired
-    public SettingsController(UserInfoService infoService) {
-        this.infoService = infoService;
+    public UserRepository userRepository;
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class SettingsWrapper {
+        private long id;
+        private String username;
+        private String name;
+        private String birthTown;
+        private LocalDate birthDate;
+        private final static SimpleDateFormat dateParser = new SimpleDateFormat("yyyy-MM-dd");
+
+        public SettingsWrapper(User user) {
+            this.id = user.getId();
+            this.username = user.getUsername();
+            this.name = user.getName();
+            this.birthTown = user.getBirthTown();
+            this.birthDate = user.getBirthDate();
+        }
+
+        public void updateUser(User user) {
+            user.setName(name);
+            user.setBirthDate(birthDate);
+            user.setBirthTown(birthTown);
+        }
+
+        public String getTextBirthDate() {
+            if(birthDate == null) return null;
+            else return dateParser.format(birthDate);
+        }
+        public void setTextBirthDate(String textDate) throws ParseException {
+            if(textDate == null) birthDate = null;
+            else birthDate = LocalDate.parse(textDate);
+        }
     }
+
+    private Logger logger = LoggerFactory.getLogger(SettingsController.class);
 
     @GetMapping
     public String settings(Model model) {
         String username = String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        UserInfo currInfo = infoService.findUserInfo(username);
+        User currUser = userRepository.findByUsername(username);
 
-        model.addAttribute("userInfo", currInfo);
+        model.addAttribute("currUser", new SettingsWrapper(currUser));
         return "settings";
     }
 
     @PostMapping
-    public String changeSettings(@ModelAttribute("userInfo") UserInfo updatedInfo, Errors errors) throws ParseException {
+    public String changeSettings(@ModelAttribute("currUser") SettingsWrapper settings, Errors errors) throws ParseException {
         if (errors.hasErrors())
         {
             logger.info(errors.toString());
             return "settings";
         }
-        infoService.updateUserInfo(updatedInfo);
+        User user = userRepository.findById(settings.id).get();
+        settings.updateUser(user);
+        userRepository.save(user);
         return "redirect:/";
     }
 }

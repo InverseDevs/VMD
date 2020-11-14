@@ -8,9 +8,6 @@
 </head>
 <body>
 
-<!--Bytes-->
-<!--<p th:text="${bytes}"></p>-->
-
 <script type="text/javascript" th:inline="javascript">
         var image = new Image();
         image.src = 'data:image/jpeg;base64,' + [[${bytes}]];

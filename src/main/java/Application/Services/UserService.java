@@ -1,6 +1,6 @@
 package Application.Services;
 
-import Application.Database.UserRepository;
+import Application.Database.User.UserRepository;
 import Application.Entities.Role;
 import Application.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +8,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
-import java.util.UUID;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class UserService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
@@ -28,22 +30,24 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public User findUserByToken(String token) {
-        User user = userRepository.findByToken(token);
+    public User findUserById(Long id) {
+        Optional<User> user = userRepository.findById(id);
 
-        return user != null ? user : new User();
+        if (!user.isPresent()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return user.get();
     }
 
-    public User findUserById(Long userId) {
-        User user = userRepository.findById(userId);
-
-        return user != null ? user : new User();
-    }
-
-    public User findUserByEmail(String email) {
+    public User findUserByEmail(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email);
 
-        return user != null ? user : new User();
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return user;
     }
 
     public Iterable<User> allUsers() {
@@ -58,13 +62,12 @@ public class UserService implements UserDetailsService {
         }
 
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
-        user.setToken(generateToken());
         userRepository.save(user);
         return true;
     }
 
-    public void permitUser(String token) {
-        userRepository.permitUser(token);
+    public void permitUser(Long id) {
+        userRepository.permitUser(id);
     }
 
     public void makeAdmin(User user) {
@@ -79,19 +82,24 @@ public class UserService implements UserDetailsService {
         userRepository.addFriend(user, friend.getId());
     }
 
+    public void deleteFriend(User user, User friend) {
+        userRepository.deleteFriend(user, friend.getId());
+    }
+
     public boolean friendExists(User user, User friend) {
         return userRepository.checkFriend(user, friend);
     }
 
+    public void updateAvatar(User user, byte[] avatar) {
+        userRepository.updateAvatar(user, avatar);
+    }
+
     public boolean deleteUser(Long userId) {
-        if (userRepository.findById(userId) != null) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
             userRepository.deleteById(userId);
             return true;
         }
         return false;
-    }
-
-    private String generateToken() {
-        return UUID.randomUUID().toString().replace("-", "");
     }
 }
