@@ -76,6 +76,12 @@ create table if not exists likes
   user_id int
 );
 
+create table if not exists likes_comments
+(
+  comment_id int,
+  user_id int
+);
+
 create table if not exists comments
 (
   id                serial,
