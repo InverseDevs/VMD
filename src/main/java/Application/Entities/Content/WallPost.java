@@ -84,15 +84,19 @@ public class WallPost extends Content {
         post.put("content", this.getContent());
         post.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
 
+        JSONObject likesJson = new JSONObject();
         int userIdx = 0;
         for (User user : likes) {
-            post.put("like_" + ++userIdx, user.toJson());
+            likesJson.put("like_" + ++userIdx, user.toJson());
         }
+        post.put("likes", likesJson);
 
+        JSONObject commentsJson = new JSONObject();
         int commentIdx = 0;
         for (Comment comment : this.getComments()) {
-            post.put("comment_" + ++commentIdx, comment.toJson());
+            commentsJson.put("comment_" + ++commentIdx, comment.toJson());
         }
+        commentsJson.put("comments", commentsJson);
 
         return post;
     }
