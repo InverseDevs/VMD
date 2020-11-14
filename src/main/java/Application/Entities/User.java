@@ -1,5 +1,6 @@
 package Application.Entities;
 
+import Application.Entities.Content.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -120,19 +121,31 @@ public class User implements UserDetails {
     }
 
     public JSONObject toJson() {
-        JSONObject user = new JSONObject();
-        user.put("id", this.getId());
-        user.put("username", this.getUsername());
-        user.put("email", this.getEmail());
-        user.put("name", this.getName());
-        user.put("birth_town", this.getBirthTown());
-        user.put("birth_date", this.getBirthDate() == null ? "" :
+        JSONObject userJson = new JSONObject();
+        userJson.put("id", this.getId());
+        userJson.put("username", this.getUsername());
+        userJson.put("email", this.getEmail());
+        userJson.put("name", this.getName());
+        userJson.put("birth_town", this.getBirthTown());
+        userJson.put("birth_date", this.getBirthDate() == null ? "" :
                 this.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        user.put("avatar", this.avatar == null ? "" : new String(avatar));
-        user.put("role", this.getRoles() == null ? "" : this.getRoles().toString());
-        user.put("friends", this.getFriends() == null ? "" : this.getFriends().toString());
+        userJson.put("avatar", this.avatar == null ? "" : new String(avatar));
 
-        return user;
+        JSONObject rolesJson = new JSONObject();
+        int roleIdx = 0;
+        for (Role role : this.getRoles()) {
+            rolesJson.put("role_" + ++roleIdx, role.getAuthority());
+        }
+        userJson.put("roles", rolesJson);
+
+        JSONObject friendsJson = new JSONObject();
+        int friendIdx = 0;
+        for (User friend : this.getFriends()) {
+            friendsJson.put("friend_" + ++friendIdx, friend.toJson());
+        }
+        userJson.put("friends", friendsJson);
+
+        return userJson;
     }
 
     @Override
