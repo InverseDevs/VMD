@@ -95,6 +95,10 @@ public class WallPost extends Content {
         int commentIdx = 0;
         for (Comment comment : this.getComments()) {
             commentsJson.put("comment_" + ++commentIdx, comment.toJson());
+
+            for (Comment innerComment : comment.getComments()) {
+                commentsJson.put("comment_" + ++commentIdx, innerComment.toJson());
+            }
         }
         post.put("comments", commentsJson);
 

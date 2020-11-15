@@ -81,6 +81,8 @@ public class Comment extends Content {
         commentJson.put("content", this.getContent());
         commentJson.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
         commentJson.put("post_id", this.getPost() == null ? "" : this.getPost().getId());
+        commentJson.put("reference_comment", this.comment == null ? "" : this.comment.getId());
+        commentJson.put("type", this.getType().toString());
 
         JSONObject likesJson = new JSONObject();
         int userIdx = 0;
@@ -88,13 +90,6 @@ public class Comment extends Content {
             likesJson.put("like_" + ++userIdx, user.toJson());
         }
         commentJson.put("likes", likesJson);
-
-        JSONObject commentsJson = new JSONObject();
-        int commentIdx = 0;
-        for (Comment comment : this.getComments()) {
-            commentsJson.put("comment_" + ++commentIdx, comment.toJson());
-        }
-        commentJson.put("comments", commentsJson);
 
         return commentJson;
     }
