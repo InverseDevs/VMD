@@ -4,6 +4,8 @@ import Application.Entities.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -24,9 +26,9 @@ public class Content {
     @Column(name = "message")
     private String content;
     @Column(name = "sent_time")
-    private Date sentTime;
+    private LocalDateTime sentTime;
 
-    public Content(User sender, String content, Date sentTime) {
+    public Content(User sender, String content, LocalDateTime sentTime) {
         this.sender = sender;
         this.content = content;
         this.sentTime = sentTime;

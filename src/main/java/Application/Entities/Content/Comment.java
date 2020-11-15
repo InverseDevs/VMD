@@ -7,7 +7,7 @@ import lombok.Setter;
 import org.json.JSONObject;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -68,7 +68,7 @@ public class Comment extends Content {
         }
     }
 
-    public Comment(User sender, String content, Date sentTime, WallPost post, CommentType type) {
+    public Comment(User sender, String content, LocalDateTime sentTime, WallPost post, CommentType type) {
         super(sender, content, sentTime);
         this.post = post;
         this.type = type;

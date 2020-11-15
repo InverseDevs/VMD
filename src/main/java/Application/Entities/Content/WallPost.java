@@ -7,9 +7,13 @@ import lombok.Setter;
 import org.json.JSONObject;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 @Entity
 @Getter
@@ -63,13 +67,13 @@ public class WallPost extends Content {
         }
     }
 
-    public WallPost(Long id, User sender, String content, Date sentTime, Long pageId, PageType pageType) {
+    public WallPost(Long id, User sender, String content, LocalDateTime sentTime, Long pageId, PageType pageType) {
         super(id, sender, content, sentTime);
         this.pageId = pageId;
         this.pageType = pageType;
     }
 
-    public WallPost(User sender, String content, Date sentTime, Long pageId, PageType pageType) {
+    public WallPost(User sender, String content, LocalDateTime sentTime, Long pageId, PageType pageType) {
         super(sender, content, sentTime);
         this.pageId = pageId;
         this.pageType = pageType;
@@ -92,14 +96,15 @@ public class WallPost extends Content {
         post.put("likes", likesJson);
 
         JSONObject commentsJson = new JSONObject();
-        int commentIdx = 0;
-        for (Comment comment : this.getComments()) {
-            commentsJson.put("comment_" + ++commentIdx, comment.toJson());
+        AtomicInteger commentIdx = new AtomicInteger();
+        Stream<Comment> commentStream = this.getComments().stream().sorted(Comparator.comparing(Content::getSentTime));
+        commentStream.forEach(comment -> {
+            commentsJson.put("comment_" + commentIdx.incrementAndGet(), comment.toJson());
 
-            for (Comment innerComment : comment.getComments()) {
-                commentsJson.put("comment_" + ++commentIdx, innerComment.toJson());
-            }
-        }
+            Stream<Comment> innerCommentStream = comment.getComments().stream().sorted(Comparator.comparing(Content::getSentTime));
+            innerCommentStream.forEach(innerComment -> commentsJson.put("comment_" + commentIdx.incrementAndGet(), innerComment.toJson()));
+        });
+
         post.put("comments", commentsJson);
 
         return post;

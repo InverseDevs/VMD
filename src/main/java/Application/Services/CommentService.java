@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
@@ -29,7 +31,7 @@ public class CommentService {
     }
 
     public void addComment(Comment comment) {
-        comment.setSentTime(new Date());
+        comment.setSentTime(LocalDateTime.now());
         commentRepository.save(comment);
     }
 

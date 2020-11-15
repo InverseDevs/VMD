@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -25,12 +27,12 @@ public class ChatMessage extends Content {
     @Column(name = "type")
     private MessageType type;
 
-    public ChatMessage(String message, Date sentTime, User sender, Chat chat) {
+    public ChatMessage(String message, LocalDateTime sentTime, User sender, Chat chat) {
         super(sender, message, sentTime);
         this.chat = chat;
     }
 
-    public ChatMessage(String message, Date sentTime, User sender, Chat chat, MessageType type) {
+    public ChatMessage(String message, LocalDateTime sentTime, User sender, Chat chat, MessageType type) {
         this(message, sentTime, sender, chat);
         this.type = type;
     }

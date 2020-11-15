@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,7 +46,7 @@ public class WallPostsAPIController {
             this.id = post.getId();
             this.senderId = post.getSender().getId();
             this.message = post.getContent();
-            this.sentTime = post.getSentTime() != null ? post.getSentTime().getTime() : 0;
+            //this.sentTime = post.getSentTime() != null ? post.getSentTime().getTime() : 0;
 
             this.pageId = post.getPageId();
             this.pageType = post.getPageType().toString();
@@ -52,10 +54,10 @@ public class WallPostsAPIController {
             this._href = Starter.homeLink + Starter.apiLink + apiWallPosts + "/" + id;
         }
 
-        public WallPost toWallPost() {
-            return new WallPost(this.id, userService.findUserById(senderId), this.message, new Date(this.sentTime),
-                                this.pageId, WallPost.PageType.valueOf(pageType));
-        }
+        //public WallPost toWallPost() {
+            //return new WallPost(this.id, userService.findUserById(senderId), this.message, new Date(this.sentTime),
+                                //this.pageId, WallPost.PageType.valueOf(pageType));
+        //}
 
         @Override
         public String toString() {
@@ -94,7 +96,7 @@ public class WallPostsAPIController {
         if(wrapper.senderId == null || wrapper.sentTime < 0
                 || wrapper.pageId == null || wrapper.message == null)
             throw new WrongRequestException();
-        WallPost post = new WallPost(null, userService.findUserById(wrapper.senderId), wrapper.message, new Date(),
+        WallPost post = new WallPost(null, userService.findUserById(wrapper.senderId), wrapper.message, LocalDateTime.now(),
                 wrapper.pageId, WallPost.PageType.USER);
         return new WallPostWrapper(postRepository.save(post));
     }

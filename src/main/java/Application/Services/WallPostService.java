@@ -7,6 +7,8 @@ import Application.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 
@@ -46,12 +48,12 @@ public class WallPostService {
     }
 
     public void addPost(WallPost post) {
-        post.setSentTime(new Date());
+        post.setSentTime(LocalDateTime.now());
         repository.save(post);
     }
 
     public void addPost(String message, User sender, WallPost.PageType pageType, Long pageId) {
-        WallPost post = new WallPost(sender, message, new Date(), pageId, pageType);
+        WallPost post = new WallPost(sender, message, LocalDateTime.now(), pageId, pageType);
         repository.save(post);
     }
 

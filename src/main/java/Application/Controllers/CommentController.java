@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Slf4j
@@ -60,7 +62,7 @@ public class CommentController {
                 commentService.addComment(new Comment(
                         user,
                         content,
-                        new Date(),
+                        LocalDateTime.now(),
                         post,
                         Comment.CommentType.POST
                 ));
@@ -118,7 +120,7 @@ public class CommentController {
                 Comment newComment = new Comment(
                         user,
                         content,
-                        new Date(),
+                        LocalDateTime.now(),
                         post,
                         Comment.CommentType.COMMENT
                 );

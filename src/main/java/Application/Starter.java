@@ -21,6 +21,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -75,31 +76,31 @@ public class Starter {
 
             ArrayList<WallPost> posts = new ArrayList<>();
             WallPost.PageType type = WallPost.PageType.USER;
-            posts.add(new WallPost(users.get(2), "Hello admin!", new Date(), 1L, type));
-            posts.add(new WallPost(users.get(0), "thx for making me alive!", new Date(), 1L, type));
-            posts.add(new WallPost(users.get(2), "u a de best", new Date(), 1L, type));
-            posts.add(new WallPost(admin, "Hello skelantros!", new Date(), 4L, type));
-            posts.add(new WallPost(users.get(2), "hey twin!", new Date(), 2L, type));
-            posts.add(new WallPost(users.get(1), "hi there!", new Date(), 3L, type));
+            posts.add(new WallPost(users.get(2), "Hello admin!", LocalDateTime.now(), 1L, type));
+            posts.add(new WallPost(users.get(0), "thx for making me alive!", LocalDateTime.now(), 1L, type));
+            posts.add(new WallPost(users.get(2), "u a de best", LocalDateTime.now(), 1L, type));
+            posts.add(new WallPost(admin, "Hello skelantros!", LocalDateTime.now(), 4L, type));
+            posts.add(new WallPost(users.get(2), "hey twin!", LocalDateTime.now(), 2L, type));
+            posts.add(new WallPost(users.get(1), "hi there!", LocalDateTime.now(), 3L, type));
 
-            posts.add(new WallPost(users.get(3), "Special for Andrew!", new Date(), 5L, type));
+            posts.add(new WallPost(users.get(3), "Special for Andrew!", LocalDateTime.now(), 5L, type));
             posts.forEach(postRepo::save);
 
             Comment simpleComment = new Comment(userRepo.findById(1L).get(),
                     "simple comment",
-                    new Date(),
+                    LocalDateTime.now(),
                     postRepo.findById(7L).get(),
                     Comment.CommentType.POST);
 
             Comment complexComment = new Comment(userRepo.findById(1L).get(),
                     "complex comment",
-                    new Date(),
+                    LocalDateTime.now(),
                     postRepo.findById(7L).get(),
                     Comment.CommentType.POST);
 
             Comment innerComment = new Comment(userRepo.findById(1L).get(),
                     "inner comment",
-                    new Date(),
+                    LocalDateTime.now(),
                     postRepo.findById(7L).get(),
                     Comment.CommentType.COMMENT);
             innerComment.setComment(complexComment);
@@ -109,13 +110,13 @@ public class Starter {
             commentService.addComment(innerComment);
 
             Chat p2pChat = chatService.getChat(admin, users.get(2));
-            chatService.saveMessage(new ChatMessage("Hello admin", new Date(), users.get(2), p2pChat));
-            chatService.saveMessage(new ChatMessage("Hello skelantros!", new Date(), admin, p2pChat));
+            chatService.saveMessage(new ChatMessage("Hello admin", LocalDateTime.now(), users.get(2), p2pChat));
+            chatService.saveMessage(new ChatMessage("Hello skelantros!", LocalDateTime.now(), admin, p2pChat));
 
             Chat multiChat = chatService.getChat(new HashSet<>(users));
-            chatService.saveMessage(new ChatMessage("hey y'all!", new Date(), users.get(2), multiChat));
-            chatService.saveMessage(new ChatMessage("hey dude!", new Date(), users.get(0), multiChat));
-            chatService.saveMessage(new ChatMessage("it's a multi chat test", new Date(), users.get(1), multiChat));
+            chatService.saveMessage(new ChatMessage("hey y'all!", LocalDateTime.now(), users.get(2), multiChat));
+            chatService.saveMessage(new ChatMessage("hey dude!", LocalDateTime.now(), users.get(0), multiChat));
+            chatService.saveMessage(new ChatMessage("it's a multi chat test", LocalDateTime.now(), users.get(1), multiChat));
         };
     }
 }

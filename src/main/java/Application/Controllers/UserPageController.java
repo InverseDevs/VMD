@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Slf4j
@@ -94,7 +96,7 @@ public class UserPageController {
                 postService.addPost(new WallPost(
                         user,
                         content,
-                        new Date(),
+                        LocalDateTime.now(),
                         userService.findUserById(id).getId(),
                         WallPost.PageType.USER));
 
