@@ -1,11 +1,9 @@
 package Application.Controllers.API;
 
-import Application.Controllers.API.Exceptions.IdChangeAttemptException;
 import Application.Controllers.API.Exceptions.NoUserFoundException;
-import Application.Controllers.API.Exceptions.WrongRequestException;
-import Application.Database.User.UserRepository;
 import Application.Entities.User;
 import Application.Security.JwtProvider;
+import Application.Services.UserService;
 import Application.Starter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,9 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -29,7 +25,7 @@ public class UserApiController {
     public final static String userApiLink = "/users";
 
     @Autowired
-    UserRepository repository;
+    UserService userService;
 
     @NoArgsConstructor
     @Getter
@@ -76,7 +72,7 @@ public class UserApiController {
             String jwt = header.substring(7);
 
             if (JwtProvider.validateToken(jwt)) {
-                List<User> users = repository.findAll();
+                List<User> users = userService.allUsers();
 
                 int idx = 0;
                 for (User user : users) {
@@ -109,13 +105,9 @@ public class UserApiController {
             String jwt = header.substring(7);
 
             if (JwtProvider.validateToken(jwt)) {
-                Optional<User> userOptional = repository.findById(id);
+                User user = userService.findUserById(id);
 
-                if (!userOptional.isPresent()) {
-                    throw new NoUserFoundException();
-                } else {
-                    responseJson = userOptional.get().toJson();
-                }
+                responseJson = user.toJson();
             } else {
                 log.info("user not authorized");
                 responseJson.put("status", "user not authorized");
@@ -134,17 +126,73 @@ public class UserApiController {
         return responseJson.toString();
     }
 
-    @PatchMapping
-    public InfoWrapper patchOne(@RequestBody InfoWrapper wrapper) {
-        if (wrapper.id == null) throw new WrongRequestException();
-        User user = repository.findById(wrapper.id).orElseThrow(NoUserFoundException::new);
-        if (wrapper.username != null) throw new IdChangeAttemptException();
+    @PatchMapping("/{id}")
+    @ResponseBody
+    public String changeSettings(@PathVariable("id") long id, HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            String header = request.getHeader("Authorization");
+            if (header == null) {
+                throw new MissingRequestHeaderException("Authorization", null);
+            }
+            String jwt = header.substring(7);
 
-        // TODO костыльный мерж переделать!!!!!!!!!!!!!!!
-        if (wrapper.name != null) user.setName(wrapper.name);
-        if (wrapper.birthTown != null) user.setBirthTown(wrapper.birthTown);
-        user.setBirthDate(wrapper.birthDate);
+            if (JwtProvider.validateToken(jwt)) {
+                StringBuilder data = new StringBuilder();
+                String line;
+                while ((line = request.getReader().readLine()) != null) {
+                    data.append(line);
+                }
 
-        return new InfoWrapper(repository.save(user));
+                JSONObject receivedDataJson = new JSONObject(data.toString());
+                String newUsername = receivedDataJson.getString("username");
+                String newBirthTown = receivedDataJson.getString("birth_town");
+                String newStudyPlace = receivedDataJson.getString("study_place");
+                LocalDate newBirthDate = LocalDate.parse(receivedDataJson.getString("birth_date"));
+                String newLanguages = receivedDataJson.getString("languages");
+                String newPhoneNumber = receivedDataJson.getString("phone");
+                String newHobbies = receivedDataJson.getString("hobbies");
+
+                User user = userService.findUserById(id);
+
+                userService.updateUsername(user, newUsername);
+                userService.updateBirthTown(user, newBirthTown);
+                userService.updateStudyPlace(user, newStudyPlace);
+                userService.updateBirthDate(user, newBirthDate);
+                userService.updateLanguages(user, newLanguages);
+                userService.updatePhone(user, newPhoneNumber);
+                userService.updateHobbies(user, newHobbies);
+
+                responseJson.put("status", "success");
+            } else {
+                log.info("user not authorized");
+                responseJson.put("status", "user not authorized");
+            }
+        } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
+            responseJson.put("status", "incorrect request headers");
+        } catch (NoUserFoundException e) {
+            log.error("no users found: " + e.getMessage());
+            responseJson.put("status", "no users found");
+        } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
+            responseJson.put("status", "unknown error");
+        }
+
+        return responseJson.toString();
     }
+
+//    @PatchMapping
+//    public InfoWrapper patchOne(@RequestBody InfoWrapper wrapper) {
+//        if (wrapper.id == null) throw new WrongRequestException();
+//        User user = userService.findById(wrapper.id).orElseThrow(NoUserFoundException::new);
+//        if (wrapper.username != null) throw new IdChangeAttemptException();
+//
+//        // TODO костыльный мерж переделать!!!!!!!!!!!!!!!
+//        if (wrapper.name != null) user.setName(wrapper.name);
+//        if (wrapper.birthTown != null) user.setBirthTown(wrapper.birthTown);
+//        user.setBirthDate(wrapper.birthDate);
+//
+//        return new InfoWrapper(userService.save(user));
+//    }
 }

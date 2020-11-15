@@ -38,6 +38,10 @@ public class User implements UserDetails {
 
     private String name;
     private String birthTown;
+    private String studyPlace;
+    private String languages;
+    private String phone;
+    private String hobbies;
     private LocalDate birthDate;
 
     @Lob
@@ -122,14 +126,18 @@ public class User implements UserDetails {
 
     public JSONObject toJson() {
         JSONObject userJson = new JSONObject();
-        userJson.put("id", this.getId());
-        userJson.put("username", this.getUsername());
-        userJson.put("email", this.getEmail());
-        userJson.put("name", this.getName());
-        userJson.put("birth_town", this.getBirthTown());
+        userJson.put("id", this.getId() == null ? "" : this.getId());
+        userJson.put("username", this.getUsername() == null ? "" : this.getUsername());
+        userJson.put("email", this.getEmail() == null ? "" : this.email);
+        userJson.put("name", this.getName() == null ? "" : this.getName());
+        userJson.put("birth_town", this.getBirthTown() == null ? "" : this.birthTown);
         userJson.put("birth_date", this.getBirthDate() == null ? "" :
                 this.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         userJson.put("avatar", this.avatar == null ? "" : new String(avatar));
+        userJson.put("study_place", this.getStudyPlace() == null ? "" : this.getStudyPlace());
+        userJson.put("languages", this.getLanguages() == null ? "" : this.getLanguages());
+        userJson.put("phone", this.getPhone() == null ? "" : this.getPhone());
+        userJson.put("hobbies", this.getHobbies() == null ? "" : this.getHobbies());
 
         JSONObject rolesJson = new JSONObject();
         int roleIdx = 0;

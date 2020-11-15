@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.time.LocalDate;
 import java.util.Collections;
 
 @Transactional
@@ -56,6 +57,55 @@ public class CustomUsersImpl implements CustomUsers {
     public User updateAvatar(User user, byte[] avatar) {
         User userInDb = findInDb(user);
         userInDb.setAvatar(avatar);
+        return userInDb;
+    }
+
+    @Override
+    public User updateUsername(User user, String username) {
+        User userInDb = findInDb(user);
+        userInDb.setUsername(username);
+        return userInDb;
+    }
+
+    @Override
+    public User updateBirthTown(User user, String birthTown) {
+        User userInDb = findInDb(user);
+        userInDb.setBirthTown(birthTown);
+        return userInDb;
+    }
+
+    @Override
+    public User updateStudyPlace(User user, String studyPlace) {
+        User userInDb = findInDb(user);
+        userInDb.setStudyPlace(studyPlace);
+        return userInDb;
+    }
+
+    @Override
+    public User updateBirthDate(User user, LocalDate birthDate) {
+        User userInDb = findInDb(user);
+        userInDb.setBirthDate(birthDate);
+        return userInDb;
+    }
+
+    @Override
+    public User updateLanguages(User user, String languages) {
+        User userInDb = findInDb(user);
+        userInDb.setLanguages(languages);
+        return userInDb;
+    }
+
+    @Override
+    public User updatePhone(User user, String phone) {
+        User userInDb = findInDb(user);
+        userInDb.setPhone(phone);
+        return userInDb;
+    }
+
+    @Override
+    public User updateHobbies(User user, String hobbies) {
+        User userInDb = findInDb(user);
+        userInDb.setHobbies(hobbies);
         return userInDb;
     }
 
