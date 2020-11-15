@@ -3,10 +3,14 @@ drop table users;
 drop table roles;
 drop table user_to_role;
 drop table chats;
+drop table chats_to_users;
 drop table messages;
 drop table friends;
 drop table users_info;
 drop table wall_posts;
+drop table likes;
+drop table likes_comments;
+drop table comments;
 
 create table if not exists users
 (
