@@ -10,15 +10,19 @@ drop table wall_posts;
 
 create table if not exists users
 (
-  id            serial,
-  username      varchar(256),
-  password      varchar(256),
-  email         varchar(256),
-  permitted     boolean,
-  name          varchar(256),
-  birth_town    varchar(256),
-  birth_date    date,
-  avatar        bytea
+  id                 serial,
+  username           varchar(256),
+  password           varchar(256),
+  email              varchar(256),
+  permitted          boolean,
+  name               varchar(256),
+  birth_town         varchar(256),
+  birth_date         date,
+  avatar             bytea,
+  study_place        varchar(256),
+  languages          varchar(256),
+  phone              varchar(256),
+  hobbies            varchar(256),
 );
 
 create table if not exists roles
@@ -79,7 +83,7 @@ create table if not exists likes
 create table if not exists likes_comments
 (
   comment_id int,
-  user_id int
+  user_id    int
 );
 
 create table if not exists comments
