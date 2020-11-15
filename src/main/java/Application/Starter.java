@@ -1,13 +1,16 @@
 package Application;
+import Application.Database.CommentRepository;
 import Application.Database.WallPostRepository;
 import Application.Entities.Chat;
 import Application.Entities.Content.ChatMessage;
+import Application.Entities.Content.Comment;
 import Application.Entities.Content.WallPost;
 import Application.Database.RoleRepository;
 import Application.Database.User.UserRepository;
 import Application.Entities.Role;
 import Application.Entities.User;
 import Application.Services.ChatService;
+import Application.Services.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +39,8 @@ public class Starter {
     WallPostRepository postRepo;
     @Autowired
     ChatService chatService;
+    @Autowired
+    CommentService commentService;
 
     Logger logger = LoggerFactory.getLogger(Starter.class);
 
@@ -76,7 +81,32 @@ public class Starter {
             posts.add(new WallPost(admin, "Hello skelantros!", new Date(), 4L, type));
             posts.add(new WallPost(users.get(2), "hey twin!", new Date(), 2L, type));
             posts.add(new WallPost(users.get(1), "hi there!", new Date(), 3L, type));
+
+            posts.add(new WallPost(users.get(3), "Special for Andrew!", new Date(), 5L, type));
             posts.forEach(postRepo::save);
+
+            Comment simpleComment = new Comment(userRepo.findById(1L).get(),
+                    "simple comment",
+                    new Date(),
+                    postRepo.findById(7L).get(),
+                    Comment.CommentType.POST);
+
+            Comment complexComment = new Comment(userRepo.findById(1L).get(),
+                    "complex comment",
+                    new Date(),
+                    postRepo.findById(7L).get(),
+                    Comment.CommentType.POST);
+
+            Comment innerComment = new Comment(userRepo.findById(1L).get(),
+                    "inner comment",
+                    new Date(),
+                    postRepo.findById(7L).get(),
+                    Comment.CommentType.COMMENT);
+            innerComment.setComment(complexComment);
+
+            commentService.addComment(simpleComment);
+            commentService.addComment(complexComment);
+            commentService.addComment(innerComment);
 
             Chat p2pChat = chatService.getChat(admin, users.get(2));
             chatService.saveMessage(new ChatMessage("Hello admin", new Date(), users.get(2), p2pChat));
