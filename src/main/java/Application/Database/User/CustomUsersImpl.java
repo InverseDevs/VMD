@@ -68,6 +68,13 @@ public class CustomUsersImpl implements CustomUsers {
     }
 
     @Override
+    public User updateName(User user, String name) {
+        User userInDb = findInDb(user);
+        userInDb.setName(name);
+        return userInDb;
+    }
+
+    @Override
     public User updateBirthTown(User user, String birthTown) {
         User userInDb = findInDb(user);
         userInDb.setBirthTown(birthTown);
