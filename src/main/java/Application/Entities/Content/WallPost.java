@@ -7,9 +7,7 @@ import lombok.Setter;
 import org.json.JSONObject;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
@@ -85,7 +83,7 @@ public class WallPost extends Content {
         post.put("page_id", this.getPageId());
         post.put("id", this.getId());
         post.put("page_type", this.getPageType() == null ? "" : this.getPageType().toString());
-        post.put("sender", this.getSender() == null ? "": this.getSender().getUsername());
+        post.put("sender", this.getSender() == null ? "" : this.getSender().getUsername());
         post.put("content", this.getContent());
         post.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
 
@@ -102,25 +100,17 @@ public class WallPost extends Content {
 
         if (!getComments().isEmpty()) {
             JSONObject commentsJson = new JSONObject();
-            int commentIdx = 0;
-            for (Comment comment : getComments()) {
-                commentsJson.put("comment_" + ++commentIdx, comment.toJson());
-            }
+
+            AtomicInteger commentIdx = new AtomicInteger();
+            Stream<Comment> commentStream = this.getComments().stream().sorted(
+                    (comment, t1) -> t1.getSentTime().compareTo(comment.getSentTime()));
+            commentStream.forEach(comment -> {
+                commentsJson.put("comment_" + commentIdx.incrementAndGet(), comment.toJson());
+            });
             post.put("comments", commentsJson);
         } else {
             post.put("comments", "");
         }
-
-
-//        JSONObject commentsJson = new JSONObject();
-//        AtomicInteger commentIdx = new AtomicInteger();
-//        Stream<Comment> commentStream = this.getComments().stream().sorted(Comparator.comparing(Content::getSentTime));
-//        commentStream.forEach(comment -> {
-//            commentsJson.put("comment_" + commentIdx.incrementAndGet(), comment.toJson());
-//
-//            Stream<Comment> innerCommentStream = comment.getComments().stream().sorted(Comparator.comparing(Content::getSentTime));
-//            innerCommentStream.forEach(innerComment -> commentsJson.put("comment_" + commentIdx.incrementAndGet(), innerComment.toJson()));
-//        });
 
         return post;
     }

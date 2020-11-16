@@ -8,8 +8,11 @@ import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 // Если ты когда-нибудь решишь, что написал костыль, просто посмотри на этот класс
 
@@ -97,10 +100,12 @@ public class Comment extends Content {
 
         if (!getComments().isEmpty()) {
             JSONObject commentsJson = new JSONObject();
-            int commentIdx = 0;
-            for (Comment comment : getComments()) {
-                commentsJson.put("comment_" + ++commentIdx, comment.toJson());
-            }
+            AtomicInteger commentIdx = new AtomicInteger();
+            Stream<Comment> commentStream = this.getComments().stream().sorted(
+                    (comment, t1) -> t1.getSentTime().compareTo(comment.getSentTime()));
+            commentStream.forEach(comment -> {
+                commentsJson.put("comment_" + commentIdx.incrementAndGet(), comment.toJson());
+            });
             resultJson.put("comments", commentsJson);
         } else {
             resultJson.put("comments", "");
