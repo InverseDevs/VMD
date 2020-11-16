@@ -126,7 +126,7 @@ public class UserApiController {
         return responseJson.toString();
     }
 
-    @PatchMapping("/{id}")
+    @PostMapping("/change/{id}")
     @ResponseBody
     public String changeSettings(@PathVariable("id") long id, HttpServletRequest request) {
         JSONObject responseJson = new JSONObject();
