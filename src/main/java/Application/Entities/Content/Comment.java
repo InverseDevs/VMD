@@ -75,29 +75,48 @@ public class Comment extends Content {
     }
 
     public JSONObject toJson() {
-        JSONObject commentJson = new JSONObject();
-        commentJson.put("id", this.getId());
-        commentJson.put("sender", this.getSender() == null ? "" : this.getSender().getUsername());
-        commentJson.put("content", this.getContent());
-        commentJson.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
-        commentJson.put("post_id", this.getPost() == null ? "" : this.getPost().getId());
-        commentJson.put("reference_comment", this.comment == null ? "" : this.comment.getId());
-        commentJson.put("type", this.getType().toString());
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("id", this.getId());
+        resultJson.put("sender", this.getSender() == null ? "" : this.getSender().getUsername());
+        resultJson.put("content", this.getContent());
+        resultJson.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
+        resultJson.put("post_id", this.getPost() == null ? "" : this.getPost().getId());
+        resultJson.put("reference_comment", this.comment == null ? "" : this.comment.getId());
+        resultJson.put("type", this.getType().toString());
 
-        JSONObject likesJson = new JSONObject();
-        int userIdx = 0;
-        for (User user : likes) {
-            likesJson.put("like_" + ++userIdx, user.toJson());
+        if (!getLikes().isEmpty()) {
+            JSONObject likesJson = new JSONObject();
+            int userIdx = 0;
+            for (User user : getLikes()) {
+                likesJson.put("like_" + ++userIdx, user.toJson());
+            }
+            resultJson.put("likes", likesJson);
+        } else {
+            resultJson.put("likes", "");
         }
-        commentJson.put("likes", likesJson);
 
-        return commentJson;
+        if (!getComments().isEmpty()) {
+            JSONObject commentsJson = new JSONObject();
+            int commentIdx = 0;
+            for (Comment comment : getComments()) {
+                commentsJson.put("comment_" + ++commentIdx, comment.toJson());
+            }
+            resultJson.put("comments", commentsJson);
+        } else {
+            resultJson.put("comments", "");
+        }
+
+        return resultJson;
     }
 
     @Override
     public String toString() {
         return "Comment{" +
+                "id=" + getId() +
+                "sender=" + getSender() +
+                "content=" + getContent() +
                 "post=" + post +
+                ", comment=" + comment +
                 ", type=" + type +
                 '}';
     }

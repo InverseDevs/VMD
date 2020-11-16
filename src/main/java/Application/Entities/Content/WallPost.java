@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
@@ -88,24 +89,38 @@ public class WallPost extends Content {
         post.put("content", this.getContent());
         post.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
 
-        JSONObject likesJson = new JSONObject();
-        int userIdx = 0;
-        for (User user : likes) {
-            likesJson.put("like_" + ++userIdx, user.toJson());
+        if (!getLikes().isEmpty()) {
+            JSONObject likesJson = new JSONObject();
+            int userIdx = 0;
+            for (User user : getLikes()) {
+                likesJson.put("like_" + ++userIdx, user.toJson());
+            }
+            post.put("likes", likesJson);
+        } else {
+            post.put("likes", "");
         }
-        post.put("likes", likesJson);
 
-        JSONObject commentsJson = new JSONObject();
-        AtomicInteger commentIdx = new AtomicInteger();
-        Stream<Comment> commentStream = this.getComments().stream().sorted(Comparator.comparing(Content::getSentTime));
-        commentStream.forEach(comment -> {
-            commentsJson.put("comment_" + commentIdx.incrementAndGet(), comment.toJson());
+        if (!getComments().isEmpty()) {
+            JSONObject commentsJson = new JSONObject();
+            int commentIdx = 0;
+            for (Comment comment : getComments()) {
+                commentsJson.put("comment_" + ++commentIdx, comment.toJson());
+            }
+            post.put("comments", commentsJson);
+        } else {
+            post.put("comments", "");
+        }
 
-            Stream<Comment> innerCommentStream = comment.getComments().stream().sorted(Comparator.comparing(Content::getSentTime));
-            innerCommentStream.forEach(innerComment -> commentsJson.put("comment_" + commentIdx.incrementAndGet(), innerComment.toJson()));
-        });
 
-        post.put("comments", commentsJson);
+//        JSONObject commentsJson = new JSONObject();
+//        AtomicInteger commentIdx = new AtomicInteger();
+//        Stream<Comment> commentStream = this.getComments().stream().sorted(Comparator.comparing(Content::getSentTime));
+//        commentStream.forEach(comment -> {
+//            commentsJson.put("comment_" + commentIdx.incrementAndGet(), comment.toJson());
+//
+//            Stream<Comment> innerCommentStream = comment.getComments().stream().sorted(Comparator.comparing(Content::getSentTime));
+//            innerCommentStream.forEach(innerComment -> commentsJson.put("comment_" + commentIdx.incrementAndGet(), innerComment.toJson()));
+//        });
 
         return post;
     }

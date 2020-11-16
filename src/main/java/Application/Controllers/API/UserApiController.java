@@ -150,7 +150,6 @@ public class UserApiController {
                 String newName = receivedDataJson.getString("name");
                 if (!newName.equals("")) userService.updateName(user, newName);
 
-
                 String newBirthTown = receivedDataJson.getString("birth_town");
                 if (!newBirthTown.equals("")) userService.updateBirthTown(user, newBirthTown);
 
