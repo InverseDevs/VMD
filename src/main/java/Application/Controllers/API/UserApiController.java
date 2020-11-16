@@ -145,23 +145,32 @@ public class UserApiController {
                 }
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
-                String newName = receivedDataJson.getString("name");
-                String newBirthTown = receivedDataJson.getString("birth_town");
-                String newStudyPlace = receivedDataJson.getString("study_place");
-                LocalDate newBirthDate = LocalDate.parse(receivedDataJson.getString("birth_date"));
-                String newLanguages = receivedDataJson.getString("languages");
-                String newPhoneNumber = receivedDataJson.getString("phone");
-                String newHobbies = receivedDataJson.getString("hobbies");
-
                 User user = userService.findUserById(id);
 
-                userService.updateName(user, newName);
-                userService.updateBirthTown(user, newBirthTown);
-                userService.updateStudyPlace(user, newStudyPlace);
-                userService.updateBirthDate(user, newBirthDate);
-                userService.updateLanguages(user, newLanguages);
-                userService.updatePhone(user, newPhoneNumber);
-                userService.updateHobbies(user, newHobbies);
+                String newName = receivedDataJson.getString("name");
+                if (!newName.equals("")) userService.updateName(user, newName);
+
+
+                String newBirthTown = receivedDataJson.getString("birth_town");
+                if (!newBirthTown.equals("")) userService.updateBirthTown(user, newBirthTown);
+
+                String newStudyPlace = receivedDataJson.getString("study_place");
+                if (newStudyPlace.equals("")) userService.updateStudyPlace(user, newStudyPlace);
+
+                String dateString = receivedDataJson.getString("birth_date");
+                if (!dateString.equals("")) {
+                    LocalDate newBirthDate = LocalDate.parse(dateString);
+                    userService.updateBirthDate(user, newBirthDate);
+                }
+
+                String newLanguages = receivedDataJson.getString("languages");
+                if (!newLanguages.equals("")) userService.updateLanguages(user, newLanguages);
+
+                String newPhoneNumber = receivedDataJson.getString("phone");
+                if (!newPhoneNumber.equals("")) userService.updatePhone(user, newPhoneNumber);
+
+                String newHobbies = receivedDataJson.getString("hobbies");
+                if (!newHobbies.equals("")) userService.updateHobbies(user, newHobbies);
 
                 responseJson.put("status", "success");
             } else {
