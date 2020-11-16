@@ -100,6 +100,10 @@ public class UserService implements UserDetailsService {
         userRepository.updateUsername(user, username);
     }
 
+    public void updateName(User user, String name) {
+        userRepository.updateName(user, name);
+    }
+
     public void updateBirthTown(User user, String birthTown) {
         userRepository.updateBirthTown(user, birthTown);
     }

@@ -13,6 +13,7 @@ public interface CustomUsers {
     User updateAvatar(User user, byte[] avatar);
 
     User updateUsername(User user, String username);
+    User updateName(User user, String name);
     User updateBirthTown(User user, String  birthTown);
     User updateStudyPlace(User user, String  studyPlace);
     User updateBirthDate(User user, LocalDate birthDate);

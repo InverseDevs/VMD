@@ -145,7 +145,7 @@ public class UserApiController {
                 }
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
-                String newUsername = receivedDataJson.getString("username");
+                String newName = receivedDataJson.getString("name");
                 String newBirthTown = receivedDataJson.getString("birth_town");
                 String newStudyPlace = receivedDataJson.getString("study_place");
                 LocalDate newBirthDate = LocalDate.parse(receivedDataJson.getString("birth_date"));
@@ -155,7 +155,7 @@ public class UserApiController {
 
                 User user = userService.findUserById(id);
 
-                userService.updateUsername(user, newUsername);
+                userService.updateName(user, newName);
                 userService.updateBirthTown(user, newBirthTown);
                 userService.updateStudyPlace(user, newStudyPlace);
                 userService.updateBirthDate(user, newBirthDate);
