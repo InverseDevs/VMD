@@ -155,7 +155,7 @@ public class UserApiController {
                 if (!newBirthTown.equals("")) userService.updateBirthTown(user, newBirthTown);
 
                 String newStudyPlace = receivedDataJson.getString("study_place");
-                if (newStudyPlace.equals("")) userService.updateStudyPlace(user, newStudyPlace);
+                if (!newStudyPlace.equals("")) userService.updateStudyPlace(user, newStudyPlace);
 
                 String dateString = receivedDataJson.getString("birth_date");
                 if (!dateString.equals("")) {
