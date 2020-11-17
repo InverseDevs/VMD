@@ -39,9 +39,10 @@ public class UserWall extends Wall {
 
     // TODO на данный момент метод работает неправильно, переделать!
     private boolean hasAccess(AccessType access, User user) {
+        if(this.user.equals(user)) return true;
         if(access.equals(AccessType.EVERYONE)) return true;
         else if(access.equals(AccessType.FRIENDS)) return this.user.getFriends().contains(user);
-        else if(access.equals(AccessType.ADMINISTRATORS)) return this.user.equals(user);
+        else if(access.equals(AccessType.ADMINISTRATORS)) return false;
         return false;
     }
 
