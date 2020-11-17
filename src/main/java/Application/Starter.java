@@ -11,6 +11,8 @@ import Application.Entities.Role;
 import Application.Entities.User;
 import Application.Services.ChatService;
 import Application.Services.CommentService;
+import Application.Services.UserService;
+import Application.Services.WallService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,11 +39,16 @@ public class Starter {
     @Autowired
     RoleRepository roleRepo;
     @Autowired
-    WallPostRepository postRepo;
-    @Autowired
     ChatService chatService;
     @Autowired
     CommentService commentService;
+    @Autowired
+    WallService wallService;
+    @Autowired
+    WallPostRepository postRepo;
+    @Autowired
+    UserService userService;
+
 
     Logger logger = LoggerFactory.getLogger(Starter.class);
 
@@ -57,8 +64,8 @@ public class Starter {
 
             User admin = new User("admin", "admin", "admin@vmd.com",
                     "Admin", "VMD", null);
-            userRepo.save(admin);
-            userRepo.makeAdmin(admin);
+            userService.saveUser(admin);
+            userService.makeAdmin(admin);
 
             ArrayList<User> users = new ArrayList<>();
             users.add(new User("test1", "1234", "test1@vmd.com",
@@ -70,21 +77,22 @@ public class Starter {
             users.add(new User("NixoN", "67562211", "mythtics2001@mail.ru",
                     "Andrew Zhukov", "Ishim", LocalDate.parse("2001-02-15")));
             for(User user : users) {
-                userRepo.save(user);
-                userRepo.makeUser(user);
+                userService.saveUser(user);
+                userService.makeUser(user);
             }
 
             ArrayList<WallPost> posts = new ArrayList<>();
-            WallPost.PageType type = WallPost.PageType.USER;
-            posts.add(new WallPost(users.get(2), "Hello admin!", LocalDateTime.now(), 1L, type));
-            posts.add(new WallPost(users.get(0), "thx for making me alive!", LocalDateTime.now(), 1L, type));
-            posts.add(new WallPost(users.get(2), "u a de best", LocalDateTime.now(), 1L, type));
-            posts.add(new WallPost(admin, "Hello skelantros!", LocalDateTime.now(), 4L, type));
-            posts.add(new WallPost(users.get(2), "hey twin!", LocalDateTime.now(), 2L, type));
-            posts.add(new WallPost(users.get(1), "hi there!", LocalDateTime.now(), 3L, type));
+            posts.add(wallService.addPost(users.get(2), "Hello admin!", admin));
+            posts.add(wallService.addPost(admin, "Hello skelantros!", users.get(2)));
+            posts.add(wallService.addPost(users.get(0), "thx for making me alive!", admin));
+            posts.add(wallService.addPost(users.get(2), "u a de best", admin));
+            posts.add(wallService.addPost(users.get(1), "hey twin!", users.get(0)));
+            posts.add(wallService.addPost(users.get(0), "hi there!", users.get(1)));
 
-            posts.add(new WallPost(users.get(3), "Special for Andrew!", LocalDateTime.now(), 5L, type));
-            posts.forEach(postRepo::save);
+
+            posts.add(wallService.addPost(users.get(2), "Special for Andrew!", users.get(3)));
+            // сохранять посты более нет необходимости: это делается в рамках метода WallService.addPost
+            //posts.forEach(postRepo::save);
 
             Comment simpleComment = new Comment(userRepo.findById(1L).get(),
                     "simple comment",

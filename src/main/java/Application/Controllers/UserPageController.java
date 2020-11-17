@@ -6,6 +6,7 @@ import Application.Entities.User;
 import Application.Security.JwtProvider;
 import Application.Services.UserService;
 import Application.Services.WallPostService;
+import Application.Services.WallService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,8 +26,10 @@ import java.util.Date;
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
 @Controller
 public class UserPageController {
+    //@Autowired
+    //private WallPostService postService;
     @Autowired
-    private WallPostService postService;
+    private WallService wallService;
     @Autowired
     private UserService userService;
 
@@ -43,7 +46,8 @@ public class UserPageController {
 
             if (JwtProvider.validateToken(jwt)) {
                 User user = userService.findUserById(id);
-                Iterable<WallPost> posts = postService.allUserPagePosts(user.getId());
+                //Iterable<WallPost> posts = postService.allUserPagePosts(user.getId());
+                Iterable<WallPost> posts = wallService.findAllUserPagePosts(user);
 
                 int idx = 0;
                 for (WallPost post : posts) {
@@ -93,12 +97,13 @@ public class UserPageController {
                 String content = receivedDataJson.getString("content");
                 User user = (User) userService.loadUserByUsername(sender);
 
-                postService.addPost(new WallPost(
-                        user,
-                        content,
-                        LocalDateTime.now(),
-                        userService.findUserById(id).getId(),
-                        WallPost.PageType.USER));
+//                postService.addPost(new WallPost(
+//                        user,
+//                        content,
+//                        LocalDateTime.now(),
+//                        userService.findUserById(id).getId(),
+//                        WallPost.PageType.USER));
+                wallService.addPost(user, content, userService.findUserById(id));
 
                 responseJson.put("status", "success");
             } else {
@@ -134,7 +139,8 @@ public class UserPageController {
             String jwt = header.substring(7);
 
             if (JwtProvider.validateToken(jwt)) {
-                postService.deletePost(postId);
+                //postService.deletePost(postId);
+                wallService.deletePostById(postId);
 
                 responseJson.put("status", "success");
             } else {
@@ -176,13 +182,21 @@ public class UserPageController {
                 JSONObject receivedDataJson = new JSONObject(data.toString());
                 Long userId = receivedDataJson.getLong("userId");
                 User user = userService.findUserById(userId);
-                WallPost post = postService.postById(postId);
+                //WallPost post = postService.postById(postId);
+                WallPost post = wallService.findPostById(postId);
 
-                if (postService.checkLike(post, user)) {
-                    postService.like(post, user);
+//                if (postService.checkLike(post, user)) {
+//                    postService.like(post, user);
+//                    responseJson.put("status", "added");
+//                } else {
+//                    postService.removeLike(post, user);
+//                    responseJson.put("status", "removed");
+//                }
+                if (wallService.checkLike(post, user)) {
+                    wallService.like(post, user);
                     responseJson.put("status", "added");
                 } else {
-                    postService.removeLike(post, user);
+                    wallService.removeLike(post, user);
                     responseJson.put("status", "removed");
                 }
             } else {
