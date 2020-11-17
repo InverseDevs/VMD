@@ -1,6 +1,7 @@
 package Application.Entities;
 
 import Application.Entities.Content.Comment;
+import Application.Entities.Wall.UserWall;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,6 +45,10 @@ public class User implements UserDetails {
     private String hobbies;
     private LocalDate birthDate;
 
+    @OneToOne
+    @JoinColumn(name = "wall_id")
+    private UserWall wall;
+
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")
     private byte[] avatar;
@@ -53,6 +58,7 @@ public class User implements UserDetails {
         this.password = password;
         this.email = email;
         this.permitted = true;
+        this.wall = new UserWall(this);
     }
 
     public User(String username, String password, String email,
@@ -61,6 +67,7 @@ public class User implements UserDetails {
         this.name = name;
         this.birthDate = birthDate;
         this.birthTown = birthTown;
+        this.wall = new UserWall(this);
     }
 
     @ManyToMany

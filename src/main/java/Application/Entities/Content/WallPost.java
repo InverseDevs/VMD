@@ -1,6 +1,7 @@
 package Application.Entities.Content;
 
 import Application.Entities.User;
+import Application.Entities.Wall.Wall;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,10 +21,9 @@ import java.util.stream.Stream;
 @NoArgsConstructor
 @Table(name = "wall_posts")
 public class WallPost extends Content {
-    @Column(name = "page_id")
-    private Long pageId;
-    @Column(name = "page_type")
-    private PageType pageType;
+    @ManyToOne
+    @JoinColumn(name = "wall_id")
+    private Wall wall;
 
     @ManyToMany
     @JoinTable(name = "likes",
@@ -47,6 +47,7 @@ public class WallPost extends Content {
         return comments;
     }
 
+    @Deprecated
     public enum PageType {
         USER, GROUP;
 
@@ -66,23 +67,24 @@ public class WallPost extends Content {
         }
     }
 
-    public WallPost(Long id, User sender, String content, LocalDateTime sentTime, Long pageId, PageType pageType) {
+    // Задавать ИД сущностей напрямую не рекомендуется, если Hibernate задает их сам
+    @Deprecated
+    public WallPost(Long id, User sender, String content, LocalDateTime sentTime, Wall wall) {
         super(id, sender, content, sentTime);
-        this.pageId = pageId;
-        this.pageType = pageType;
+        this.wall = wall;
     }
 
-    public WallPost(User sender, String content, LocalDateTime sentTime, Long pageId, PageType pageType) {
+    public WallPost(User sender, String content, LocalDateTime sentTime, Wall wall) {
         super(sender, content, sentTime);
-        this.pageId = pageId;
-        this.pageType = pageType;
+        this.wall = wall;
     }
 
+    // TODO исправить
     public JSONObject toJson() {
         JSONObject post = new JSONObject();
-        post.put("page_id", this.getPageId());
+        //post.put("page_id", this.getPageId());
         post.put("id", this.getId());
-        post.put("page_type", this.getPageType() == null ? "" : this.getPageType().toString());
+        //post.put("page_type", this.getPageType() == null ? "" : this.getPageType().toString());
         post.put("sender", this.getSender() == null ? "" : this.getSender().getUsername());
         post.put("content", this.getContent());
         post.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
