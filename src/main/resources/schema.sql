@@ -26,7 +26,8 @@ create table if not exists users
   study_place        varchar(256),
   languages          varchar(256),
   phone              varchar(256),
-  hobbies            varchar(256)
+  hobbies            varchar(256),
+  wall_id            int
 );
 
 create table if not exists roles
@@ -71,11 +72,10 @@ create table if not exists friends
 create table if not exists wall_posts
 (
   id            serial,
-  page_type     varchar(16),
-  page_id       int,
   sender_id     int,
   message       varchar(256),
-  sent_time     date
+  sent_time     date,
+  wall_id       int
 );
 
 create table if not exists likes
@@ -99,4 +99,11 @@ create table if not exists comments
   sender_id         bigint,
   reference_comment bigint,
   post_id           bigint
+);
+
+create table if not exists walls
+(
+  id        serial,
+  type      varchar(16),
+  user_id   int
 );
