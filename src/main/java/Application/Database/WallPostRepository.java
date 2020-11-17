@@ -2,6 +2,7 @@ package Application.Database;
 
 import Application.Entities.Content.WallPost;
 import Application.Entities.User;
+import Application.Entities.Wall.Wall;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -11,12 +12,15 @@ import org.springframework.data.repository.query.Param;
 import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface WallPostRepository extends JpaRepository<WallPost, Long> {
-    @Query("SELECT p from WallPost p where p.pageType = :pageType and p.pageId = :pageId")
-    Iterable<WallPost> findByPage(@Param("pageId") Long pageId, @Param("pageType") WallPost.PageType pageType);
+//    @Modifying
+//    @Transactional
+//    @Query("SELECT p from WallPost p where p.pageType = :pageType and p.pageId = :pageId")
+//    Iterable<WallPost> findByPage(@Param("pageId") Long pageId, @Param("pageType") WallPost.PageType pageType);
 
-    List<WallPost> findByPageId(Long pageId, Pageable pageable);
+    //List<WallPost> findByPageId(Long pageId, Pageable pageable);
 
     @Modifying
     @Transactional
@@ -32,4 +36,7 @@ public interface WallPostRepository extends JpaRepository<WallPost, Long> {
     @Transactional
     @Query(value = "SELECT * FROM likes WHERE post_id = :post AND user_id = :user", nativeQuery = true)
     Collection<Integer> checkLike(@Param("post") Long postId, @Param("user") Long userId);
+
+    Set<WallPost> findAllBySender(User sender);
+    Set<WallPost> findByWall(Wall wall);
 }
