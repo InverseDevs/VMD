@@ -1,5 +1,6 @@
 package Application.Services;
 
+import Application.Database.User.UserRepository;
 import Application.Database.Wall.UserWallRepository;
 import Application.Database.Wall.WallRepository;
 import Application.Database.WallPostRepository;
@@ -11,9 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @Transactional
@@ -24,6 +24,8 @@ public class WallService {
     private WallPostRepository postRepository;
     @Autowired
     private WallRepository wallRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     /**
      * Возвращает список всех постов на странице заданного пользователя.
@@ -35,12 +37,12 @@ public class WallService {
     }
 
     /**
-     * Возвращает список всех постов, отправленных заданным пользователем.
+     * Возвращает множество всех постов, отправленных заданным пользователем.
      * @param sender объект, соответствующий заданному пользователю.
-     * @return список постов, отправленных пользователем.
+     * @return множество постов, отправленных пользователем.
      */
-    public List<WallPost> findAllBySender(User sender) {
-        return new ArrayList<>(postRepository.findBySender(sender));
+    public Set<WallPost> findAllBySender(User sender) {
+        return new HashSet<>(postRepository.findAllBySender(sender));
     }
 
     /**
@@ -141,14 +143,33 @@ public class WallService {
     public WallPost addPost(User sender, String message, Wall wall) {
         if(wall.getId() == null) return null;
         if(!wall.canPost(sender)) return null;
-        WallPost post = new WallPost(sender, message, new Date(), wall);
+        WallPost post = new WallPost(sender, message, LocalDateTime.now(), wall);
         wall.getPosts().add(post);
         wallRepository.save(wall);
         return postRepository.save(post);
     }
 
+    public void removePost(WallPost post) {
+        postRepository.delete(post);
+    }
+
+    public WallPost like(WallPost post, User user) {
+        postRepository.addLike(post.getId(), user.getId());
+        return post;
+    }
+
+    public WallPost removeLike(WallPost post, User user) {
+        postRepository.removeLike(post.getId(), user.getId());
+        return post;
+    }
+
+    public boolean checkLike(WallPost post, User user) {
+        return postRepository.checkLike(post.getId(), user.getId()).size() == 0;
+    }
+
     public void setUserWallPostAccess(User user, Wall.AccessType postAccess) {
         user.getWall().setPostAccess(postAccess);
         wallRepository.save(user.getWall());
+        userRepository.save(user);
     }
 }
