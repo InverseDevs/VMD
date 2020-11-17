@@ -96,6 +96,10 @@ public class UserService implements UserDetailsService {
         userRepository.updateAvatar(user, avatar);
     }
 
+    public void updateRound(User user, byte[] round) {
+        userRepository.updateRound(user, round);
+    }
+
     public void updateUsername(User user, String username) {
         userRepository.updateUsername(user, username);
     }

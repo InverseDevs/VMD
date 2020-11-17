@@ -23,6 +23,7 @@ create table if not exists users
   birth_town         varchar(256),
   birth_date         date,
   avatar             bytea,
+  round             bytea,
   study_place        varchar(256),
   languages          varchar(256),
   phone              varchar(256),

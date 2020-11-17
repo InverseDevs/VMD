@@ -11,6 +11,7 @@ public interface CustomUsers {
     User makeAdmin(User user);
     User makeUser(User user);
     User updateAvatar(User user, byte[] avatar);
+    User updateRound(User user, byte[] round);
 
     User updateUsername(User user, String username);
     User updateName(User user, String name);

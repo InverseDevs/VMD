@@ -61,6 +61,13 @@ public class CustomUsersImpl implements CustomUsers {
     }
 
     @Override
+    public User updateRound(User user, byte[] round) {
+        User userInDb = findInDb(user);
+        userInDb.setRound(round);
+        return userInDb;
+    }
+
+    @Override
     public User updateUsername(User user, String username) {
         User userInDb = findInDb(user);
         userInDb.setUsername(username);

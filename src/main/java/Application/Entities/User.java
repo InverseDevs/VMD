@@ -48,6 +48,10 @@ public class User implements UserDetails {
     @Type(type = "org.hibernate.type.BinaryType")
     private byte[] avatar;
 
+    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
+    private byte[] round;
+
     public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
