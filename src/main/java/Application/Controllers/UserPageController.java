@@ -7,6 +7,8 @@ import Application.Security.JwtProvider;
 import Application.Services.UserService;
 import Application.Services.WallPostService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
@@ -91,14 +91,28 @@ public class UserPageController {
                 JSONObject receivedDataJson = new JSONObject(data.toString());
                 String sender = receivedDataJson.getString("sender");
                 String content = receivedDataJson.getString("content");
+
+                JSONArray jArray = receivedDataJson.getJSONArray("picture");
+                byte[] picture = new byte[jArray.length()];
+
                 User user = (User) userService.loadUserByUsername(sender);
 
-                postService.addPost(new WallPost(
+                WallPost post = new WallPost(
                         user,
                         content,
                         LocalDateTime.now(),
                         userService.findUserById(id).getId(),
-                        WallPost.PageType.USER));
+                        WallPost.PageType.USER);
+
+                if (picture.length > 0) {
+                    for (int i = 0; i < jArray.length(); i++) {
+                        picture[i] = (byte) jArray.getInt(i);
+                    }
+                    // Потом может убрать кодирование в Base64
+                    post.setPicture(Base64.encodeBase64(picture));
+                }
+
+                postService.addPost(post);
 
                 responseJson.put("status", "success");
             } else {

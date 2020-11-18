@@ -10,6 +10,8 @@ import Application.Services.CommentService;
 import Application.Services.UserService;
 import Application.Services.WallPostService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,12 +59,24 @@ public class CommentController {
                 User user = (User) userService.loadUserByUsername(sender);
                 WallPost post = wallPostService.postById(post_id);
 
-                commentService.addComment(new Comment(
+                JSONArray jArray = receivedDataJson.getJSONArray("picture");
+                byte[] picture = new byte[jArray.length()];
+
+                Comment comment = new Comment(
                         user,
                         content,
                         LocalDateTime.now(),
-                        post
-                ));
+                        post);
+
+                if (picture.length > 0) {
+                    for (int i = 0; i < jArray.length(); i++) {
+                        picture[i] = (byte) jArray.getInt(i);
+                    }
+                    // Потом может убрать кодирование в Base64
+                    comment.setPicture(Base64.encodeBase64(picture));
+                }
+
+                commentService.addComment(comment);
 
                 responseJson.put("status", "success");
             } else {
@@ -114,13 +128,23 @@ public class CommentController {
                 Comment comment = commentService.findById(comment_id);
                 WallPost post = wallPostService.postById(comment.getPost().getId());
 
+                JSONArray jArray = receivedDataJson.getJSONArray("picture");
+                byte[] picture = new byte[jArray.length()];
+
                 Comment newComment = new Comment(
                         user,
                         content,
                         LocalDateTime.now(),
-                        post
-                );
-                newComment.setReference_comment(comment);
+                        post);
+                newComment.setReference_comment(newComment);
+
+                if (picture.length > 0) {
+                    for (int i = 0; i < jArray.length(); i++) {
+                        picture[i] = (byte) jArray.getInt(i);
+                    }
+                    // Потом может убрать кодирование в Base64
+                    newComment.setPicture(Base64.encodeBase64(picture));
+                }
 
                 commentService.addComment(newComment);
 

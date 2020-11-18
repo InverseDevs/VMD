@@ -4,6 +4,7 @@ import Application.Entities.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -33,6 +34,10 @@ public class WallPost extends Content {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
+
+    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
+    private byte[] picture;
 
     public Set<Comment> getComments() {
         Set<Comment> comments = new HashSet<>();
@@ -85,6 +90,7 @@ public class WallPost extends Content {
         post.put("sender", this.getSender() == null ? "" : this.getSender().getUsername());
         post.put("content", this.getContent());
         post.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
+        post.put("picture", this.getPicture() == null ? "" : this.getPicture());
 
         if (!getLikes().isEmpty()) {
             JSONObject likesJson = new JSONObject();

@@ -23,7 +23,7 @@ create table if not exists users
   birth_town         varchar(256),
   birth_date         date,
   avatar             bytea,
-  round             bytea,
+  round              bytea,
   study_place        varchar(256),
   languages          varchar(256),
   phone              varchar(256),
@@ -71,12 +71,13 @@ create table if not exists friends
 
 create table if not exists wall_posts
 (
-  id            serial,
-  page_type     varchar(16),
-  page_id       int,
-  sender_id     int,
-  message       varchar(256),
-  sent_time     date
+  id                  serial,
+  page_type           varchar(16),
+  page_id             int,
+  sender_id           int,
+  message             varchar(256),
+  sent_time           date,
+  picture             bytea
 );
 
 create table if not exists likes
@@ -93,10 +94,11 @@ create table if not exists likes_comments
 
 create table if not exists comments
 (
-  id                serial,
-  message           varchar(256),
-  sent_time         timestamp,
-  sender_id         bigint,
-  reference_comment bigint,
-  post_id           bigint
+  id                  serial,
+  message             varchar(256),
+  sent_time           timestamp,
+  sender_id           bigint,
+  reference_comment   bigint,
+  post_id             bigint,
+  picture             bytea
 );
