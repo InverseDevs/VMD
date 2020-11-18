@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders="Authorization")
@@ -63,8 +61,7 @@ public class CommentController {
                         user,
                         content,
                         LocalDateTime.now(),
-                        post,
-                        Comment.CommentType.POST
+                        post
                 ));
 
                 responseJson.put("status", "success");
@@ -121,10 +118,9 @@ public class CommentController {
                         user,
                         content,
                         LocalDateTime.now(),
-                        post,
-                        Comment.CommentType.COMMENT
+                        post
                 );
-                newComment.setComment(comment);
+                newComment.setReference_comment(comment);
 
                 commentService.addComment(newComment);
 

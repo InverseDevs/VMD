@@ -29,17 +29,16 @@ public class WallPost extends Content {
     @JoinTable(name = "likes",
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> likes; //user id's
+    private Set<User> likes;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Comment> comments;
 
-    // Близнец-костыль, но не слишком серьёзный. По крайней, мере структуру проекта он не ломает :)
     public Set<Comment> getComments() {
         Set<Comment> comments = new HashSet<>();
 
         for (Comment comment : this.comments) {
-            if (comment.getType() == Comment.CommentType.POST) {
+            if (comment.getReference_comment() == null) {
                 comments.add(comment);
             }
         }
@@ -103,7 +102,7 @@ public class WallPost extends Content {
 
             AtomicInteger commentIdx = new AtomicInteger();
             Stream<Comment> commentStream = this.getComments().stream().sorted(
-                    (comment, t1) -> t1.getSentTime().compareTo(comment.getSentTime()));
+                    (comment1, comment2) -> comment2.getSentTime().compareTo(comment1.getSentTime()));
             commentStream.forEach(comment -> {
                 commentsJson.put("comment_" + commentIdx.incrementAndGet(), comment.toJson());
             });

@@ -1,5 +1,4 @@
 package Application;
-import Application.Database.CommentRepository;
 import Application.Database.WallPostRepository;
 import Application.Entities.Chat;
 import Application.Entities.Content.ChatMessage;
@@ -23,7 +22,6 @@ import org.springframework.context.annotation.Bean;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 
 @SpringBootApplication
@@ -89,21 +87,18 @@ public class Starter {
             Comment simpleComment = new Comment(userRepo.findById(1L).get(),
                     "simple comment",
                     LocalDateTime.now(),
-                    postRepo.findById(7L).get(),
-                    Comment.CommentType.POST);
+                    postRepo.findById(7L).get());
 
             Comment complexComment = new Comment(userRepo.findById(1L).get(),
                     "complex comment",
                     LocalDateTime.now(),
-                    postRepo.findById(7L).get(),
-                    Comment.CommentType.POST);
+                    postRepo.findById(7L).get());
 
             Comment innerComment = new Comment(userRepo.findById(1L).get(),
                     "inner comment",
                     LocalDateTime.now(),
-                    postRepo.findById(7L).get(),
-                    Comment.CommentType.COMMENT);
-            innerComment.setComment(complexComment);
+                    postRepo.findById(7L).get());
+            innerComment.setReference_comment(complexComment);
 
             commentService.addComment(simpleComment);
             commentService.addComment(complexComment);

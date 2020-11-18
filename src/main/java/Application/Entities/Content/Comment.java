@@ -8,13 +8,10 @@ import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
-
-// Если ты когда-нибудь решишь, что написал костыль, просто посмотри на этот класс
 
 @Entity
 @Getter
@@ -28,7 +25,7 @@ public class Comment extends Content {
 
     @ManyToOne
     @JoinColumn(name = "reference_comment")
-    private Comment comment;
+    private Comment reference_comment;
 
     @ManyToMany
     @JoinTable(name = "likes_comments",
@@ -36,17 +33,14 @@ public class Comment extends Content {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> likes;
 
-    private CommentType type;
-
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "reference_comment", cascade = CascadeType.ALL)
     private Set<Comment> comments;
 
-    // Близнец-костыль, но не слишком серьёзный. По крайней, мере структуру проекта он не ломает :)
     public Set<Comment> getComments() {
         Set<Comment> comments = new HashSet<>();
 
         for (Comment comment : this.comments) {
-            if (comment.getType() == CommentType.COMMENT) {
+            if (comment.getReference_comment() != null) {
                 comments.add(comment);
             }
         }
@@ -54,27 +48,9 @@ public class Comment extends Content {
         return comments;
     }
 
-    public enum CommentType {
-        POST, COMMENT;
-
-        @Converter(autoApply = true)
-        public static class PageTypeConverter implements AttributeConverter<CommentType, String> {
-            @Override
-            public String convertToDatabaseColumn(CommentType commentType) {
-                return commentType == null ? null : commentType.toString();
-            }
-
-            @Override
-            public CommentType convertToEntityAttribute(String s) {
-                return s == null ? null : CommentType.valueOf(s);
-            }
-        }
-    }
-
-    public Comment(User sender, String content, LocalDateTime sentTime, WallPost post, CommentType type) {
+    public Comment(User sender, String content, LocalDateTime sentTime, WallPost post) {
         super(sender, content, sentTime);
         this.post = post;
-        this.type = type;
     }
 
     public JSONObject toJson() {
@@ -84,8 +60,7 @@ public class Comment extends Content {
         resultJson.put("content", this.getContent());
         resultJson.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
         resultJson.put("post_id", this.getPost() == null ? "" : this.getPost().getId());
-        resultJson.put("reference_comment", this.comment == null ? "" : this.comment.getId());
-        resultJson.put("type", this.getType().toString());
+        resultJson.put("reference_comment", this.reference_comment == null ? "" : this.reference_comment.getId());
 
         if (!getLikes().isEmpty()) {
             JSONObject likesJson = new JSONObject();
@@ -102,7 +77,7 @@ public class Comment extends Content {
             JSONObject commentsJson = new JSONObject();
             AtomicInteger commentIdx = new AtomicInteger();
             Stream<Comment> commentStream = this.getComments().stream().sorted(
-                    (comment, t1) -> t1.getSentTime().compareTo(comment.getSentTime()));
+                    (comment1, comment2) -> comment2.getSentTime().compareTo(comment1.getSentTime()));
             commentStream.forEach(comment -> {
                 commentsJson.put("comment_" + commentIdx.incrementAndGet(), comment.toJson());
             });
@@ -116,13 +91,11 @@ public class Comment extends Content {
 
     @Override
     public String toString() {
-        return "Comment{" +
-                "id=" + getId() +
-                "sender=" + getSender() +
-                "content=" + getContent() +
-                "post=" + post +
-                ", comment=" + comment +
-                ", type=" + type +
-                '}';
+        return "Comment: " +
+                "id = " + getId() +
+                " sender = " + getSender() +
+                " content = " + getContent() +
+                " post = " + getPost() +
+                " comment = " + getReference_comment();
     }
 }
