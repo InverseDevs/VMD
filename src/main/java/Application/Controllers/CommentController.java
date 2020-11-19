@@ -59,22 +59,22 @@ public class CommentController {
                 User user = (User) userService.loadUserByUsername(sender);
                 WallPost post = wallPostService.postById(post_id);
 
-                JSONArray jArray = receivedDataJson.getJSONArray("picture");
-                byte[] picture = new byte[jArray.length()];
-
                 Comment comment = new Comment(
                         user,
                         content,
                         LocalDateTime.now(),
                         post);
 
-                if (picture.length > 0) {
-                    for (int i = 0; i < jArray.length(); i++) {
-                        picture[i] = (byte) jArray.getInt(i);
-                    }
-                    // Потом может убрать кодирование в Base64
-                    comment.setPicture(Base64.encodeBase64(picture));
-                }
+//                JSONArray jArray = receivedDataJson.getJSONArray("picture");
+//                byte[] picture = new byte[jArray.length()];
+//
+//                if (picture.length > 0) {
+//                    for (int i = 0; i < jArray.length(); i++) {
+//                        picture[i] = (byte) jArray.getInt(i);
+//                    }
+//                    // Потом может убрать кодирование в Base64
+//                    comment.setPicture(Base64.encodeBase64(picture));
+//                }
 
                 commentService.addComment(comment);
 

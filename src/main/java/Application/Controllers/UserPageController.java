@@ -92,9 +92,6 @@ public class UserPageController {
                 String sender = receivedDataJson.getString("sender");
                 String content = receivedDataJson.getString("content");
 
-                JSONArray jArray = receivedDataJson.getJSONArray("picture");
-                byte[] picture = new byte[jArray.length()];
-
                 User user = (User) userService.loadUserByUsername(sender);
 
                 WallPost post = new WallPost(
@@ -104,13 +101,16 @@ public class UserPageController {
                         userService.findUserById(id).getId(),
                         WallPost.PageType.USER);
 
-                if (picture.length > 0) {
-                    for (int i = 0; i < jArray.length(); i++) {
-                        picture[i] = (byte) jArray.getInt(i);
-                    }
-                    // Потом может убрать кодирование в Base64
-                    post.setPicture(Base64.encodeBase64(picture));
-                }
+//                JSONArray jArray = receivedDataJson.getJSONArray("picture");
+//                byte[] picture = new byte[jArray.length()];
+//
+//                if (picture.length > 0) {
+//                    for (int i = 0; i < jArray.length(); i++) {
+//                        picture[i] = (byte) jArray.getInt(i);
+//                    }
+//                    // Потом может убрать кодирование в Base64
+//                    post.setPicture(Base64.encodeBase64(picture));
+//                }
 
                 postService.addPost(post);
 
