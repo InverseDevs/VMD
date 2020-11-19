@@ -124,6 +124,13 @@ public class CustomUsersImpl implements CustomUsers {
     }
 
     @Override
+    public User updateOnline(User user, Boolean online) {
+        User userInDb = findInDb(user);
+        userInDb.setOnline(online);
+        return userInDb;
+    }
+
+    @Override
     public User makeUser(User user) {
         User userInDb = findInDb(user);
         Role userRole = em.find(Role.class, 1L);

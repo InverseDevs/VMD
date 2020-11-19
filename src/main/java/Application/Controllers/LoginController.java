@@ -10,10 +10,8 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.MissingRequestHeaderException;
+import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders="Authorization")
+@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
 @Controller
 public class LoginController {
     @Autowired
@@ -47,6 +45,8 @@ public class LoginController {
                 String token = JwtProvider.generateToken(username, password);
                 response.addHeader("Access-Control-Expose-Headers", "Authorization");
                 response.addHeader("Authorization", "Bearer " + token);
+
+                userService.updateOnline(user, true);
 
                 responseJson = user.toJson();
             } else {
@@ -94,6 +94,38 @@ public class LoginController {
         } catch (MessagingException e) {
             log.error("incorrect email: " + e.getMessage());
             responseJson.put("status", "incorrect email");
+        } catch (Exception e) {
+            log.error("unknown error:" + e.getMessage());
+            responseJson.put("status", "unknown error");
+        }
+
+        return responseJson.toString();
+    }
+
+    @RequestMapping(value = "/exit/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String exit(@PathVariable("id") Long userId, HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            String header = request.getHeader("Authorization");
+            if (header == null) {
+                throw new MissingRequestHeaderException("Authorization", null);
+            }
+            String jwt = header.substring(7);
+
+            if (JwtProvider.validateToken(jwt)) {
+                User user = userService.findUserById(userId);
+
+                userService.updateOnline(user, false);
+
+                responseJson.put("status", "success");
+            } else {
+                log.info("user not authorized");
+                responseJson.put("status", "user not authorized");
+            }
+        } catch (UsernameNotFoundException e) {
+            log.error("user not found: " + e.getMessage());
+            responseJson.put("status", "user not found");
         } catch (Exception e) {
             log.error("unknown error:" + e.getMessage());
             responseJson.put("status", "unknown error");

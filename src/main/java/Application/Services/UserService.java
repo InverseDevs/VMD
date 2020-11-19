@@ -132,6 +132,10 @@ public class UserService implements UserDetailsService {
         userRepository.updateHobbies(user, hobbies);
     }
 
+    public void updateOnline(User user, Boolean online) {
+        userRepository.updateOnline(user, online);
+    }
+
     public boolean deleteUser(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {

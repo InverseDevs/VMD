@@ -27,7 +27,8 @@ create table if not exists users
   study_place        varchar(256),
   languages          varchar(256),
   phone              varchar(256),
-  hobbies            varchar(256)
+  hobbies            varchar(256),
+  online             boolean
 );
 
 create table if not exists roles

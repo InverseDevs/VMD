@@ -43,6 +43,7 @@ public class User implements UserDetails {
     private String phone;
     private String hobbies;
     private LocalDate birthDate;
+    private Boolean online;
 
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")
@@ -77,7 +78,7 @@ public class User implements UserDetails {
     @JoinTable(name = "friends",
             joinColumns = @JoinColumn(name = "user1_id"),
             inverseJoinColumns = @JoinColumn(name = "user2_id"))
-    private Set<User> friends; // friends' ids
+    private Set<User> friends;
 
     @Override
     public String getUsername() {
@@ -142,6 +143,7 @@ public class User implements UserDetails {
         userJson.put("languages", this.getLanguages() == null ? "" : this.getLanguages());
         userJson.put("phone", this.getPhone() == null ? "" : this.getPhone());
         userJson.put("hobbies", this.getHobbies() == null ? "" : this.getHobbies());
+        userJson.put("online", this.getOnline() == null ? "false" : this.getOnline());
 
         JSONObject rolesJson = new JSONObject();
         int roleIdx = 0;
