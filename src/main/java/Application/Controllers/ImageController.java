@@ -43,17 +43,13 @@ public class ImageController {
                 }
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
-                JSONArray jArray = receivedDataJson.getJSONArray("avatar");
-                byte[] avatar = new byte[jArray.length()];
-                for (int i = 0; i < jArray.length(); i++) {
-                    avatar[i] = (byte) jArray.getInt(i);
-                }
+                String avatar = receivedDataJson.getString("avatar");
                 // Потом может убрать
-                avatar = Base64.encodeBase64(avatar);
+                //avatar = Base64.encodeBase64(avatar);
 
                 User user = userService.findUserById(id);
 
-                userService.updateAvatar(user, avatar);
+                userService.updateAvatar(user, avatar.getBytes());
 
                 responseJson.put("status", "success");
             } else {

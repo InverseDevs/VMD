@@ -84,8 +84,8 @@ public class WallPost extends Content {
 
     public JSONObject toJson() {
         JSONObject post = new JSONObject();
-        post.put("page_id", this.getPageId());
         post.put("id", this.getId());
+        post.put("page_id", this.getPageId());
         post.put("page_type", this.getPageType() == null ? "" : this.getPageType().toString());
         post.put("sender", this.getSender() == null ? "" : this.getSender().getUsername());
         post.put("content", this.getContent());
