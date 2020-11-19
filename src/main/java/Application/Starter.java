@@ -58,19 +58,31 @@ public class Starter {
             userRepo.save(admin);
             userRepo.makeAdmin(admin);
 
+            User test1 = new User("test1", "1234", "test1@vmd.com",
+                    "Test Account 1", "VMD", null);
+
+            User test2 = new User("test2", "1234", "test2@vmd.com",
+                    "Test Account 2", "VMD", null);
+
+            User skelantros = new User("skelantros", "23052001", "skelantros@vmd.com",
+                    "Alex Egorowski", "Zelenokumsk", LocalDate.parse("1990-12-12"));
+
+            User nixon = new User("NixoN", "67562211", "mythtics2001@mail.ru",
+                    "Andrew Zhukov", "Ishim", LocalDate.parse("2001-02-15"));
+
             ArrayList<User> users = new ArrayList<>();
-            users.add(new User("test1", "1234", "test1@vmd.com",
-                    "Test Account 1", "VMD", null));
-            users.add(new User("test2", "1234", "test2@vmd.com",
-                    "Test Account 2", "VMD", null));
-            users.add(new User("skelantros", "23052001", "skelantros@vmd.com",
-                    "Alex Egorowski", "Zelenokumsk", LocalDate.parse("1990-12-12")));
-            users.add(new User("NixoN", "67562211", "mythtics2001@mail.ru",
-                    "Andrew Zhukov", "Ishim", LocalDate.parse("2001-02-15")));
+            users.add(test1);
+            users.add(test2);
+            users.add(skelantros);
+            users.add(nixon);
             for(User user : users) {
                 userRepo.save(user);
                 userRepo.makeUser(user);
             }
+
+            userRepo.addFriend(nixon, 1L);
+            userRepo.addFriend(nixon, 2L);
+            userRepo.addFriend(nixon, 3L);
 
             ArrayList<WallPost> posts = new ArrayList<>();
             WallPost.PageType type = WallPost.PageType.USER;
