@@ -79,8 +79,8 @@ public class FriendsController {
                 }
 
                 JSONObject jsonObject = new JSONObject(data.toString());
-                String username = jsonObject.getString("username");
-                User user = (User) userService.loadUserByUsername(username);
+                long currentUserId = jsonObject.getLong("id");
+                User user = userService.findUserById(currentUserId);
                 User friend = userService.findUserById(id);
 
                 if (!user.getId().equals(friend.getId()) && !userService.friendExists(user, friend)) {
@@ -134,8 +134,8 @@ public class FriendsController {
                 }
 
                 JSONObject jsonObject = new JSONObject(data.toString());
-                String username = jsonObject.getString("username");
-                User user = (User) userService.loadUserByUsername(username);
+                long currentUserId = jsonObject.getLong("id");
+                User user = userService.findUserById(currentUserId);
                 User friend = userService.findUserById(id);
 
                 if (!user.getId().equals(friend.getId()) && !userService.friendExists(user, friend)) {
