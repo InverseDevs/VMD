@@ -153,7 +153,7 @@ public class User implements UserDetails {
         JSONObject friendsJson = new JSONObject();
         int friendIdx = 0;
         for (User friend : this.getFriends()) {
-            friendsJson.put("friend_" + ++friendIdx, friend.toJson());
+            friendsJson.put("friend_" + ++friendIdx, friend.getId());
         }
         userJson.put("friends", friendsJson);
 
