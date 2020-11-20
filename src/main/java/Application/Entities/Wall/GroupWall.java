@@ -39,6 +39,7 @@ public class GroupWall extends Wall {
     }
 
     private boolean hasAccess(AccessType access, User user) {
+        if(group.getOwner().equals(user)) return true;
         if(this.group.getBannedUsers().contains(user)) return false;
         if(access == AccessType.EVERYONE) return true;
         if(access == AccessType.MEMBERS) return group.getMembers().contains(user);
