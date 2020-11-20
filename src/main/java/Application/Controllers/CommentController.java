@@ -128,9 +128,6 @@ public class CommentController {
                 Comment comment = commentService.findById(comment_id);
                 WallPost post = wallPostService.postById(comment.getPost().getId());
 
-                JSONArray jArray = receivedDataJson.getJSONArray("picture");
-                byte[] picture = new byte[jArray.length()];
-
                 Comment newComment = new Comment(
                         user,
                         content,
@@ -138,13 +135,16 @@ public class CommentController {
                         post);
                 newComment.setReference_comment(newComment);
 
-                if (picture.length > 0) {
-                    for (int i = 0; i < jArray.length(); i++) {
-                        picture[i] = (byte) jArray.getInt(i);
-                    }
-                    // Потом может убрать кодирование в Base64
-                    newComment.setPicture(Base64.encodeBase64(picture));
-                }
+//                JSONArray jArray = receivedDataJson.getJSONArray("picture");
+//                byte[] picture = new byte[jArray.length()];
+//
+//                if (picture.length > 0) {
+//                    for (int i = 0; i < jArray.length(); i++) {
+//                        picture[i] = (byte) jArray.getInt(i);
+//                    }
+//                    // Потом может убрать кодирование в Base64
+//                    newComment.setPicture(Base64.encodeBase64(picture));
+//                }
 
                 commentService.addComment(newComment);
 
