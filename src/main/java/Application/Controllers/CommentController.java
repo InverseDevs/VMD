@@ -133,7 +133,7 @@ public class CommentController {
                         content,
                         LocalDateTime.now(),
                         post);
-                newComment.setReference_comment(newComment);
+                newComment.setReference_comment(comment);
 
 //                JSONArray jArray = receivedDataJson.getJSONArray("picture");
 //                byte[] picture = new byte[jArray.length()];
