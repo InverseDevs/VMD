@@ -133,7 +133,11 @@ public class Starter {
             group1.addAdministrator(users.get(2));
             group1.banUser(users.get(1));
             group1.banUser(admin); // этот пользователь не будет забанен, т.к. он является владельцем группы
-            groupService.update(group1);
+            group1 = groupService.update(group1);
+
+            wallService.addPost(admin, "Post from group owner", group1);
+            wallService.addPost(users.get(2), "Post from group admin", group1);
+            wallService.addPost(users.get(0), "Post from group member", group1);
         };
     }
 }

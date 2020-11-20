@@ -1,10 +1,12 @@
 package Application.Services;
 
 import Application.Database.User.UserRepository;
+import Application.Database.Wall.GroupWallRepository;
 import Application.Database.Wall.UserWallRepository;
 import Application.Database.Wall.WallRepository;
 import Application.Database.WallPostRepository;
 import Application.Entities.Content.WallPost;
+import Application.Entities.Group;
 import Application.Entities.User;
 import Application.Entities.Wall.UserWall;
 import Application.Entities.Wall.Wall;
@@ -18,6 +20,8 @@ import java.util.*;
 @Service
 @Transactional
 public class WallService {
+    @Autowired
+    private GroupWallRepository groupWallRepository;
     @Autowired
     private UserWallRepository userWallRepository;
     @Autowired
@@ -130,6 +134,23 @@ public class WallService {
     }
 
     /**
+     * "Частный случай" метода {@link WallService#addPost(User, String, Wall)}.
+     * Добавляет пост на стену группы с заданным сообщением и отправителем.
+     * В случае, если отправитель не имеет права отправить пост на стену группы,
+     * возвращает null. В противном случае возвращает объект, соответствующий отправленному
+     * посту.
+     * @param sender отправитель.
+     * @param message сообщение поста.
+     * @param group группа, на чью стену необходимо отправить пост.
+     * @return объект, соответствующий отправленному посту.
+     * @see WallService#addPost(User, String, Wall)
+     * @see Wall#canPost(User)
+     */
+    public WallPost addPost(User sender, String message, Group group) {
+        return addPost(sender, message, groupWallRepository.findByGroup(group));
+    }
+
+    /**
      * Добавляет пост с заданным сообщением и отправителем на заданную стену.
      * В случае, если стены не существует (т.е. у нее нулевой идентификатор) или
      * если отправитель не имеет права отправить пост на заданную стену,
@@ -140,7 +161,9 @@ public class WallService {
      * @param wall
      * @return
      */
-    public WallPost addPost(User sender, String message, Wall wall) {
+    private WallPost addPost(User sender, String message, Wall wall) {
+        if(sender.getId() == null) return null;
+        sender = userRepository.findById(sender.getId()).get();
         if(wall.getId() == null) return null;
         if(!wall.canPost(sender)) return null;
         WallPost post = new WallPost(sender, message, LocalDateTime.now(), wall);
@@ -165,11 +188,5 @@ public class WallService {
 
     public boolean checkLike(WallPost post, User user) {
         return postRepository.checkLike(post.getId(), user.getId()).size() == 0;
-    }
-
-    public void setUserWallPostAccess(User user, Wall.AccessType postAccess) {
-        user.getWall().setPostAccess(postAccess);
-        wallRepository.save(user.getWall());
-        userRepository.save(user);
     }
 }
