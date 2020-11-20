@@ -255,7 +255,7 @@ public class FriendsController {
                 User user = userService.findUserById(currentUserId);
                 User friend = userService.findUserById(id);
 
-                if (!user.getId().equals(friend.getId()) && !userService.friendExists(user, friend)) {
+                if (!user.getId().equals(friend.getId()) && userService.friendExists(user, friend)) {
                     userService.deleteFriend(user, friend);
                     userService.deleteFriend(friend, user);
 
