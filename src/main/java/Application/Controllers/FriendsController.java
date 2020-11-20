@@ -43,14 +43,14 @@ public class FriendsController {
                 JSONObject friendsJson = new JSONObject();
                 int friendIdx = 0;
                 for (User friend : friends) {
-                    friendsJson.put("friend_" + ++friendIdx, friend.getId());
+                    friendsJson.put("friend_" + ++friendIdx, friend.toJson());
                 }
                 responseJson.put("friends", friendsJson);
 
                 JSONObject friendsRequestsJson = new JSONObject();
                 int friendRequestIdx = 0;
                 for (User friendRequest : friendRequests) {
-                    friendsRequestsJson.put("friend_request_" + ++friendRequestIdx, friendRequest.getId());
+                    friendsRequestsJson.put("friend_request_" + ++friendRequestIdx, friendRequest.toJson());
                 }
                 responseJson.put("friends_requests", friendsRequestsJson);
             } else {
