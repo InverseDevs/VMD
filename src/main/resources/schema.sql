@@ -70,7 +70,7 @@ create table if not exists friends
   user2_id int
 );
 
-create table if not exists friendRequests
+create table if not exists friend_requests
 (
   to_user int,
   from_user int
