@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface GroupRepository extends JpaRepository<Group, Long> {
     Optional<Group> findByNamedLink(String namedLink);
+    boolean existsByNamedLink(String namedLink);
 }
