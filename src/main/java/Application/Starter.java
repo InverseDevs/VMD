@@ -1,6 +1,7 @@
 package Application;
 import Application.Database.CommentRepository;
 import Application.Database.GroupRepository;
+import Application.Database.Wall.WallRepository;
 import Application.Database.WallPostRepository;
 import Application.Entities.Chat;
 import Application.Entities.Content.ChatMessage;
@@ -11,10 +12,7 @@ import Application.Database.User.UserRepository;
 import Application.Entities.Group;
 import Application.Entities.Role;
 import Application.Entities.User;
-import Application.Services.ChatService;
-import Application.Services.CommentService;
-import Application.Services.UserService;
-import Application.Services.WallService;
+import Application.Services.*;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +49,7 @@ public class Starter {
     @Autowired
     UserService userService;
     @Autowired
-    GroupRepository groupRepository;
+    GroupService groupService;
 
 
     Logger logger = LoggerFactory.getLogger(Starter.class);
@@ -130,12 +128,12 @@ public class Starter {
             chatService.saveMessage(new ChatMessage("hey dude!", LocalDateTime.now(), users.get(0), multiChat));
             chatService.saveMessage(new ChatMessage("it's a multi chat test", LocalDateTime.now(), users.get(1), multiChat));
 
-            Group group1 = new Group("Test Group", admin, "test");
+            Group group1 = groupService.createGroup("Test Group","test", admin);
             users.forEach(group1::addMember);
             group1.addAdministrator(users.get(2));
             group1.banUser(users.get(1));
             group1.banUser(admin); // этот пользователь не будет забанен, т.к. он является владельцем группы
-            groupRepository.save(group1);
+            groupService.update(group1);
         };
     }
 }
