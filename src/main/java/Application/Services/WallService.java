@@ -41,6 +41,15 @@ public class WallService {
     }
 
     /**
+     * Возвращает список всех постов на странице заданной группы.
+     * @param group объект, соответствующий заданной группы.
+     * @return список постов на странице группы.
+     */
+    public List<WallPost> findAllGroupPosts(Group group) {
+        return new ArrayList<>(groupWallRepository.findByGroup(group).getPosts());
+    }
+
+    /**
      * Возвращает множество всех постов, отправленных заданным пользователем.
      * @param sender объект, соответствующий заданному пользователю.
      * @return множество постов, отправленных пользователем.
