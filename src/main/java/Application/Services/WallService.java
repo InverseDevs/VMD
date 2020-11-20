@@ -36,8 +36,8 @@ public class WallService {
      * @param user объект, соответствующий заданному пользователю.
      * @return список постов на странице пользователя.
      */
-    public List<WallPost> findAllUserPagePosts(User user) {
-        return new ArrayList<>(userWallRepository.findByUser(user).getPosts());
+    public Set<WallPost> findAllUserPagePosts(User user) {
+        return new HashSet<>(userWallRepository.findByUser(user).getPosts());
     }
 
     /**
@@ -45,8 +45,8 @@ public class WallService {
      * @param group объект, соответствующий заданной группы.
      * @return список постов на странице группы.
      */
-    public List<WallPost> findAllGroupPosts(Group group) {
-        return new ArrayList<>(groupWallRepository.findByGroup(group).getPosts());
+    public Set<WallPost> findAllGroupPosts(Group group) {
+        return new HashSet<>(groupWallRepository.findByGroup(group).getPosts());
     }
 
     /**
@@ -75,54 +75,6 @@ public class WallService {
      */
     public void deletePostById(long id) {
         postRepository.deleteById(id);
-    }
-
-    /**
-     * Находит в базе данных объект, соответствующий абстрактной стене постов, и возвращает его.
-     * В случае, если стена не представлена в БД (то есть у нее нет идентификатора), возвращает null.
-     * @param wall устаревший объект, соответствующий стене постов.
-     * @return обновленный объект.
-     * @see WallService#refresh(UserWall) 
-     */
-    public Wall refresh(Wall wall) {
-        if(wall.getId() == null) return null;
-        return wallRepository.findById(wall.getId()).get();
-    }
-
-    /**
-     * Находит в базе данных объект, соответствующий стене постов пользователя, и возвращает его.
-     * В случае, если стена не представлена в БД (то есть у нее нет идентификатора), возвращает null.
-     * @param wall устаревший объект, соответствующий стене постов.
-     * @return обновленный объект.
-     * @see WallService#refresh(Wall)
-     */
-    public UserWall refresh(UserWall wall) {
-        if(wall.getId() == null) return null;
-        return userWallRepository.findById(wall.getId()).get();
-    }
-
-    /**
-     * Обновляет стену, находящуюся в БД, в соответствии с заданным параметром.
-     * В случае, если стена не представлена в БД (то есть у нее нет идентификатора), возвращает null.
-     * @param wall обновленный объект, соответствующий стене постов.
-     * @return обновленный объект.
-     * @see WallService#update(UserWall)
-     */
-    public Wall update(Wall wall) {
-        if(wall.getId() == null) return null;
-        return wallRepository.save(wall);
-    }
-
-    /**
-     * Обновляет стену пользователя, находящуюся в БД, в соответствии с заданным параметром.
-     * В случае, если стена не представлена в БД (то есть у нее нет идентификатора), возвращает null.
-     * @param wall обновленный объект, соответствующий стене постов.
-     * @return обновленный объект.
-     * @see WallService#update(Wall)
-     */
-    public UserWall update(UserWall wall) {
-        if(wall.getId() == null) return null;
-        return userWallRepository.save(wall);
     }
 
     /**
