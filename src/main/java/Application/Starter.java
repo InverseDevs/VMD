@@ -1,5 +1,6 @@
 package Application;
 import Application.Database.CommentRepository;
+import Application.Database.GroupRepository;
 import Application.Database.WallPostRepository;
 import Application.Entities.Chat;
 import Application.Entities.Content.ChatMessage;
@@ -7,6 +8,7 @@ import Application.Entities.Content.Comment;
 import Application.Entities.Content.WallPost;
 import Application.Database.RoleRepository;
 import Application.Database.User.UserRepository;
+import Application.Entities.Group;
 import Application.Entities.Role;
 import Application.Entities.User;
 import Application.Services.ChatService;
@@ -48,6 +50,8 @@ public class Starter {
     WallPostRepository postRepo;
     @Autowired
     UserService userService;
+    @Autowired
+    GroupRepository groupRepository;
 
 
     Logger logger = LoggerFactory.getLogger(Starter.class);
@@ -125,6 +129,13 @@ public class Starter {
             chatService.saveMessage(new ChatMessage("hey y'all!", LocalDateTime.now(), users.get(2), multiChat));
             chatService.saveMessage(new ChatMessage("hey dude!", LocalDateTime.now(), users.get(0), multiChat));
             chatService.saveMessage(new ChatMessage("it's a multi chat test", LocalDateTime.now(), users.get(1), multiChat));
+
+            Group group1 = new Group("Test Group", admin, "test");
+            group1.addAdministrator(users.get(2));
+            group1.banUser(users.get(0));
+            group1.banUser(users.get(1));
+            group1.banUser(admin); // этот пользователь не будет забанен, т.к. он является владельцем группы
+            groupRepository.save(group1);
         };
     }
 }

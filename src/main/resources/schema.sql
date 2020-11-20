@@ -11,6 +11,9 @@ drop table wall_posts;
 drop table likes;
 drop table likes_comments;
 drop table comments;
+drop table groups;
+drop table group_admins;
+drop table group_bans;
 
 create table if not exists users
 (
@@ -106,4 +109,24 @@ create table if not exists walls
   id        serial,
   type      varchar(16),
   user_id   int
+);
+
+create table if not exists groups
+(
+  id            serial,
+  name          varchar(256),
+  named_link    varchar(64),
+  owner_id      int
+);
+
+create table if not exists group_admins
+(
+  group_id int,
+  admin_id int,
+);
+
+create table if not exists group_bans
+(
+  group_id int,
+  user_id  int,
 );
