@@ -131,8 +131,8 @@ public class Starter {
             chatService.saveMessage(new ChatMessage("it's a multi chat test", LocalDateTime.now(), users.get(1), multiChat));
 
             Group group1 = new Group("Test Group", admin, "test");
+            users.forEach(group1::addMember);
             group1.addAdministrator(users.get(2));
-            group1.banUser(users.get(0));
             group1.banUser(users.get(1));
             group1.banUser(admin); // этот пользователь не будет забанен, т.к. он является владельцем группы
             groupRepository.save(group1);

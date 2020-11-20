@@ -37,14 +37,22 @@ public class Group {
                inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> bannedUsers = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(name = "group_members",
+               joinColumns = @JoinColumn(name = "group_id"),
+               inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> members = new HashSet<>();
+
     public Group(String name, User owner, String namedLink) {
         this.name = name;
         this.owner = owner;
         this.namedLink = namedLink;
+        this.members.add(owner);
     }
 
-    public void addAdministrator(User user) {
-        administrators.add(user);
+    public boolean addAdministrator(User user) {
+        if(owner.equals(user)) return false;
+        return administrators.add(user);
     }
 
     public void removeAdministrator(User user) {
@@ -54,12 +62,21 @@ public class Group {
     public boolean banUser(User user) {
         if(user.equals(owner)) return false;
         administrators.remove(user);
+        members.remove(user);
         bannedUsers.add(user);
         return true;
     }
 
     public void unbanUser(User user) {
         bannedUsers.remove(user);
+    }
+
+    public void addMember(User user) {
+        members.add(user);
+    }
+
+    public void removeMember(User user) {
+        members.remove(user);
     }
 
     @Override

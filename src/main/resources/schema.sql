@@ -14,6 +14,7 @@ drop table comments;
 drop table groups;
 drop table group_admins;
 drop table group_bans;
+drop table group_members;
 
 create table if not exists users
 (
@@ -126,6 +127,12 @@ create table if not exists group_admins
 );
 
 create table if not exists group_bans
+(
+  group_id int,
+  user_id  int,
+);
+
+create table if not exists group_members
 (
   group_id int,
   user_id  int,
