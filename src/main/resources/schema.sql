@@ -109,7 +109,8 @@ create table if not exists walls
 (
   id        serial,
   type      varchar(16),
-  user_id   int
+  user_id   int,
+  group_id  int
 );
 
 create table if not exists groups

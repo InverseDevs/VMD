@@ -1,5 +1,6 @@
 package Application.Entities;
 
+import Application.Entities.Wall.GroupWall;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,10 @@ public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "wall_id")
+    private GroupWall wall;
 
     @Setter
     private String name;
@@ -48,6 +53,7 @@ public class Group {
         this.owner = owner;
         this.namedLink = namedLink;
         this.members.add(owner);
+        this.wall = new GroupWall(this);
     }
 
     public boolean addAdministrator(User user) {

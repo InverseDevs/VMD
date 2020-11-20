@@ -16,6 +16,8 @@ import java.util.Optional;
 public class GroupService {
     @Autowired
     private GroupRepository groupRepository;
+    @Autowired
+    private WallRepository wallRepository;
 
     public Group findById(Long id) {
         return groupRepository.findById(id).orElseThrow(RuntimeException::new);
@@ -42,6 +44,7 @@ public class GroupService {
     public Group createGroup(String name, String namedLink, User owner) {
         if(groupRepository.existsByNamedLink(namedLink)) throw new RuntimeException();
         Group group = new Group(name, owner, namedLink);
+        wallRepository.save(group.getWall());
         return groupRepository.save(group);
     }
 }
