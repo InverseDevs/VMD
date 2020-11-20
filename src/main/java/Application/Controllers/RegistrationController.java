@@ -64,10 +64,18 @@ public class RegistrationController {
         return responseJson.toString();
     }
 
-    @RequestMapping(value = "/verification/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/verification/{id}", method = RequestMethod.POST)
+    @ResponseBody
     public String verify(@PathVariable("id") Long id) {
-        userService.permitUser(id);
+        JSONObject responseJson = new JSONObject();
+        try {
+            userService.permitUser(id);
+            responseJson.put("status", "success");
+        } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
+            responseJson.put("status", "unknown error");
+        }
 
-        return "verification";
+        return responseJson.toString();
     }
 }
