@@ -70,6 +70,12 @@ create table if not exists friends
   user2_id int
 );
 
+create table if not exists friendRequests
+(
+  to_user int,
+  from_user int
+);
+
 create table if not exists wall_posts
 (
   id                  serial,

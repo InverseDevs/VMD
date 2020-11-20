@@ -1,6 +1,5 @@
 package Application.Entities;
 
-import Application.Entities.Content.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +13,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 
@@ -53,6 +53,24 @@ public class User implements UserDetails {
     @Type(type = "org.hibernate.type.BinaryType")
     private byte[] round;
 
+    @ManyToMany
+    @JoinTable(name = "user_to_role",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
+
+    @ManyToMany
+    @JoinTable(name = "friends",
+            joinColumns = @JoinColumn(name = "user1_id"),
+            inverseJoinColumns = @JoinColumn(name = "user2_id"))
+    private Set<User> friends;
+
+    @ManyToMany
+    @JoinTable(name = "friendRequests",
+            joinColumns = @JoinColumn(name = "to_user"),
+            inverseJoinColumns = @JoinColumn(name = "from_user"))
+    private Set<User> friendRequests;
+
     public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
@@ -67,18 +85,6 @@ public class User implements UserDetails {
         this.birthDate = birthDate;
         this.birthTown = birthTown;
     }
-
-    @ManyToMany
-    @JoinTable(name = "user_to_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
-
-    @ManyToMany
-    @JoinTable(name = "friends",
-            joinColumns = @JoinColumn(name = "user1_id"),
-            inverseJoinColumns = @JoinColumn(name = "user2_id"))
-    private Set<User> friends;
 
     @Override
     public String getUsername() {
@@ -158,6 +164,13 @@ public class User implements UserDetails {
             friendsJson.put("friend_" + ++friendIdx, friend.getId());
         }
         userJson.put("friends", friendsJson);
+
+        JSONObject friendsRequestsJson = new JSONObject();
+        int friendRequestIdx = 0;
+        for (User friendRequest : this.getFriendRequests()) {
+            friendsRequestsJson.put("friend_request_" + ++friendRequestIdx, friendRequest.getId());
+        }
+        userJson.put("friends_requests", friendsRequestsJson);
 
         return userJson;
     }

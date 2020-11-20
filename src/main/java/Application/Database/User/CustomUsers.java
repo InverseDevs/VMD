@@ -7,6 +7,10 @@ import java.time.LocalDate;
 public interface CustomUsers {
     User addFriend(User user, Long friendId);
 
+    User addFriendRequest(User user, Long friendId);
+
+    User deleteFriendRequest(User user, Long friendId);
+
     boolean checkFriend(User user, User friend);
 
     User deleteFriend(User user, Long friendId);

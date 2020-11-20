@@ -31,6 +31,21 @@ public class CustomUsersImpl implements CustomUsers {
     }
 
     @Override
+    public User addFriendRequest(User user, Long friendId) {
+        User friend = findInDb(friendId);
+        friend.getFriendRequests().add(user);
+        return friend;
+    }
+
+    @Override
+    public User deleteFriendRequest(User user, Long friendId) {
+        User userInDb = findInDb(user);
+        User friend = findInDb(friendId);
+        userInDb.getFriendRequests().remove(friend);
+        return userInDb;
+    }
+
+    @Override
     public boolean checkFriend(User user, User friend) {
         User friendInDb = findInDb(user);
         User userInDb = findInDb(friend);

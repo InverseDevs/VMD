@@ -84,8 +84,16 @@ public class UserService implements UserDetailsService {
         userRepository.addFriend(user, friend.getId());
     }
 
+    public void addFriendRequest(User user, User friend) {
+        userRepository.addFriendRequest(user, friend.getId());
+    }
+
     public void deleteFriend(User user, User friend) {
         userRepository.deleteFriend(user, friend.getId());
+    }
+
+    public void deleteFriendRequest(User user, User friend) {
+        userRepository.deleteFriendRequest(user, friend.getId());
     }
 
     public boolean friendExists(User user, User friend) {
