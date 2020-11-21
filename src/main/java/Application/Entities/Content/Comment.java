@@ -26,7 +26,7 @@ public class Comment extends Content {
 
     @ManyToOne
     @JoinColumn(name = "reference_comment")
-    private Comment reference_comment;
+    private Comment referenceComment;
 
     @ManyToMany
     @JoinTable(name = "likes_comments",
@@ -34,7 +34,7 @@ public class Comment extends Content {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> likes;
 
-    @OneToMany(mappedBy = "reference_comment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "referenceComment", cascade = CascadeType.ALL)
     private Set<Comment> comments;
 
     @Lob
@@ -45,7 +45,7 @@ public class Comment extends Content {
         Set<Comment> comments = new HashSet<>();
 
         for (Comment comment : this.comments) {
-            if (comment.getReference_comment() != null) {
+            if (comment.getReferenceComment() != null) {
                 comments.add(comment);
             }
         }
@@ -65,7 +65,7 @@ public class Comment extends Content {
         resultJson.put("content", this.getContent());
         resultJson.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
         resultJson.put("post_id", this.getPost() == null ? "" : this.getPost().getId());
-        resultJson.put("reference_comment", this.reference_comment == null ? "" : this.reference_comment.getId());
+        resultJson.put("reference_comment", this.referenceComment == null ? "" : this.referenceComment.getId());
         resultJson.put("picture", this.getPicture() == null ? "" : this.getPicture());
 
         if (!getLikes().isEmpty()) {
@@ -102,6 +102,6 @@ public class Comment extends Content {
                 " sender = " + getSender() +
                 " content = " + getContent() +
                 " post = " + getPost() +
-                " comment = " + getReference_comment();
+                " comment = " + getReferenceComment();
     }
 }

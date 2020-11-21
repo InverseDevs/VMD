@@ -8,12 +8,7 @@ import org.hibernate.annotations.Type;
 import org.json.JSONObject;
 
 import javax.persistence.*;
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -47,7 +42,7 @@ public class WallPost extends Content {
         Set<Comment> comments = new HashSet<>();
 
         for (Comment comment : this.comments) {
-            if (comment.getReference_comment() == null) {
+            if (comment.getReferenceComment() == null) {
                 comments.add(comment);
             }
         }

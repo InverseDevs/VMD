@@ -1,5 +1,6 @@
 package Application.Entities;
 
+import Application.Entities.Content.Comment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 @Getter
 @Setter
@@ -158,12 +161,18 @@ public class User implements UserDetails {
         }
         userJson.put("roles", rolesJson);
 
-        JSONObject friendsJson = new JSONObject();
-        int friendIdx = 0;
-        for (User friend : this.getFriends()) {
-            friendsJson.put("friend_" + ++friendIdx, friend.getId());
+        if (!getFriends().isEmpty()) {
+            JSONObject friendsJson = new JSONObject();
+            AtomicInteger friendIdx = new AtomicInteger();
+            Stream<User> friendStream = this.getFriends().stream().sorted(
+                    (friend1, friend2) -> friend2.getName().compareTo(friend1.getName()));
+            friendStream.forEach(friend -> {
+                friendsJson.put("friend_" + friendIdx.incrementAndGet(), friend.getId());
+            });
+            userJson.put("friends", friendsJson);
+        } else {
+            userJson.put("friends", "");
         }
-        userJson.put("friends", friendsJson);
 
         JSONObject friendsRequestsJson = new JSONObject();
         int friendRequestIdx = 0;

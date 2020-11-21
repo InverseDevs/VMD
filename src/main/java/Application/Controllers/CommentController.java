@@ -131,8 +131,8 @@ public class CommentController {
                         content,
                         LocalDateTime.now(),
                         post);
-                newComment.setReference_comment(
-                        comment.getReference_comment() == null ? comment : comment.getReference_comment());
+                newComment.setReferenceComment(
+                        comment.getReferenceComment() == null ? comment : comment.getReferenceComment());
 
 //                JSONArray jArray = receivedDataJson.getJSONArray("picture");
 //                byte[] picture = new byte[jArray.length()];

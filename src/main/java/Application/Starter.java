@@ -110,7 +110,7 @@ public class Starter {
                     "inner comment",
                     LocalDateTime.now(),
                     postRepo.findById(7L).get());
-            innerComment.setReference_comment(complexComment);
+            innerComment.setReferenceComment(complexComment);
 
             commentService.addComment(simpleComment);
             commentService.addComment(complexComment);
