@@ -10,8 +10,6 @@ import Application.Services.CommentService;
 import Application.Services.UserService;
 import Application.Services.WallPostService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.codec.binary.Base64;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Slf4j
-@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders="Authorization")
+@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
 @Controller
 public class CommentController {
     @Autowired
@@ -133,7 +131,8 @@ public class CommentController {
                         content,
                         LocalDateTime.now(),
                         post);
-                newComment.setReference_comment(comment);
+                newComment.setReference_comment(
+                        comment.getReference_comment() == null ? comment : comment.getReference_comment());
 
 //                JSONArray jArray = receivedDataJson.getJSONArray("picture");
 //                byte[] picture = new byte[jArray.length()];
