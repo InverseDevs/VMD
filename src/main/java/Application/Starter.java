@@ -84,6 +84,10 @@ public class Starter {
             userRepo.addFriend(nixon, 2L);
             userRepo.addFriend(nixon, 3L);
 
+            userRepo.addFriend(userRepo.findById(1L).get(), nixon.getId());
+            userRepo.addFriend(userRepo.findById(2L).get(), nixon.getId());
+            userRepo.addFriend(userRepo.findById(3L).get(), nixon.getId());
+
             ArrayList<WallPost> posts = new ArrayList<>();
             WallPost.PageType type = WallPost.PageType.USER;
             posts.add(new WallPost(users.get(2), "Hello admin!", LocalDateTime.now(), 1L, type));
