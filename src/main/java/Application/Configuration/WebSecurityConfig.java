@@ -29,6 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/message/**").permitAll()
                 .antMatchers("/friends/**").permitAll()
                 .antMatchers("/chat/**").permitAll()
+                .antMatchers("/websocket-chat/**").permitAll()
                 .antMatchers("/user/**").permitAll()
                 .antMatchers("/posts/**").permitAll()
                 .antMatchers("/post/**").permitAll()
