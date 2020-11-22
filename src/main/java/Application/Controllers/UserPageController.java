@@ -7,6 +7,7 @@ import Application.Security.JwtProvider;
 import Application.Services.UserService;
 import Application.Services.WallPostService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,16 +100,8 @@ public class UserPageController {
                         userService.findUserById(id).getId(),
                         WallPost.PageType.USER);
 
-//                JSONArray jArray = receivedDataJson.getJSONArray("picture");
-//                byte[] picture = new byte[jArray.length()];
-//
-//                if (picture.length > 0) {
-//                    for (int i = 0; i < jArray.length(); i++) {
-//                        picture[i] = (byte) jArray.getInt(i);
-//                    }
-//                    // Потом может убрать кодирование в Base64
-//                    post.setPicture(Base64.encodeBase64(picture));
-//                }
+                String picture = receivedDataJson.getString("picture");
+                post.setPicture(picture.getBytes());
 
                 postService.addPost(post);
 

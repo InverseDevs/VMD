@@ -63,16 +63,8 @@ public class CommentController {
                         LocalDateTime.now(),
                         post);
 
-//                JSONArray jArray = receivedDataJson.getJSONArray("picture");
-//                byte[] picture = new byte[jArray.length()];
-//
-//                if (picture.length > 0) {
-//                    for (int i = 0; i < jArray.length(); i++) {
-//                        picture[i] = (byte) jArray.getInt(i);
-//                    }
-//                    // Потом может убрать кодирование в Base64
-//                    comment.setPicture(Base64.encodeBase64(picture));
-//                }
+                String picture = receivedDataJson.getString("picture");
+                comment.setPicture(picture.getBytes());
 
                 commentService.addComment(comment);
 
@@ -134,16 +126,8 @@ public class CommentController {
                 newComment.setReferenceComment(
                         comment.getReferenceComment() == null ? comment : comment.getReferenceComment());
 
-//                JSONArray jArray = receivedDataJson.getJSONArray("picture");
-//                byte[] picture = new byte[jArray.length()];
-//
-//                if (picture.length > 0) {
-//                    for (int i = 0; i < jArray.length(); i++) {
-//                        picture[i] = (byte) jArray.getInt(i);
-//                    }
-//                    // Потом может убрать кодирование в Base64
-//                    newComment.setPicture(Base64.encodeBase64(picture));
-//                }
+                String picture = receivedDataJson.getString("picture");
+                newComment.setPicture(picture.getBytes());
 
                 commentService.addComment(newComment);
 

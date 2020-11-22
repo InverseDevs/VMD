@@ -28,4 +28,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Transactional
     @Query(value = "SELECT * FROM likes_comments WHERE comment_id = :comment AND user_id = :user", nativeQuery = true)
     Collection<Integer> checkLike(@Param("comment") Long commentId, @Param("user") Long userId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE comments SET picture = :picture where id = :id", nativeQuery = true)
+    int updatePicture(@Param("id") Long commentId, @Param("picture") byte[] picture);
 }

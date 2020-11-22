@@ -32,4 +32,9 @@ public interface WallPostRepository extends JpaRepository<WallPost, Long> {
     @Transactional
     @Query(value = "SELECT * FROM likes WHERE post_id = :post AND user_id = :user", nativeQuery = true)
     Collection<Integer> checkLike(@Param("post") Long postId, @Param("user") Long userId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE wall_posts SET picture = :picture where id = :id", nativeQuery = true)
+    int updatePicture(@Param("id") Long postId, @Param("picture") byte[] picture);
 }

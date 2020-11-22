@@ -69,6 +69,10 @@ public class WallPostService {
         return repository.checkLike(post.getId(), user.getId()).size() == 0;
     }
 
+    public void updatePicture(WallPost post, byte[] picture) {
+        repository.updatePicture(post.getId(), picture);
+    }
+
     public void deletePost(Long postId) {
         repository.deleteById(postId);
     }
