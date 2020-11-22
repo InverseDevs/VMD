@@ -34,7 +34,6 @@ import org.springframework.web.socket.config.annotation.*;
 
 @Configuration
 @EnableWebSocket
-@EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketConfigurer, WebSocketMessageBrokerConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(new ChatHandler(), "/ws");
