@@ -152,14 +152,18 @@ public class User implements UserDetails {
         userJson.put("languages", this.getLanguages() == null ? "" : this.getLanguages());
         userJson.put("phone", this.getPhone() == null ? "" : this.getPhone());
         userJson.put("hobbies", this.getHobbies() == null ? "" : this.getHobbies());
-        userJson.put("online", this.getOnline() == null ? "false" : this.getOnline());
+        userJson.put("online", this.getOnline() != null && this.getOnline());
 
-        JSONObject rolesJson = new JSONObject();
-        int roleIdx = 0;
-        for (Role role : this.getRoles()) {
-            rolesJson.put("role_" + ++roleIdx, role.getAuthority());
+        if (!this.getRoles().isEmpty()) {
+            JSONObject rolesJson = new JSONObject();
+            int roleIdx = 0;
+            for (Role role : this.getRoles()) {
+                rolesJson.put("role_" + ++roleIdx, role.getAuthority());
+            }
+            userJson.put("roles", rolesJson);
+        } else {
+            userJson.put("roles", "");
         }
-        userJson.put("roles", rolesJson);
 
         if (!getFriends().isEmpty()) {
             JSONObject friendsJson = new JSONObject();
@@ -174,12 +178,16 @@ public class User implements UserDetails {
             userJson.put("friends", "");
         }
 
-        JSONObject friendsRequestsJson = new JSONObject();
-        int friendRequestIdx = 0;
-        for (User friendRequest : this.getFriendRequests()) {
-            friendsRequestsJson.put("friend_request_" + ++friendRequestIdx, friendRequest.getId());
+        if (!friendRequests.isEmpty()) {
+            JSONObject friendsRequestsJson = new JSONObject();
+            int friendRequestIdx = 0;
+            for (User friendRequest : this.getFriendRequests()) {
+                friendsRequestsJson.put("friend_request_" + ++friendRequestIdx, friendRequest.getId());
+            }
+            userJson.put("friends_requests", friendsRequestsJson);
+        } else {
+            userJson.put("friends_requests", "");
         }
-        userJson.put("friends_requests", friendsRequestsJson);
 
         return userJson;
     }

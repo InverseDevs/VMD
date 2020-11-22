@@ -60,9 +60,10 @@ public class Comment extends Content {
 
     public JSONObject toJson() {
         JSONObject resultJson = new JSONObject();
-        resultJson.put("id", this.getId());
+        resultJson.put("id", this.getId() == null ? "" : this.getId());
         resultJson.put("sender", this.getSender() == null ? "" : this.getSender().getUsername());
-        resultJson.put("content", this.getContent());
+        resultJson.put("name", this.getSender() == null ? "" : this.getSender().getName());
+        resultJson.put("content", this.getContent() == null ? "" : this.getContent());
         resultJson.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
         resultJson.put("post_id", this.getPost() == null ? "" : this.getPost().getId());
         resultJson.put("reference_comment", this.referenceComment == null ? "" : this.referenceComment.getId());
