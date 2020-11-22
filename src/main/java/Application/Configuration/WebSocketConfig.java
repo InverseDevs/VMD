@@ -65,7 +65,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
         stompEndpointRegistry.addEndpoint("/websocket-chat")
-                .setAllowedOrigins("'https://inversedevs.herokuapp.com")
+                .setAllowedOrigins("http://localhost:3000")
                 .withSockJS();
     }
 
