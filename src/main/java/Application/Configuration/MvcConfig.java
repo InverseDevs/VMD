@@ -18,6 +18,6 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**").allowCredentials(true).
-                allowedOrigins("https://verymagicduck.netlify.app/").allowedMethods("*");
+                allowedOrigins("https://verymagicduck.netlify.app/websocket-chat").allowedMethods("*");
     }
 }
