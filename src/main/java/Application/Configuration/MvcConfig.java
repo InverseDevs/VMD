@@ -22,8 +22,8 @@ public class MvcConfig implements WebMvcConfigurer {
                 .allowedOrigins("https://verymagicduck.netlify.app")
                 .allowedMethods("GET", "POST", "OPTIONS", "PUT")
                 .allowedHeaders("Content-Type", "X-Requested-With", "accept", "Origin", "Access-Control-Request-Method",
-                        "Access-Control-Request-Headers")
-                .exposedHeaders("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials")
+                        "Access-Control-Request-Headers, Access-Control-Allow-Origin")
+                .exposedHeaders("Access-Control-Allow-Credentials")
                 .allowCredentials(false)
         ;
     }
