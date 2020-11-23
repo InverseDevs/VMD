@@ -9,7 +9,6 @@ import Application.Services.UserService;
 import Application.Services.WallPostService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 @Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
@@ -106,7 +104,7 @@ public class ImageController {
 
                 User user = userService.findUserById(id);
 
-                userService.updateRound(user, Base64.encodeBase64(round.getBytes()));
+                userService.updateRound(user, round.getBytes());
 
                 responseJson.put("status", "success");
             } else {
@@ -156,7 +154,7 @@ public class ImageController {
 
                 WallPost post = wallPostService.postById(postId);
 
-                wallPostService.updatePicture(post, Base64.encodeBase64(picture.getBytes()));
+                wallPostService.updatePicture(post, picture.getBytes());
 
                 responseJson.put("status", "success");
             } else {
@@ -203,7 +201,7 @@ public class ImageController {
 
                 Comment comment = commentService.findById(commentId);
 
-                commentService.updatePicture(comment, Base64.encodeBase64(picture.getBytes()));
+                commentService.updatePicture(comment, picture.getBytes());
 
                 responseJson.put("status", "success");
             } else {
