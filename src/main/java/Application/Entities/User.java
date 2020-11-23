@@ -142,12 +142,12 @@ public class User implements UserDetails {
         JSONObject userJson = new JSONObject();
         userJson.put("id", this.getId() == null ? "" : this.getId());
         userJson.put("username", this.getUsername() == null ? "" : this.getUsername());
-        userJson.put("email", this.getEmail() == null ? "" : this.email);
+        userJson.put("email", this.getEmail() == null ? "" : this.getEmail());
         userJson.put("name", this.getName() == null ? "" : this.getName());
-        userJson.put("birth_town", this.getBirthTown() == null ? "" : this.birthTown);
+        userJson.put("birth_town", this.getBirthTown() == null ? "" : this.getBirthTown());
         userJson.put("birth_date", this.getBirthDate() == null ? "" :
                 this.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        userJson.put("avatar", this.avatar == null ? "" : new String(avatar));
+        userJson.put("avatar", this.getAvatar() == null ? "" : new String(this.getAvatar()));
         userJson.put("study_place", this.getStudyPlace() == null ? "" : this.getStudyPlace());
         userJson.put("languages", this.getLanguages() == null ? "" : this.getLanguages());
         userJson.put("phone", this.getPhone() == null ? "" : this.getPhone());

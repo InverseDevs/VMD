@@ -90,7 +90,7 @@ public class WallPost extends Content {
         post.put("name", this.getSender() == null ? "" : this.getSender().getName());
         post.put("content", this.getContent() == null ? "" : this.getContent());
         post.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
-        post.put("picture", this.getPicture() == null ? "" : this.getPicture());
+        post.put("picture", this.getPicture() == null ? "" : new String(this.getPicture()));
 
         if (!getLikes().isEmpty()) {
             JSONObject likesJson = new JSONObject();

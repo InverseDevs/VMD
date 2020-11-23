@@ -66,8 +66,8 @@ public class Comment extends Content {
         resultJson.put("content", this.getContent() == null ? "" : this.getContent());
         resultJson.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
         resultJson.put("post_id", this.getPost() == null ? "" : this.getPost().getId());
-        resultJson.put("reference_comment", this.referenceComment == null ? "" : this.referenceComment.getId());
-        resultJson.put("picture", this.getPicture() == null ? "" : this.getPicture());
+        resultJson.put("reference_comment", this.getReferenceComment() == null ? "" : this.getReferenceComment().getId());
+        resultJson.put("picture", this.getPicture() == null ? "" : new String(this.getPicture()));
 
         if (!getLikes().isEmpty()) {
             JSONObject likesJson = new JSONObject();
