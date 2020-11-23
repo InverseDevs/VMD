@@ -53,12 +53,10 @@ public class ImageController {
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
                 String avatar = receivedDataJson.getString("avatar");
-                // Потом может убрать
-                //avatar = Base64.encodeBase64(avatar);
 
                 User user = userService.findUserById(id);
 
-                userService.updateAvatar(user, avatar.getBytes());
+                userService.updateAvatar(user, Base64.encodeBase64(avatar.getBytes()));
 
                 responseJson.put("status", "success");
             } else {
@@ -104,17 +102,11 @@ public class ImageController {
                 }
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
-                JSONArray jArray = receivedDataJson.getJSONArray("round");
-                byte[] round = new byte[jArray.length()];
-                for (int i = 0; i < jArray.length(); i++) {
-                    round[i] = (byte) jArray.getInt(i);
-                }
-                // Потом может убрать
-                round = Base64.encodeBase64(round);
+                String round = receivedDataJson.getString("round");
 
                 User user = userService.findUserById(id);
 
-                userService.updateRound(user, round);
+                userService.updateRound(user, Base64.encodeBase64(round.getBytes()));
 
                 responseJson.put("status", "success");
             } else {
@@ -163,7 +155,8 @@ public class ImageController {
                 String picture = receivedDataJson.getString("picture");
 
                 WallPost post = wallPostService.postById(postId);
-                wallPostService.updatePicture(post, picture.getBytes());
+
+                wallPostService.updatePicture(post, Base64.encodeBase64(picture.getBytes()));
 
                 responseJson.put("status", "success");
             } else {
@@ -209,7 +202,8 @@ public class ImageController {
                 String picture = receivedDataJson.getString("picture");
 
                 Comment comment = commentService.findById(commentId);
-                commentService.updatePicture(comment, picture.getBytes());
+
+                commentService.updatePicture(comment, Base64.encodeBase64(picture.getBytes()));
 
                 responseJson.put("status", "success");
             } else {
