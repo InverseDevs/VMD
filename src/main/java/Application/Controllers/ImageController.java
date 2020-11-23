@@ -56,7 +56,7 @@ public class ImageController {
 
                 User user = userService.findUserById(id);
 
-                userService.updateAvatar(user, Base64.encodeBase64(avatar.getBytes()));
+                userService.updateAvatar(user, avatar.getBytes());
 
                 responseJson.put("status", "success");
             } else {
