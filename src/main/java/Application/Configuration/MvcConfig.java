@@ -20,7 +20,7 @@ public class MvcConfig implements WebMvcConfigurer {
         registry
                 .addMapping("/**")
                 .allowedOrigins("https://verymagicduck.netlify.app")
-                .allowedMethods("GET", "POST", "OPTIONS", "PUT")
+                .allowedMethods("*")
                 .allowedHeaders("Content-Type", "X-Requested-With", "accept", "Origin", "Access-Control-Request-Method",
                         "Access-Control-Request-Headers, Access-Control-Allow-Origin")
                 .exposedHeaders("Access-Control-Allow-Credentials")
