@@ -26,6 +26,7 @@ public class SimpleCORSFilter implements Filter {
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Origin", "*");
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Methods","GET, OPTIONS, HEAD, PUT, POST");
         ((HttpServletResponse) servletResponse).addHeader("Authorization","*");
+        ((HttpServletResponse) servletResponse).addHeader("authorization","*");
 
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
 
