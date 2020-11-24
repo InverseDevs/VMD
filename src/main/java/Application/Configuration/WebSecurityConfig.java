@@ -19,6 +19,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
+                .addFilterBefore(new SimpleCORSFilter(), LogoutFilter.class)
+                .authorizeRequests()
+                .antMatchers("/websocket-chat/**").permitAll();
+
+        httpSecurity
                 .csrf()
                 .disable()
                 .authorizeRequests()
@@ -43,7 +48,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/exit/**").permitAll()
                 .antMatchers("/app/**").permitAll()
                 .antMatchers("/ws/**").permitAll()
-                .antMatchers("/websocket-chat/**").permitAll()
                 .antMatchers("/css/**").permitAll()
                 .antMatchers("/js/**").permitAll()
                 .antMatchers("/images/**").permitAll()
@@ -63,11 +67,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.headers()
                 .frameOptions()
                 .disable();
-
-        httpSecurity
-                .addFilterBefore(new SimpleCORSFilter(), LogoutFilter.class)
-                .authorizeRequests()
-                .antMatchers("/websocket-chat/**").permitAll();
     }
 
     @Autowired
