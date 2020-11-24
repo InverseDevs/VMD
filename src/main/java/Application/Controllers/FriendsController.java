@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
+@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
 @Controller
 public class FriendsController {
     @Autowired

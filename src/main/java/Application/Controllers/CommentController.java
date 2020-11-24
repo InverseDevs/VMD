@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Slf4j
+@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
 @Controller
 public class CommentController {
     @Autowired

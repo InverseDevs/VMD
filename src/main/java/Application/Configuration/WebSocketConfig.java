@@ -24,7 +24,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
         stompEndpointRegistry
                 .addEndpoint("/websocket-chat")
-                //.setAllowedOrigins("https://verymagicduck.netlify.app")
+                .setAllowedOrigins("https://verymagicduck.netlify.app")
                 .withSockJS();
     }
 
