@@ -1,7 +1,7 @@
 package Application.Configuration;
 
-
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
@@ -17,13 +17,27 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSocketMessageBroker
-@Slf4j
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
         stompEndpointRegistry
                 .addEndpoint("/websocket-chat")
                 .setAllowedOrigins("https://verymagicduck.netlify.app")
+                .setHandshakeHandler(new HandshakeHandler() {
+                    @Override
+                    public boolean doHandshake(ServerHttpRequest request,
+                                               ServerHttpResponse response,
+                                               WebSocketHandler wsHandler,
+                                               Map<String, Object> attributes) throws HandshakeFailureException {
+
+                        System.out.println("Handshake");
+                        logger.info("Handshake");
+
+                        return true;
+                    }
+                })
                 .withSockJS();
     }
 
