@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
-@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
+@CrossOrigin(origins = "https://verymagicduck.netlify.app", allowedHeaders = "*", exposedHeaders = "Access-Control-Allow-Origin")
 public class ChatController {
 
     @Autowired
