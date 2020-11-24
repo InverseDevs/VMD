@@ -35,6 +35,11 @@ public class SimpleCORSFilter implements Filter {
             return;
         }
 
+        if (request.getMethod().equals("Authorization")) {
+            resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+            return;
+        }
+
         filterChain.doFilter(request, servletResponse);
 
 
