@@ -9,19 +9,13 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer, WebSocketConfigurer {
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
         stompEndpointRegistry
                 .addEndpoint("/websocket-chat")
                 .setAllowedOrigins("https://verymagicduck.netlify.app")
                 .withSockJS();
-    }
-
-    @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new ChatHandler(), "/websocket-chat")
-                .addInterceptors(new HttpSessionHandshakeInterceptor());
     }
 
     @Override
