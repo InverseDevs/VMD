@@ -17,12 +17,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry
-                .addMapping("/**")
-                .allowedOrigins("https://verymagicduck.netlify.app")
-                .allowedMethods("*")
-                .allowedHeaders("*")
-                .allowCredentials(false)
-        ;
+//        registry
+//                .addMapping("/**")
+//                .allowedOrigins("https://verymagicduck.netlify.app")
+//                .allowedMethods("*")
+//                .allowedHeaders("*")
+//                .allowCredentials(false)
+//        ;
     }
 }
