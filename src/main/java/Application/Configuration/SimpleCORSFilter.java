@@ -29,19 +29,9 @@ public class SimpleCORSFilter implements Filter {
         ((HttpServletResponse) servletResponse).addHeader("authorization","*");
 
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
-
-        if (request.getMethod().equals("OPTIONS")) {
-            resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-            return;
-        }
-
-        if (request.getMethod().equals("Authorization")) {
-            resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-            return;
-        }
+        resp.setStatus(HttpServletResponse.SC_OK);
 
         filterChain.doFilter(request, servletResponse);
-
 
         //responseToUse.setHeader("Access-Control-Allow-Origin", requestToUse.getHeader("Origin"));
         //responseToUse.setHeader("Authorization", "*");
