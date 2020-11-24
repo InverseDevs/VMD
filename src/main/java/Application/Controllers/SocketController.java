@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Controller
-@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
 public class SocketController {
 
     @MessageMapping("/user-all")
