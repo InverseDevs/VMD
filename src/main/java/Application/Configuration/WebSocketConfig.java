@@ -25,19 +25,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         stompEndpointRegistry
                 .addEndpoint("/websocket-chat")
                 .setAllowedOrigins("https://verymagicduck.netlify.app")
-                .setHandshakeHandler(new HandshakeHandler() {
-                    @Override
-                    public boolean doHandshake(ServerHttpRequest request,
-                                               ServerHttpResponse response,
-                                               WebSocketHandler wsHandler,
-                                               Map<String, Object> attributes) throws HandshakeFailureException {
-
-                        System.out.println("Handshake");
-                        logger.info("Handshake");
-
-                        return true;
-                    }
-                })
                 .withSockJS();
     }
 
