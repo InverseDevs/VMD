@@ -21,9 +21,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .addFilterBefore(new SimpleCORSFilter(), LogoutFilter.class)
                 .authorizeRequests()
-                .antMatchers("/websocket-chat/**").permitAll();
-
-        httpSecurity
+                .antMatchers("/websocket-chat/**").permitAll().and()
                 .csrf()
                 .disable()
                 .authorizeRequests()
