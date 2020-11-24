@@ -21,13 +21,24 @@ public class SimpleCORSFilter implements Filter {
     public void doFilter(ServletRequest servletRequest,
                          ServletResponse servletResponse,
                          FilterChain filterChain) throws IOException, ServletException {
-        log.info("Filer");
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        HttpServletRequest requestToUse = (HttpServletRequest)servletRequest;
-        HttpServletResponse responseToUse = (HttpServletResponse)servletResponse;
+        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Origin", "*");
+        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Methods","GET, OPTIONS, HEAD, PUT, POST");
 
-        responseToUse.setHeader("Access-Control-Allow-Origin",requestToUse.getHeader("Origin"));
-        filterChain.doFilter(requestToUse,responseToUse);
+        HttpServletResponse resp = (HttpServletResponse) servletResponse;
+
+        if (request.getMethod().equals("OPTIONS")) {
+            resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+            return;
+        }
+
+        filterChain.doFilter(request, servletResponse);
+
+
+        //responseToUse.setHeader("Access-Control-Allow-Origin", requestToUse.getHeader("Origin"));
+        //responseToUse.setHeader("Authorization", "*");
+        //filterChain.doFilter(requestToUse,responseToUse);
     }
 
     @Override
