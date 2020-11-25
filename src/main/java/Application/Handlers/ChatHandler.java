@@ -18,7 +18,7 @@ public class ChatHandler extends TextWebSocketHandler {
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
-        log.info("message received " + message.getPayload());
+        log.info("message received in handler " + message.getPayload());
     }
 
     @Override
