@@ -24,6 +24,10 @@ public class ChatService {
     @Autowired
     private UserRepository userRepository;
 
+    public void saveChat(Chat chat) {
+        chatRepository.save(chat);
+    }
+
     public Chat getChatById(Long id) {
         Optional<Chat> chat = chatRepository.findById(id);
 
@@ -32,6 +36,10 @@ public class ChatService {
         } else {
             throw new ChatNotFoundException();
         }
+    }
+
+    public void deleteChat(Long id) {
+        chatRepository.deleteById(id);
     }
 
     /** Сохраняет сообщение в базу данных

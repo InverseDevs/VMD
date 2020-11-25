@@ -2,6 +2,8 @@ package Application.Entities;
 
 import Application.Entities.Content.ChatMessage;
 import lombok.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -21,7 +23,7 @@ public class Chat {
     @Setter(AccessLevel.PRIVATE)
     private Long id;
 
-    @OneToMany(mappedBy="chat")
+    @OneToMany(mappedBy="chat", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMessage> messages = new ArrayList<>();
 
     @ManyToMany
@@ -38,6 +40,20 @@ public class Chat {
         this.users = new HashSet<>();
         users.add(user1);
         users.add(user2);
+    }
+
+    public JSONObject toJson() {
+        JSONObject chatJson = new JSONObject();
+        chatJson.put("chat_id", this.getId() == null ? "" : this.getId());
+
+        JSONObject usersJson = new JSONObject();
+        int userIdx = 0;
+        for (User user : this.getUsers()) {
+            usersJson.put("user_" + ++userIdx, user.toJson());
+        }
+        chatJson.put("users", usersJson);
+
+        return chatJson;
     }
 
     @Override

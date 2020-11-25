@@ -1,21 +1,26 @@
 package Application.Controllers;
 
+import Application.Entities.Chat;
 import Application.Entities.User;
-import Application.Entities.Content.ChatMessage;
+import Application.Security.JwtProvider;
 import Application.Services.ChatService;
 import Application.Services.UserService;
+import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.MissingRequestHeaderException;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
+
+@Slf4j
 @Controller
 @CrossOrigin(origins = "https://verymagicduck.netlify.app", allowedHeaders = "*", exposedHeaders = "Access-Control-Allow-Origin")
 public class ChatController {
@@ -25,44 +30,176 @@ public class ChatController {
     @Autowired
     UserService userService;
 
-    @MessageMapping("/chat.sendMessage")
-    @SendTo("/chat/topic/public")
-    public ChatMessage sendMessage(@Payload ChatMessage chatMessage) {
-        User sender = chatMessage.getSender();
-        //User receiver = chatMessage.getReceiver();
+    @RequestMapping(value = "/chat/create", method = RequestMethod.POST)
+    @ResponseBody
+    public String createChat(HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            String header = request.getHeader("Authorization");
+            if (header == null) {
+                throw new MissingRequestHeaderException("Authorization", null);
+            }
+            String jwt = header.substring(7);
 
-        //long chatId = chatService.getChat(sender.getId(), receiver.getId());
-        //chatMessage.setChatId(chatId);
+            if (JwtProvider.validateToken(jwt)) {
+                StringBuilder data = new StringBuilder();
+                String line;
+                while ((line = request.getReader().readLine()) != null) {
+                    data.append(line);
+                }
 
-        chatService.saveMessage(chatMessage);
+                JSONObject receivedDataJson = new JSONObject(data.toString());
+                JSONArray usersJsonArray = receivedDataJson.getJSONArray("users");
 
-        return chatMessage;
+                Set<User> users = new HashSet<>();
+                for (int i = 0; i < usersJsonArray.length(); i++) {
+                    users.add(userService.findUserById(usersJsonArray.getLong(i)));
+                }
+
+                Chat chat = new Chat();
+                chat.setUsers(users);
+
+                chatService.saveChat(chat);
+
+                responseJson.put("status", "success");
+            } else {
+                log.info("user not authorized");
+                responseJson.put("status", "user not authorized");
+            }
+        } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
+            responseJson.put("status", "incorrect request headers");
+        } catch (JSONException | IOException e) {
+            log.error("incorrect request body: " + e.getMessage());
+            responseJson.put("status", "incorrect request body");
+        } catch (UsernameNotFoundException e) {
+            log.error("user not found: " + e.getMessage());
+            responseJson.put("status", "user not found");
+        } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
+            responseJson.put("status", "unknown error");
+        }
+
+        return responseJson.toString();
     }
 
-    @MessageMapping("/chat.addUser")
-    @SendTo("/chat/topic/public")
-    public ChatMessage addUser(@Payload ChatMessage chatMessage,
-                               SimpMessageHeaderAccessor headerAccessor) {
-        headerAccessor.getSessionAttributes().put("sender", chatMessage.getSender());
-        return chatMessage;
+    @RequestMapping(value = "/chats/{user_id}", method = RequestMethod.GET)
+    @ResponseBody
+    public String getChatsByUser(@PathVariable("user_id") Long userId, HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            String header = request.getHeader("Authorization");
+            if (header == null) {
+                throw new MissingRequestHeaderException("Authorization", null);
+            }
+            String jwt = header.substring(7);
+
+            if (JwtProvider.validateToken(jwt)) {
+                StringBuilder data = new StringBuilder();
+                String line;
+                while ((line = request.getReader().readLine()) != null) {
+                    data.append(line);
+                }
+                User user = userService.findUserById(userId);
+
+                Set<Chat> chats = chatService.getAllChatsByUser(user);
+                JSONObject chatsJson = new JSONObject();
+                int chatIdx = 0;
+                for (Chat chat : chats) {
+                    chatsJson.put("chat_" + ++chatIdx, chat.toJson());
+                }
+                responseJson.put("chats", chatsJson);
+            } else {
+                log.info("user not authorized");
+                responseJson.put("status", "user not authorized");
+            }
+        } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
+            responseJson.put("status", "incorrect request headers");
+        } catch (JSONException e) {
+            log.error("incorrect request body: " + e.getMessage());
+            responseJson.put("status", "incorrect request body");
+        } catch (UsernameNotFoundException e) {
+            log.error("user not found: " + e.getMessage());
+            responseJson.put("status", "user not found");
+        } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
+            responseJson.put("status", "unknown error");
+        }
+
+        return responseJson.toString();
     }
 
-    @GetMapping("/chat/{id}")
-    public String getChat(@PathVariable("id") Long id, Model model) {
-        User sender = (User) userService.loadUserByUsername(
-                String.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal()));
-        User receiver = userService.findUserById(id);
+    @RequestMapping(value = "/chat/{chat_id}", method = RequestMethod.GET)
+    @ResponseBody
+    public String getChatById(@PathVariable("chat_id") Long chatId, HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            String header = request.getHeader("Authorization");
+            if (header == null) {
+                throw new MissingRequestHeaderException("Authorization", null);
+            }
+            String jwt = header.substring(7);
 
-        ChatMessage message = new ChatMessage();
-        message.setSender(sender);
-        //message.setReceiver(receiver);
+            if (JwtProvider.validateToken(jwt)) {
+                StringBuilder data = new StringBuilder();
+                String line;
+                while ((line = request.getReader().readLine()) != null) {
+                    data.append(line);
+                }
+                Chat chat = chatService.getChatById(chatId);
 
-        long chatId = chatService.getChat(sender.getId(), receiver.getId());
+                responseJson = chat.toJson();
+            } else {
+                log.info("user not authorized");
+                responseJson.put("status", "user not authorized");
+            }
+        } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
+            responseJson.put("status", "incorrect request headers");
+        } catch (JSONException e) {
+            log.error("incorrect request body: " + e.getMessage());
+            responseJson.put("status", "incorrect request body");
+        } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
+            responseJson.put("status", "unknown error");
+        }
 
-        model.addAttribute("sender", sender.getUsername());
-        model.addAttribute("message", message);
-        model.addAttribute("messages", chatService.getMessages(chatId).toArray());
+        return responseJson.toString();
+    }
 
-        return "chat";
+    @RequestMapping(value = "/chat/delete/{chat_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteChat(@PathVariable("chat_id") Long chatId, HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            String header = request.getHeader("Authorization");
+            if (header == null) {
+                throw new MissingRequestHeaderException("Authorization", null);
+            }
+            String jwt = header.substring(7);
+
+            if (JwtProvider.validateToken(jwt)) {
+                StringBuilder data = new StringBuilder();
+                String line;
+                while ((line = request.getReader().readLine()) != null) {
+                    data.append(line);
+                }
+                chatService.deleteChat(chatId);
+
+                responseJson.put("status", "success");
+            } else {
+                log.info("user not authorized");
+                responseJson.put("status", "user not authorized");
+            }
+        } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
+            responseJson.put("status", "incorrect request headers");
+        } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
+            responseJson.put("status", "unknown error");
+        }
+
+        return responseJson.toString();
     }
 }
