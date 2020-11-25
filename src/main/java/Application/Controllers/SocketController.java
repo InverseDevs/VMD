@@ -12,6 +12,8 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.time.LocalDateTime;
+
 @Controller
 @Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
@@ -24,11 +26,14 @@ public class SocketController {
     @MessageMapping("/user-all")
     @SendTo("/topic/user")
     public String send(@Payload MessageAdapter messageAdapter) {
-        ChatMessage message = new ChatMessage();
-        message.setChat(chatService.getChatById(Long.valueOf(messageAdapter.getChat_id())));
-        message.setSender(userService.findUserById(Long.valueOf(messageAdapter.getSender_id())));
-        message.setContent(messageAdapter.getMessage());
+        ChatMessage receivedMessage = new ChatMessage();
+        receivedMessage.setChat(chatService.getChatById(Long.valueOf(messageAdapter.getChat_id())));
+        receivedMessage.setSender(userService.findUserById(Long.valueOf(messageAdapter.getSender_id())));
+        receivedMessage.setContent(messageAdapter.getMessage());
+        receivedMessage.setSentTime(LocalDateTime.now());
 
-        return message.toJson().toString();
+        ChatMessage savedMessage = chatService.saveMessage(receivedMessage);
+
+        return savedMessage.toJson().toString();
     }
 }
