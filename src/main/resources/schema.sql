@@ -107,11 +107,10 @@ create table if not exists comments
   id                serial,
   message           varchar(256),
   sent_time         timestamp,
-  type              varchar(256),
   sender_id         bigint,
   reference_comment bigint,
   post_id           bigint,
-  picture             bytea
+  picture           bytea
 );
 
 create table if not exists walls
