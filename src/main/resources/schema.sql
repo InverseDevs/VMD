@@ -129,7 +129,8 @@ create table if not exists groups
   id            serial,
   name          varchar(256),
   named_link    varchar(64),
-  owner_id      int
+  owner_id      int,
+  wall_id       int
 );
 
 create table if not exists group_admins
