@@ -1,7 +1,7 @@
 package Application.Controllers;
 
+import Application.Entities.Content.ChatMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONObject;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -15,11 +15,18 @@ public class SocketController {
 
     @MessageMapping("/user-all")
     @SendTo("/topic/user")
-    public String send(@Payload JSONObject message) {
-        String name = message.getString("name");
-        String msg = message.getString("message");
+    public String send(@Payload MessageAdapter messageAdapter) {
+        ChatMessage message = new ChatMessage();
+        //message.setChat(messageAdapter.chat_id);
+        //message.setSender(messageAdapter.sender_id);
+        message.setContent(messageAdapter.message);
 
-        log.info("message received " + name + " " + msg);
-        return message.toString();
+        return message.toJson().toString();
+    }
+
+    private class MessageAdapter {
+        Long chat_id;
+        Long sender_id;
+        String message;
     }
 }
