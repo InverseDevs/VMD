@@ -25,7 +25,9 @@ public class SocketController {
         return message.toJson().toString();
     }
 
-    private class MessageAdapter {
+    class MessageAdapter {
+        public MessageAdapter() {}
+
         public MessageAdapter(Long chat_id, Long sender_id, String message) {
             this.chat_id = chat_id;
             this.sender_id = sender_id;
