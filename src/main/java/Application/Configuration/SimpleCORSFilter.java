@@ -31,12 +31,14 @@ public class SimpleCORSFilter implements Filter {
 
         Enumeration<String> requestHeaderNames = request.getHeaderNames();
         while (requestHeaderNames.hasMoreElements()) {
-            log.info("request header " + requestHeaderNames.nextElement());
+            String header = requestHeaderNames.nextElement();
+            log.info("request header name" + header + " request header " + request.getHeader(header));
         }
 
         List<String> responseHeaderNames = new ArrayList<>(((HttpServletResponse) servletResponse).getHeaderNames());
         for (String responseHeaderName : responseHeaderNames) {
-            log.info("response header " + responseHeaderName);
+            log.info("response header name " + responseHeaderName +
+                    " response header " + ((HttpServletResponse) servletResponse).getHeader(responseHeaderName));
         }
 
         log.info("stop");
