@@ -1,7 +1,6 @@
 package Application.Configuration;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -9,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -44,14 +42,11 @@ public class SimpleCORSFilter implements Filter {
         log.info("stop");
 
         ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Origin", "https://verymagicduck.netlify.app");
-        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Methods","GET, OPTIONS, HEAD, PUT, POST");
-        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Headers","Authorization");
+        ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Credentials", "true");
+        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD, PUT, POST");
+        ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Headers", "Authorization");
 
         filterChain.doFilter(request, servletResponse);
-
-        //responseToUse.setHeader("Access-Control-Allow-Origin", requestToUse.getHeader("Origin"));
-        //responseToUse.setHeader("Authorization", "*");
-        //filterChain.doFilter(requestToUse,responseToUse);
     }
 
     @Override
