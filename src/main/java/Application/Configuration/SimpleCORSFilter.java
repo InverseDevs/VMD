@@ -8,6 +8,10 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -23,7 +27,19 @@ public class SimpleCORSFilter implements Filter {
                          FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        log.info("testing log in config");
+        log.info("start");
+
+        Enumeration<String> requestHeaderNames = request.getHeaderNames();
+        while (requestHeaderNames.hasMoreElements()) {
+            log.info("request header " + requestHeaderNames.nextElement());
+        }
+
+        List<String> responseHeaderNames = new ArrayList<>(((HttpServletResponse) servletResponse).getHeaderNames());
+        for (String responseHeaderName : responseHeaderNames) {
+            log.info("response header " + responseHeaderName);
+        }
+
+        log.info("stop");
 
         //((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Origin", "https://verymagicduck.netlify.app");
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Methods","GET, OPTIONS, HEAD, PUT, POST");
