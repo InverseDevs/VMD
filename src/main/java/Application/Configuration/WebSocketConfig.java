@@ -24,6 +24,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer, WebSoc
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new ChatHandler(), "/user-all");
+        registry.addHandler(new ChatHandler(), "/app/user-all");
     }
 }
