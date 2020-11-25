@@ -1,6 +1,6 @@
 package Application.Controllers;
 
-import Application.Entities.Content.MessageBean;
+import Application.Entities.Content.ChatMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -15,8 +15,8 @@ public class SocketController {
 
     @MessageMapping("/user-all")
     @SendTo("/topic/user")
-    public MessageBean send(@Payload MessageBean message) {
-        log.info("message in controller " + message.getMessage());
+    public ChatMessage send(@Payload ChatMessage message) {
+        log.info("message received " + message.getContent());
         return message;
     }
 }

@@ -58,7 +58,6 @@ create table if not exists messages
 (
   id        serial,
   sender_id int,
-  type      varchar(64),
   chat_id   int,
   message   varchar(256),
   sent_time date

@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -23,24 +24,20 @@ public class ChatMessage extends Content {
     @JoinColumn(name="chat_id")
     private Chat chat;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type")
-    private MessageType type;
-
     public ChatMessage(String message, LocalDateTime sentTime, User sender, Chat chat) {
         super(sender, message, sentTime);
         this.chat = chat;
     }
 
-    public ChatMessage(String message, LocalDateTime sentTime, User sender, Chat chat, MessageType type) {
-        this(message, sentTime, sender, chat);
-        this.type = type;
-    }
+    public JSONObject toJson() {
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("message_id", this.getId() == null ? "" : this.getId());
+        resultJson.put("chat_id", this.getChat() == null ? "" : this.getChat().getId());
+        resultJson.put("sender_id", this.getSender() == null ? "" : this.getSender());
+        resultJson.put("message", this.getContent() == null ? "" : this.getContent());
+        resultJson.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
 
-    public enum MessageType {
-        CHAT,
-        JOIN,
-        LEAVE
+        return resultJson;
     }
 
     @Override
@@ -50,7 +47,6 @@ public class ChatMessage extends Content {
         return this.getSender().equals(msg.getSender()) &&
                 this.getSentTime().equals(msg.getSentTime()) &&
                 this.getContent().equals(msg.getContent()) &&
-                this.chat.equals(msg.chat) &&
-                this.type.equals(msg.type);
+                this.chat.equals(msg.chat);
     }
 }
