@@ -10,7 +10,7 @@ import java.io.IOException;
 
 @Component
 @Slf4j
-public class SimpleCORSFilter implements Filter {
+public class CORSFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {}
 
@@ -20,7 +20,8 @@ public class SimpleCORSFilter implements Filter {
                          FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Origin", "https://verymagicduck.netlify.app");
+        ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Origin",
+                "https://verymagicduck.netlify.app, http://localhost:3000");
         ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Credentials", "true");
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD, PUT, POST");
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Headers", "Authorization");

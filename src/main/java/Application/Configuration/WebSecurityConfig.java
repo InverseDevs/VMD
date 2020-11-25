@@ -18,7 +18,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .addFilterBefore(new SimpleCORSFilter(), LogoutFilter.class)
+                .addFilterBefore(new CORSFilter(), LogoutFilter.class)
                 .authorizeRequests()
                 .antMatchers("/websocket-chat/**").permitAll().and()
                 .csrf()
