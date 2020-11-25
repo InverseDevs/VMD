@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
 public class SocketController {
 
-//    @MessageMapping("/user-all")
-//    @SendTo("/topic/user")
-//    public MessageBean send(@Payload MessageBean message) {
-//        log.info("message in controller " + message.getMessage());
-//        return message;
-//    }
+    @MessageMapping("/user-all")
+    @SendTo("/topic/user")
+    public MessageBean send(@Payload MessageBean message) {
+        log.info("message in controller " + message.getMessage());
+        return message;
+    }
 }
