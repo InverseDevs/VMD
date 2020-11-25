@@ -28,14 +28,8 @@ public class SocketController {
     class MessageAdapter {
         public MessageAdapter() {}
 
-        public MessageAdapter(Long chat_id, Long sender_id, String message) {
-            this.chat_id = chat_id;
-            this.sender_id = sender_id;
-            this.message = message;
-        }
-
-        Long chat_id;
-        Long sender_id;
+        String chat_id;
+        String sender_id;
         String message;
     }
 }
