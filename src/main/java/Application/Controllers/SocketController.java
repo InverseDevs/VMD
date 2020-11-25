@@ -15,8 +15,8 @@ public class SocketController {
 
     @MessageMapping("/user-all")
     @SendTo("/topic/user")
-    public ChatMessage send(@Payload ChatMessage message) {
+    public String send(@Payload ChatMessage message) {
         log.info("message received " + message.getContent());
-        return message;
+        return message.toJson().toString();
     }
 }
