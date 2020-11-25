@@ -1,5 +1,6 @@
 package Application.Services;
 
+import Application.Controllers.API.Exceptions.ChatNotFoundException;
 import Application.Database.Chat.ChatMessageRepository;
 import Application.Database.Chat.ChatRepository;
 import Application.Database.User.UserRepository;
@@ -22,6 +23,16 @@ public class ChatService {
     private ChatMessageRepository messageRepository;
     @Autowired
     private UserRepository userRepository;
+
+    public Chat getChatById(Long id) {
+        Optional<Chat> chat = chatRepository.findById(id);
+
+        if (chat.isPresent()) {
+            return chat.get();
+        } else {
+            throw new ChatNotFoundException();
+        }
+    }
 
     /** Сохраняет сообщение в базу данных
      * @param message сообщение, которое необходимо сохранить
