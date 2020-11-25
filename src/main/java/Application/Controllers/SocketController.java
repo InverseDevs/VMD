@@ -24,12 +24,12 @@ public class SocketController {
 
         return message.toJson().toString();
     }
+}
 
-    class MessageAdapter {
-        public MessageAdapter() {}
+class MessageAdapter {
+    public MessageAdapter() {}
 
-        String chat_id;
-        String sender_id;
-        String message;
-    }
+    String chat_id;
+    String sender_id;
+    String message;
 }
