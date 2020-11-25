@@ -19,12 +19,19 @@ public class SocketController {
         ChatMessage message = new ChatMessage();
         //message.setChat(messageAdapter.chat_id);
         //message.setSender(messageAdapter.sender_id);
+
         message.setContent(messageAdapter.message);
 
         return message.toJson().toString();
     }
 
     private class MessageAdapter {
+        public MessageAdapter(Long chat_id, Long sender_id, String message) {
+            this.chat_id = chat_id;
+            this.sender_id = sender_id;
+            this.message = message;
+        }
+
         Long chat_id;
         Long sender_id;
         String message;
