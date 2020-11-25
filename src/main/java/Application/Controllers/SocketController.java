@@ -1,6 +1,7 @@
 package Application.Controllers;
 
 import Application.Entities.Content.ChatMessage;
+import Application.Entities.Content.MessageAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -20,16 +21,8 @@ public class SocketController {
         //message.setChat(messageAdapter.chat_id);
         //message.setSender(messageAdapter.sender_id);
 
-        message.setContent(messageAdapter.message);
+        message.setContent(messageAdapter.getMessage());
 
         return message.toJson().toString();
     }
-}
-
-class MessageAdapter {
-    public MessageAdapter() {}
-
-    String chat_id;
-    String sender_id;
-    String message;
 }
