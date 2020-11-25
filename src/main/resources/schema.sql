@@ -15,6 +15,7 @@ drop table groups;
 drop table group_admins;
 drop table group_bans;
 drop table group_members;
+drop table walls;
 
 create table if not exists users
 (
