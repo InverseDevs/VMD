@@ -136,17 +136,17 @@ create table if not exists groups
 create table if not exists group_admins
 (
   group_id int,
-  admin_id int,
+  admin_id int
 );
 
 create table if not exists group_bans
 (
   group_id int,
-  user_id  int,
+  user_id  int
 );
 
 create table if not exists group_members
 (
   group_id int,
-  user_id  int,
+  user_id  int
 );
