@@ -22,7 +22,7 @@ import java.util.Set;
 
 @Slf4j
 @Controller
-@CrossOrigin(origins = "https://verymagicduck.netlify.app", allowedHeaders = "*", exposedHeaders = "Access-Control-Allow-Origin")
+@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Access-Control-Allow-Origin")
 public class ChatController {
 
     @Autowired
