@@ -1,5 +1,9 @@
 package Application.Services;
 
+import Application.Controllers.API.Exceptions.Group.GroupAlreadyExistsByLinkException;
+import Application.Controllers.API.Exceptions.Group.GroupIsNotPersistedException;
+import Application.Controllers.API.Exceptions.Group.GroupNotFoundByLinkException;
+import Application.Controllers.API.Exceptions.Group.GroupNotFoundException;
 import Application.Database.GroupRepository;
 import Application.Database.Wall.WallRepository;
 import Application.Entities.Group;
@@ -20,11 +24,11 @@ public class GroupService {
     private WallRepository wallRepository;
 
     public Group findById(Long id) {
-        return groupRepository.findById(id).orElseThrow(RuntimeException::new);
+        return groupRepository.findById(id).orElseThrow(GroupNotFoundException::new);
     }
 
     public Group findByNamedLink(String namedLink) {
-        return groupRepository.findByNamedLink(namedLink).orElseThrow(RuntimeException::new);
+        return groupRepository.findByNamedLink(namedLink).orElseThrow(GroupNotFoundByLinkException::new);
     }
 
     public List<Group> findAllGroups() {
@@ -32,17 +36,17 @@ public class GroupService {
     }
 
     public Group refresh(Group group) {
-        return groupRepository.findById(group.getId()).orElseThrow(RuntimeException::new);
+        return groupRepository.findById(group.getId()).orElseThrow(GroupIsNotPersistedException::new);
     }
 
     public Group update(Group group) {
-        if(group.getId() == null) throw new RuntimeException();
-        if(!groupRepository.existsById(group.getId())) throw new RuntimeException();
+        if(group.getId() == null) throw new GroupIsNotPersistedException();
+        if(!groupRepository.existsById(group.getId())) throw new GroupNotFoundException();
         return groupRepository.save(group);
     }
 
     public Group createGroup(String name, String namedLink, User owner) {
-        if(groupRepository.existsByNamedLink(namedLink)) throw new RuntimeException();
+        if(groupRepository.existsByNamedLink(namedLink)) throw new GroupAlreadyExistsByLinkException();
         Group group = new Group(name, owner, namedLink);
         wallRepository.save(group.getWall());
         return groupRepository.save(group);
