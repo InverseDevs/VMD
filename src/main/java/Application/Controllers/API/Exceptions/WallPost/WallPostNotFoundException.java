@@ -1,4 +1,6 @@
-package Application.Controllers.API.Exceptions;
+package Application.Controllers.API.Exceptions.WallPost;
+
+import Application.Controllers.API.Exceptions.APIException;
 
 public class WallPostNotFoundException extends APIException {
     public WallPostNotFoundException() {

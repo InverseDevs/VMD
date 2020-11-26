@@ -1,4 +1,7 @@
 package Application;
+import Application.Database.CommentRepository;
+import Application.Database.GroupRepository;
+import Application.Database.Wall.WallRepository;
 import Application.Database.WallPostRepository;
 import Application.Entities.Chat;
 import Application.Entities.Content.ChatMessage;
@@ -6,10 +9,10 @@ import Application.Entities.Content.Comment;
 import Application.Entities.Content.WallPost;
 import Application.Database.RoleRepository;
 import Application.Database.User.UserRepository;
+import Application.Entities.Group;
 import Application.Entities.Role;
 import Application.Entities.User;
-import Application.Services.ChatService;
-import Application.Services.CommentService;
+import Application.Services.*;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,11 +38,18 @@ public class Starter {
     @Autowired
     RoleRepository roleRepo;
     @Autowired
-    WallPostRepository postRepo;
-    @Autowired
     ChatService chatService;
     @Autowired
     CommentService commentService;
+    @Autowired
+    WallService wallService;
+    @Autowired
+    WallPostRepository postRepo;
+    @Autowired
+    UserService userService;
+    @Autowired
+    GroupService groupService;
+
 
     Logger logger = LoggerFactory.getLogger(Starter.class);
 
@@ -55,8 +65,8 @@ public class Starter {
 
             User admin = new User("admin", "admin", "admin@vmd.com",
                     "Admin", "VMD", null);
-            userRepo.save(admin);
-            userRepo.makeAdmin(admin);
+            userService.saveUser(admin);
+            userService.makeAdmin(admin);
 
             User test1 = new User("test1", "1234", "test1@vmd.com",
                     "Test Account 1", "VMD", null);
@@ -76,8 +86,8 @@ public class Starter {
             users.add(skelantros);
             users.add(nixon);
             for(User user : users) {
-                userRepo.save(user);
-                userRepo.makeUser(user);
+                userService.saveUser(user);
+                userService.makeUser(user);
             }
 
             userRepo.addFriend(nixon, 1L);
@@ -89,16 +99,17 @@ public class Starter {
             userRepo.addFriend(userRepo.findById(3L).get(), nixon.getId());
 
             ArrayList<WallPost> posts = new ArrayList<>();
-            WallPost.PageType type = WallPost.PageType.USER;
-            posts.add(new WallPost(users.get(2), "Hello admin!", LocalDateTime.now(), 1L, type));
-            posts.add(new WallPost(users.get(0), "thx for making me alive!", LocalDateTime.now(), 1L, type));
-            posts.add(new WallPost(users.get(2), "u a de best", LocalDateTime.now(), 1L, type));
-            posts.add(new WallPost(admin, "Hello skelantros!", LocalDateTime.now(), 4L, type));
-            posts.add(new WallPost(users.get(2), "hey twin!", LocalDateTime.now(), 2L, type));
-            posts.add(new WallPost(users.get(1), "hi there!", LocalDateTime.now(), 3L, type));
+            posts.add(wallService.addPost(users.get(2), "Hello admin!", admin));
+            posts.add(wallService.addPost(admin, "Hello skelantros!", users.get(2)));
+            posts.add(wallService.addPost(users.get(0), "thx for making me alive!", admin));
+            posts.add(wallService.addPost(users.get(2), "u a de best", admin));
+            posts.add(wallService.addPost(users.get(1), "hey twin!", users.get(0)));
+            posts.add(wallService.addPost(users.get(0), "hi there!", users.get(1)));
 
-            posts.add(new WallPost(users.get(3), "Special for Andrew!", LocalDateTime.now(), 5L, type));
-            posts.forEach(postRepo::save);
+
+            posts.add(wallService.addPost(users.get(2), "Special for Andrew!", users.get(3)));
+            // сохранять посты более нет необходимости: это делается в рамках метода WallService.addPost
+            //posts.forEach(postRepo::save);
 
             Comment simpleComment = new Comment(userRepo.findById(1L).get(),
                     "simple comment",
@@ -128,6 +139,17 @@ public class Starter {
             chatService.saveMessage(new ChatMessage("hey y'all!", LocalDateTime.now(), users.get(2), multiChat));
             chatService.saveMessage(new ChatMessage("hey dude!", LocalDateTime.now(), users.get(0), multiChat));
             chatService.saveMessage(new ChatMessage("it's a multi chat test", LocalDateTime.now(), users.get(1), multiChat));
+
+            Group group1 = groupService.createGroup("Test Group","test", admin);
+            users.forEach(group1::addMember);
+            group1.addAdministrator(users.get(2));
+            group1.banUser(users.get(1));
+            group1.banUser(admin); // этот пользователь не будет забанен, т.к. он является владельцем группы
+            group1 = groupService.update(group1);
+
+            wallService.addPost(admin, "Post from group owner", group1);
+            wallService.addPost(users.get(2), "Post from group admin", group1);
+            wallService.addPost(users.get(0), "Post from group member", group1);
         };
     }
 }

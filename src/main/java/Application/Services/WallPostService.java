@@ -1,21 +1,29 @@
 package Application.Services;
 
-import Application.Controllers.API.Exceptions.WallPostNotFoundException;
+import Application.Controllers.API.Exceptions.WallPost.WallPostNotFoundException;
+import Application.Database.User.UserRepository;
+import Application.Database.Wall.UserWallRepository;
+import Application.Database.Wall.WallRepository;
 import Application.Database.WallPostRepository;
 import Application.Entities.Content.WallPost;
 import Application.Entities.User;
+import Application.Entities.Wall.Wall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Date;
 
 @Service
+@Deprecated
 public class WallPostService {
     @Autowired
     private WallPostRepository repository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private WallRepository wallRepository;
+    @Autowired
+    private UserWallRepository userWallRepository;
 
     public Iterable<WallPost> allPosts() {
         Iterable<WallPost> posts = repository.findAll();
@@ -28,8 +36,7 @@ public class WallPostService {
     }
 
     public Iterable<WallPost> allUserPagePosts(Long userId) throws WallPostNotFoundException {
-        Iterable<WallPost> posts = repository.findByPage(userId, WallPost.PageType.USER);
-
+        Iterable<WallPost> posts = repository.findByWall(userRepository.findById(userId).get().getWall());
         if (posts == null) {
             throw new WallPostNotFoundException("No posts found");
         }
@@ -53,7 +60,17 @@ public class WallPostService {
     }
 
     public void addPost(String message, User sender, WallPost.PageType pageType, Long pageId) {
-        WallPost post = new WallPost(sender, message, LocalDateTime.now(), pageId, pageType);
+        Wall wall;
+        if(pageType.equals(WallPost.PageType.USER) && userRepository.existsById(pageId)) {
+            wall = userRepository.findById(pageId).get().getWall();
+        } else if(pageType.equals(WallPost.PageType.GROUP)) {
+            // some logic
+            wall = null;
+        }
+        else {
+            wall = null;
+        }
+        WallPost post = new WallPost(sender, message, LocalDateTime.now(), wall);
         repository.save(post);
     }
 

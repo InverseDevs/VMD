@@ -11,6 +11,11 @@ drop table wall_posts;
 drop table likes;
 drop table likes_comments;
 drop table comments;
+drop table groups;
+drop table group_admins;
+drop table group_bans;
+drop table group_members;
+drop table walls;
 
 create table if not exists users
 (
@@ -28,7 +33,8 @@ create table if not exists users
   languages          varchar(256),
   phone              varchar(256),
   hobbies            varchar(256),
-  online             boolean
+  online             boolean,
+  wall_id            int
 );
 
 create table if not exists roles
@@ -78,13 +84,12 @@ create table if not exists friend_requests
 
 create table if not exists wall_posts
 (
-  id                  serial,
-  page_type           varchar(16),
-  page_id             int,
-  sender_id           int,
-  message             varchar(256),
-  sent_time           date,
-  picture             bytea
+  id            serial,
+  sender_id     int,
+  message       varchar(256),
+  sent_time     date,
+  wall_id       int,
+  picture       bytea
 );
 
 create table if not exists likes
@@ -101,11 +106,48 @@ create table if not exists likes_comments
 
 create table if not exists comments
 (
-  id                  serial,
-  message             varchar(256),
-  sent_time           timestamp,
-  sender_id           bigint,
-  reference_comment   bigint,
-  post_id             bigint,
-  picture             bytea
+  id                serial,
+  message           varchar(256),
+  sent_time         timestamp,
+  sender_id         bigint,
+  reference_comment bigint,
+  post_id           bigint,
+  picture           bytea
+);
+
+create table if not exists walls
+(
+  id        serial,
+  type      varchar(16),
+  user_id   int,
+  group_id  int,
+  comment_access varchar(32),
+  post_access  varchar(32)
+);
+
+create table if not exists groups
+(
+  id            serial,
+  name          varchar(256),
+  named_link    varchar(64),
+  owner_id      int,
+  wall_id       int
+);
+
+create table if not exists group_admins
+(
+  group_id int,
+  admin_id int
+);
+
+create table if not exists group_bans
+(
+  group_id int,
+  user_id  int
+);
+
+create table if not exists group_members
+(
+  group_id int,
+  user_id  int
 );

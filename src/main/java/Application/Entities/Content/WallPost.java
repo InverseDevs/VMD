@@ -1,6 +1,9 @@
 package Application.Entities.Content;
 
 import Application.Entities.User;
+import Application.Entities.Wall.GroupWall;
+import Application.Entities.Wall.UserWall;
+import Application.Entities.Wall.Wall;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,10 +23,9 @@ import java.util.stream.Stream;
 @NoArgsConstructor
 @Table(name = "wall_posts")
 public class WallPost extends Content {
-    @Column(name = "page_id")
-    private Long pageId;
-    @Column(name = "page_type")
-    private PageType pageType;
+    @ManyToOne
+    @JoinColumn(name = "wall_id")
+    private Wall wall;
 
     @ManyToMany
     @JoinTable(name = "likes",
@@ -52,35 +54,38 @@ public class WallPost extends Content {
 
     public enum PageType {
         USER, GROUP;
-
-        @Converter(autoApply = true)
-        public static class PageTypeConverter implements AttributeConverter<PageType, String> {
-            @Override
-            public String convertToDatabaseColumn(PageType pageType) {
-                if (pageType == null) return null;
-                return pageType.toString();
-            }
-
-            @Override
-            public PageType convertToEntityAttribute(String s) {
-                if (s == null) return null;
-                return PageType.valueOf(s);
-            }
-        }
     }
 
-    public WallPost(Long id, User sender, String content, LocalDateTime sentTime, Long pageId, PageType pageType) {
+    public Long getPageId() {
+        if(wall instanceof UserWall) return ((UserWall) wall).getUser().getId();
+        else if(wall instanceof GroupWall) return ((GroupWall) wall).getGroup().getId();
+        else return null;
+    }
+
+    public PageType getPageType() {
+        if(wall instanceof UserWall) return PageType.USER;
+        else if(wall instanceof GroupWall) return PageType.GROUP;
+        else return null;
+    }
+
+    // Задавать ИД сущностей напрямую не рекомендуется, если Hibernate задает их сам
+    @Deprecated
+    public WallPost(Long id, User sender, String content, LocalDateTime sentTime, Wall wall) {
         super(id, sender, content, sentTime);
-        this.pageId = pageId;
-        this.pageType = pageType;
+        this.wall = wall;
     }
 
-    public WallPost(User sender, String content, LocalDateTime sentTime, Long pageId, PageType pageType) {
+    public WallPost(User sender, String content, LocalDateTime sentTime, Wall wall) {
+        this(sender, content, sentTime, wall, null);
+    }
+
+    public WallPost(User sender, String content, LocalDateTime sentTime, Wall wall, byte[] picture) {
         super(sender, content, sentTime);
-        this.pageId = pageId;
-        this.pageType = pageType;
+        this.wall = wall;
+        this.picture = picture;
     }
 
+    // TODO исправить
     public JSONObject toJson() {
         JSONObject post = new JSONObject();
         post.put("id", this.getId() == null ? "" : this.getId());

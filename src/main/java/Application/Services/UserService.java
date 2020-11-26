@@ -1,6 +1,7 @@
 package Application.Services;
 
 import Application.Database.User.UserRepository;
+import Application.Database.Wall.UserWallRepository;
 import Application.Entities.Role;
 import Application.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    UserWallRepository wallRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -64,6 +67,7 @@ public class UserService implements UserDetailsService {
         }
 
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
+        wallRepository.save(user.getWall());
         userRepository.save(user);
         return true;
     }
