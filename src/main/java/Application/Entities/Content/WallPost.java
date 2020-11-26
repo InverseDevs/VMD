@@ -85,7 +85,6 @@ public class WallPost extends Content {
         this.picture = picture;
     }
 
-    // TODO исправить
     public JSONObject toJson() {
         JSONObject post = new JSONObject();
         post.put("id", this.getId() == null ? "" : this.getId());
