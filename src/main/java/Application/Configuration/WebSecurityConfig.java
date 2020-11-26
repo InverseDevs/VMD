@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -17,16 +18,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-//                .addFilterBefore(new CORSFilter(), LogoutFilter.class)
-//                .authorizeRequests()
-//                .antMatchers("/websocket-chat/**").permitAll().and()
+                .addFilterBefore(new CORSFilter(), LogoutFilter.class)
+                .authorizeRequests()
+                .antMatchers("/websocket-chat/**").permitAll().and()
                 .csrf()
                 .disable()
                 .authorizeRequests()
                 .antMatchers("/registration").not().fullyAuthenticated()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/forgot_password").permitAll()
-                .antMatchers("/websocket-chat/**").permitAll()
                 .antMatchers("/console/**").permitAll()
                 .antMatchers("/authorization").permitAll()
                 .antMatchers("/verification/**").permitAll()
