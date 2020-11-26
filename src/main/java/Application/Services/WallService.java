@@ -164,7 +164,7 @@ public class WallService {
      */
     private WallPost addPost(User sender, String message, byte[] picture, Wall wall) {
         sender = userRepository.findById(sender.getId()).orElseThrow(NoUserFoundException::new);
-        if(wall == null || wall.getId() == null) throw new NoWallFoundException();
+        //if(wall == null || wall.getId() == null) throw new NoWallFoundException();
         //if(!wall.canPost(sender)) throw new WallNoPostAccessException();
         WallPost post = new WallPost(sender, message, LocalDateTime.now(), wall, picture);
         wall.getPosts().add(post);
