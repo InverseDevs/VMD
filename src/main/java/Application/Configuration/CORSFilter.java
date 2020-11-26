@@ -20,7 +20,7 @@ public class CORSFilter implements Filter {
                          FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        //((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Origin", "https://verymagicduck.netlify.app");
+        ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Origin", "*");
         ((HttpServletResponse) servletResponse).setHeader("Access-Control-Allow-Credentials", "true");
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD, PUT, POST");
         ((HttpServletResponse) servletResponse).addHeader("Access-Control-Allow-Headers", "Authorization");
