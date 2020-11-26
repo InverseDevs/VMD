@@ -1,11 +1,10 @@
 package Application.Controllers;
 
-import Application.Controllers.API.Exceptions.WallPostNotFoundException;
+import Application.Controllers.API.Exceptions.WallPost.WallPostNotFoundException;
 import Application.Entities.Content.WallPost;
 import Application.Entities.User;
 import Application.Security.JwtProvider;
 import Application.Services.UserService;
-import Application.Services.WallPostService;
 import Application.Services.WallService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
@@ -18,9 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")

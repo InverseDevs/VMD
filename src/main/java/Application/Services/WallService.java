@@ -1,5 +1,9 @@
 package Application.Services;
 
+import Application.Controllers.API.Exceptions.NoUserFoundException;
+import Application.Controllers.API.Exceptions.WallPost.NoWallFoundException;
+import Application.Controllers.API.Exceptions.WallPost.WallNoPostAccessException;
+import Application.Controllers.API.Exceptions.WallPost.WallPostNotFoundException;
 import Application.Database.User.UserRepository;
 import Application.Database.Wall.GroupWallRepository;
 import Application.Database.Wall.UserWallRepository;
@@ -8,7 +12,6 @@ import Application.Database.WallPostRepository;
 import Application.Entities.Content.WallPost;
 import Application.Entities.Group;
 import Application.Entities.User;
-import Application.Entities.Wall.UserWall;
 import Application.Entities.Wall.Wall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,12 +63,12 @@ public class WallService {
 
     /**
      * Возвращает пост по его числовому идентификатору.
-     * В случае, если поста с заданным идентификатором не существует, возвращает null.
+     * В случае, если поста с заданным идентификатором не существует, генерирует исключение.
      * @param id числовой идентификатор.
-     * @return пост с данным идентификатором или null, если таковой отсутствует.
+     * @return пост с данным идентификатором.
      */
     public WallPost findPostById(long id) {
-        return postRepository.findById(id).orElse(null);
+        return postRepository.findById(id).orElseThrow(WallPostNotFoundException::new);
     }
 
     /**
@@ -78,22 +81,36 @@ public class WallService {
     }
 
     /**
-     * "Частный случай" метода {@link WallService#addPost(User, String, Wall)}.
+     * "Частный случай" метода {@link WallService#addPost(User, String, byte[], Wall)}.
      * Добавляет пост на стену пользователя с заданным сообщением и отправителем.
      * В случае, если отправитель не имеет права отправить пост на стену пользователя,
-     * возвращает null. В противном случае возвращает объект, соответствующий отправленному
+     * генерирует соответствующие исключения. В противном случае возвращает объект, соответствующий отправленному
      * посту.
      * @param sender отправитель.
      * @param message сообщение поста.
      * @param pageOwner пользователь, на чью стену необходимо отправить пост.
      * @return объект, соответствующий отправленному посту.
-     * @see WallService#addPost(User, String, Wall)
+     * @see WallService#addPost(User, String, byte[], Wall)
      * @see Wall#canPost(User)
      */
     public WallPost addPost(User sender, String message, User pageOwner) {
         return addPost(sender, message, null, userWallRepository.findByUser(pageOwner));
     }
 
+    /**
+     * "Частный случай" метода {@link WallService#addPost(User, String, byte[], Wall)}.
+     * Добавляет пост на стену пользователя с заданным сообщением, отправителем и прикрепленным изображением.
+     * В случае, если отправитель не имеет права отправить пост на стену пользователя,
+     * генерирует соответствующие исключения. В противном случае возвращает объект, соответствующий отправленному
+     * посту.
+     * @param sender отправитель.
+     * @param message сообщение поста.
+     * @param pageOwner пользователь, на чью стену необходимо отправить пост.
+     * @param picture изображение в виде байтового массива.
+     * @return объект, соответствующий отправленному посту.
+     * @see WallService#addPost(User, String, byte[], Wall)
+     * @see Wall#canPost(User)
+     */
     public WallPost addPost(User sender, String message, User pageOwner, byte[] picture) {
         return addPost(sender, message, picture, userWallRepository.findByUser(pageOwner));
     }
@@ -102,7 +119,7 @@ public class WallService {
      * "Частный случай" метода {@link WallService#addPost(User, String, byte[], Wall)}.
      * Добавляет пост на стену группы с заданным сообщением и отправителем.
      * В случае, если отправитель не имеет права отправить пост на стену группы,
-     * возвращает null. В противном случае возвращает объект, соответствующий отправленному
+     * генерирует соответствующие исключения. В противном случае возвращает объект, соответствующий отправленному
      * посту.
      * @param sender отправитель.
      * @param message сообщение поста.
@@ -115,6 +132,20 @@ public class WallService {
         return addPost(sender, message, null, groupWallRepository.findByGroup(group));
     }
 
+    /**
+     * "Частный случай" метода {@link WallService#addPost(User, String, byte[], Wall)}.
+     * Добавляет пост на стену группы с заданным сообщением и отправителем.
+     * В случае, если отправитель не имеет права отправить пост на стену группы,
+     * генерирует соответствующие исключения. В противном случае возвращает объект, соответствующий отправленному
+     * посту.
+     * @param sender отправитель.
+     * @param message сообщение поста.
+     * @param group группа, на чью стену необходимо отправить пост.
+     * @param picture изображение в виде байтового массива.
+     * @return объект, соответствующий отправленному посту.
+     * @see WallService#addPost(User, String, byte[], Wall)
+     * @see Wall#canPost(User)
+     */
     public WallPost addPost(User sender, String message, byte[] picture, Group group) {
         return addPost(sender, message, picture, groupWallRepository.findByGroup(group));
     }
@@ -123,18 +154,18 @@ public class WallService {
      * Добавляет пост с заданным сообщением и отправителем на заданную стену.
      * В случае, если стены не существует (т.е. у нее нулевой идентификатор) или
      * если отправитель не имеет права отправить пост на заданную стену,
-     * возвращает null. В противном случае возвращает объект, соответствующий
+     * генерирует соответствующие исключения. В противном случае возвращает объект, соответствующий
      * отправленному посту.
      * @param sender
      * @param message
+     * @param picture
      * @param wall
-     * @return
+     * @return сохраненный пост
      */
     private WallPost addPost(User sender, String message, byte[] picture, Wall wall) {
-        if(sender.getId() == null) return null;
-        sender = userRepository.findById(sender.getId()).get();
-        if(wall.getId() == null) return null;
-        if(!wall.canPost(sender)) return null;
+        sender = userRepository.findById(sender.getId()).orElseThrow(NoUserFoundException::new);
+        if(wall == null || wall.getId() == null) throw new NoWallFoundException();
+        if(!wall.canPost(sender)) throw new WallNoPostAccessException();
         WallPost post = new WallPost(sender, message, LocalDateTime.now(), wall, picture);
         wall.getPosts().add(post);
         wallRepository.save(wall);

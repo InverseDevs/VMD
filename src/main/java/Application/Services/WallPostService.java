@@ -1,6 +1,6 @@
 package Application.Services;
 
-import Application.Controllers.API.Exceptions.WallPostNotFoundException;
+import Application.Controllers.API.Exceptions.WallPost.WallPostNotFoundException;
 import Application.Database.User.UserRepository;
 import Application.Database.Wall.UserWallRepository;
 import Application.Database.Wall.WallRepository;
@@ -11,10 +11,7 @@ import Application.Entities.Wall.Wall;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Date;
 
 @Service
 @Deprecated
