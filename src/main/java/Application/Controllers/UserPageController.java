@@ -95,6 +95,7 @@ public class UserPageController {
                 JSONObject receivedDataJson = new JSONObject(data.toString());
                 String sender = receivedDataJson.getString("sender");
                 String content = receivedDataJson.getString("content");
+                String picture = receivedDataJson.getString("picture");
                 User user = (User) userService.loadUserByUsername(sender);
 
 //                postService.addPost(new WallPost(
@@ -103,7 +104,7 @@ public class UserPageController {
 //                        LocalDateTime.now(),
 //                        userService.findUserById(id).getId(),
 //                        WallPost.PageType.USER));
-                wallService.addPost(user, content, userService.findUserById(id));
+                wallService.addPost(user, content, userService.findUserById(id), picture.getBytes());
 
                 responseJson.put("status", "success");
             } else {

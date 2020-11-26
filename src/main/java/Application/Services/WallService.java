@@ -91,11 +91,15 @@ public class WallService {
      * @see Wall#canPost(User)
      */
     public WallPost addPost(User sender, String message, User pageOwner) {
-        return addPost(sender, message, userWallRepository.findByUser(pageOwner));
+        return addPost(sender, message, null, userWallRepository.findByUser(pageOwner));
+    }
+
+    public WallPost addPost(User sender, String message, User pageOwner, byte[] picture) {
+        return addPost(sender, message, picture, userWallRepository.findByUser(pageOwner));
     }
 
     /**
-     * "Частный случай" метода {@link WallService#addPost(User, String, Wall)}.
+     * "Частный случай" метода {@link WallService#addPost(User, String, byte[], Wall)}.
      * Добавляет пост на стену группы с заданным сообщением и отправителем.
      * В случае, если отправитель не имеет права отправить пост на стену группы,
      * возвращает null. В противном случае возвращает объект, соответствующий отправленному
@@ -104,11 +108,15 @@ public class WallService {
      * @param message сообщение поста.
      * @param group группа, на чью стену необходимо отправить пост.
      * @return объект, соответствующий отправленному посту.
-     * @see WallService#addPost(User, String, Wall)
+     * @see WallService#addPost(User, String, byte[], Wall)
      * @see Wall#canPost(User)
      */
     public WallPost addPost(User sender, String message, Group group) {
-        return addPost(sender, message, groupWallRepository.findByGroup(group));
+        return addPost(sender, message, null, groupWallRepository.findByGroup(group));
+    }
+
+    public WallPost addPost(User sender, String message, byte[] picture, Group group) {
+        return addPost(sender, message, picture, groupWallRepository.findByGroup(group));
     }
 
     /**
@@ -122,12 +130,12 @@ public class WallService {
      * @param wall
      * @return
      */
-    private WallPost addPost(User sender, String message, Wall wall) {
+    private WallPost addPost(User sender, String message, byte[] picture, Wall wall) {
         if(sender.getId() == null) return null;
         sender = userRepository.findById(sender.getId()).get();
         if(wall.getId() == null) return null;
         if(!wall.canPost(sender)) return null;
-        WallPost post = new WallPost(sender, message, LocalDateTime.now(), wall);
+        WallPost post = new WallPost(sender, message, LocalDateTime.now(), wall, picture);
         wall.getPosts().add(post);
         wallRepository.save(wall);
         return postRepository.save(post);

@@ -76,8 +76,13 @@ public class WallPost extends Content {
     }
 
     public WallPost(User sender, String content, LocalDateTime sentTime, Wall wall) {
+        this(sender, content, sentTime, wall, null);
+    }
+
+    public WallPost(User sender, String content, LocalDateTime sentTime, Wall wall, byte[] picture) {
         super(sender, content, sentTime);
         this.wall = wall;
+        this.picture = picture;
     }
 
     // TODO исправить
