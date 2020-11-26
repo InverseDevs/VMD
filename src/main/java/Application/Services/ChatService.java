@@ -38,6 +38,10 @@ public class ChatService {
         }
     }
 
+    public void updatePicture(Long chatId, byte[] picture) {
+        chatRepository.updatePicture(chatId, picture);
+    }
+
     public void deleteChat(Long id) {
         chatRepository.deleteById(id);
     }

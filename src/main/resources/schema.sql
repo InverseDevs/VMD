@@ -45,7 +45,8 @@ create table if not exists user_to_role
 
 create table if not exists chats
 (
-  id          serial
+  id                 serial,
+  picture              bytea
 );
 
 create table if not exists chats_to_users
@@ -71,7 +72,7 @@ create table if not exists friends
 
 create table if not exists friend_requests
 (
-  to_user int,
+  to_user   int,
   from_user int
 );
 

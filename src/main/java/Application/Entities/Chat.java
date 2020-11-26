@@ -2,6 +2,7 @@ package Application.Entities;
 
 import Application.Entities.Content.ChatMessage;
 import lombok.*;
+import org.hibernate.annotations.Type;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -32,6 +33,10 @@ public class Chat {
     inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> users = new HashSet<>();
 
+    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
+    private byte[] picture;
+
     public Chat(Set<User> users) {
         this.users = new HashSet<>(users);
     }
@@ -45,6 +50,7 @@ public class Chat {
     public JSONObject toJson() {
         JSONObject chatJson = new JSONObject();
         chatJson.put("chat_id", this.getId() == null ? "" : this.getId());
+        chatJson.put("picture", this.getPicture() == null ? "" : new String(this.getPicture()));
 
         JSONObject usersJson = new JSONObject();
         int userIdx = 0;
