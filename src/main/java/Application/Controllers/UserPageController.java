@@ -22,8 +22,6 @@ import java.io.IOException;
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
 @Controller
 public class UserPageController {
-    //@Autowired
-    //private WallPostService postService;
     @Autowired
     private WallService wallService;
     @Autowired

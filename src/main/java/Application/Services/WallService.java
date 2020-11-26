@@ -189,4 +189,8 @@ public class WallService {
     public boolean checkLike(WallPost post, User user) {
         return postRepository.checkLike(post.getId(), user.getId()).size() == 0;
     }
+
+    public void updatePostPicture(WallPost post, byte[] picture) {
+        postRepository.updatePicture(post.getId(), picture);
+    }
 }

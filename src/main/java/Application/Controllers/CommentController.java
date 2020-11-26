@@ -8,7 +8,7 @@ import Application.Entities.User;
 import Application.Security.JwtProvider;
 import Application.Services.CommentService;
 import Application.Services.UserService;
-import Application.Services.WallPostService;
+import Application.Services.WallService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +31,7 @@ public class CommentController {
     @Autowired
     UserService userService;
     @Autowired
-    WallPostService wallPostService;
+    WallService wallService;
 
     @RequestMapping(value = "/comment/post/{post_id}", method = RequestMethod.POST)
     @ResponseBody
@@ -55,7 +55,7 @@ public class CommentController {
                 String sender = receivedDataJson.getString("sender");
                 String content = receivedDataJson.getString("content");
                 User user = (User) userService.loadUserByUsername(sender);
-                WallPost post = wallPostService.postById(post_id);
+                WallPost post = wallService.findPostById(post_id);
 
                 Comment comment = new Comment(
                         user,
@@ -116,7 +116,7 @@ public class CommentController {
                 String content = receivedDataJson.getString("content");
                 User user = (User) userService.loadUserByUsername(sender);
                 Comment comment = commentService.findById(comment_id);
-                WallPost post = wallPostService.postById(comment.getPost().getId());
+                WallPost post = wallService.findPostById(comment.getPost().getId());
 
                 Comment newComment = new Comment(
                         user,

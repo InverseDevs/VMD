@@ -1,6 +1,5 @@
 package Application.Controllers;
 
-import Application.Entities.Chat;
 import Application.Entities.Content.Comment;
 import Application.Entities.Content.WallPost;
 import Application.Entities.User;
@@ -8,7 +7,7 @@ import Application.Security.JwtProvider;
 import Application.Services.ChatService;
 import Application.Services.CommentService;
 import Application.Services.UserService;
-import Application.Services.WallPostService;
+import Application.Services.WallService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +27,7 @@ public class ImageController {
     @Autowired
     UserService userService;
     @Autowired
-    WallPostService wallPostService;
+    WallService wallService;
     @Autowired
     CommentService commentService;
     @Autowired
@@ -155,9 +154,9 @@ public class ImageController {
                 JSONObject receivedDataJson = new JSONObject(data.toString());
                 String picture = receivedDataJson.getString("picture");
 
-                WallPost post = wallPostService.postById(postId);
+                WallPost post = wallService.findPostById(postId);
 
-                wallPostService.updatePicture(post, picture.getBytes());
+                wallService.updatePostPicture(post, picture.getBytes());
 
                 responseJson.put("status", "success");
             } else {
