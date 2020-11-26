@@ -116,9 +116,6 @@ public class ChatController {
         } catch (MissingRequestHeaderException e) {
             log.error("incorrect request headers: " + e.getMessage());
             responseJson.put("status", "incorrect request headers");
-        } catch (JSONException e) {
-            log.error("incorrect request body: " + e.getMessage());
-            responseJson.put("status", "incorrect request body");
         } catch (UsernameNotFoundException e) {
             log.error("user not found: " + e.getMessage());
             responseJson.put("status", "user not found");
@@ -157,9 +154,6 @@ public class ChatController {
         } catch (MissingRequestHeaderException e) {
             log.error("incorrect request headers: " + e.getMessage());
             responseJson.put("status", "incorrect request headers");
-        } catch (JSONException e) {
-            log.error("incorrect request body: " + e.getMessage());
-            responseJson.put("status", "incorrect request body");
         } catch (Exception e) {
             log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");

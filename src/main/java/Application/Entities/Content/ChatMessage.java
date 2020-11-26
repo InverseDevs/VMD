@@ -33,7 +33,7 @@ public class ChatMessage extends Content {
         JSONObject resultJson = new JSONObject();
         resultJson.put("message_id", this.getId() == null ? "" : this.getId());
         resultJson.put("chat_id", this.getChat() == null ? "" : this.getChat().getId());
-        resultJson.put("sender_id", this.getSender() == null ? "" : this.getSender());
+        resultJson.put("sender_id", this.getSender() == null ? "" : this.getSender().getId());
         resultJson.put("message", this.getContent() == null ? "" : this.getContent());
         resultJson.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
 
