@@ -11,10 +11,10 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
-        stompEndpointRegistry
-                .addEndpoint("/websocket-chat")
-                .setAllowedOrigins("https://verymagicduck.netlify.app")
-                .withSockJS();
+//        stompEndpointRegistry
+//                .addEndpoint("/websocket-chat")
+//                .setAllowedOrigins("https://verymagicduck.netlify.app")
+//                .withSockJS();
     }
 
     @Override
