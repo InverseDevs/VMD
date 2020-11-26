@@ -262,9 +262,6 @@ public class ImageController {
         } catch (JSONException | IOException e) {
             log.error("incorrect request body: " + e.getMessage());
             responseJson.put("status", "incorrect request body");
-        } catch (UsernameNotFoundException e) {
-            log.error("user not found: " + e.getMessage());
-            responseJson.put("status", "user not found");
         } catch (Exception e) {
             log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");
