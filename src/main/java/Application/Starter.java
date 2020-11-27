@@ -1,4 +1,6 @@
 package Application;
+import Application.Controllers.API.Exceptions.WallPost.NoWallFoundException;
+import Application.Controllers.API.Exceptions.WallPost.WallNoPostAccessException;
 import Application.Database.CommentRepository;
 import Application.Database.GroupRepository;
 import Application.Database.Wall.WallRepository;
@@ -50,7 +52,6 @@ public class Starter {
     @Autowired
     GroupService groupService;
 
-
     Logger logger = LoggerFactory.getLogger(Starter.class);
 
     public static void main(String[] args) {
@@ -90,13 +91,9 @@ public class Starter {
                 userService.makeUser(user);
             }
 
-            userRepo.addFriend(nixon, 1L);
-            userRepo.addFriend(nixon, 2L);
-            userRepo.addFriend(nixon, 3L);
-
-            userRepo.addFriend(userRepo.findById(1L).get(), nixon.getId());
-            userRepo.addFriend(userRepo.findById(2L).get(), nixon.getId());
-            userRepo.addFriend(userRepo.findById(3L).get(), nixon.getId());
+            userService.makeFriends(nixon, admin);
+            userService.makeFriends(nixon, test1);
+            userService.makeFriends(nixon, test2);
 
             ArrayList<WallPost> posts = new ArrayList<>();
             posts.add(wallService.addPost(users.get(2), "Hello admin!", admin));
@@ -110,6 +107,21 @@ public class Starter {
             posts.add(wallService.addPost(users.get(2), "Special for Andrew!", users.get(3)));
             // сохранять посты более нет необходимости: это делается в рамках метода WallService.addPost
             //posts.forEach(postRepo::save);
+
+            userService.updatePostAccess(skelantros, User.Access.FRIENDS);
+            userService.makeFriends(skelantros, test1);
+            wallService.addPost(test1, "It's a-me, Skel, your friend!", skelantros);
+            try {
+                wallService.addPost(test2, "I am not a friend of Skel, so my post won't be sent ):", skelantros);
+            } catch(WallNoPostAccessException e) {
+                logger.info(e.getMessage());
+            }
+            userService.updatePostAccess(skelantros, User.Access.NOBODY);
+            try {
+                wallService.addPost(test1, "I am still a friend of Skel, but I can't send anything on his wall :(", skelantros);
+            } catch(WallNoPostAccessException e) {
+                logger.info(e.getMessage());
+            }
 
             Comment simpleComment = new Comment(userRepo.findById(1L).get(),
                     "simple comment",
@@ -146,9 +158,13 @@ public class Starter {
             group1.banUser(admin); // этот пользователь не будет забанен, т.к. он является владельцем группы
             group1 = groupService.update(group1);
 
-            wallService.addPost(admin, "Post from group owner", group1);
-            wallService.addPost(users.get(2), "Post from group admin", group1);
-            wallService.addPost(users.get(0), "Post from group member", group1);
+            try {
+                wallService.addPost(admin, "Post from group owner", group1);
+                wallService.addPost(users.get(2), "Post from group admin", group1);
+                wallService.addPost(users.get(0), "Post from group member", group1);
+            } catch(WallNoPostAccessException e) {
+                logger.info(e.getMessage());
+            }
         };
     }
 }

@@ -34,7 +34,10 @@ create table if not exists users
   phone              varchar(256),
   hobbies            varchar(256),
   online             boolean,
-  wall_id            int
+  wall_id            int,
+  post_access        varchar(32),
+  comment_access     varchar(32),
+  message_access     varchar(32)
 );
 
 create table if not exists roles

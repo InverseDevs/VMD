@@ -2,10 +2,7 @@ package Application.Entities;
 
 import Application.Entities.Content.Comment;
 import Application.Entities.Wall.UserWall;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Type;
 import org.json.JSONObject;
 import org.springframework.security.core.GrantedAuthority;
@@ -51,6 +48,7 @@ public class User implements UserDetails {
 
     @OneToOne
     @JoinColumn(name = "wall_id")
+    @Setter(AccessLevel.PRIVATE)
     private UserWall wall;
 
     @Lob
@@ -79,12 +77,25 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "from_user"))
     private Set<User> friendRequests;
 
+    public enum Access {
+        EVERYONE, FRIENDS, NOBODY;
+    }
+    @Enumerated(EnumType.STRING)
+    private Access messageAccess;
+    @Enumerated(EnumType.STRING)
+    private Access postAccess;
+    @Enumerated(EnumType.STRING)
+    private Access commentAccess;
+
     public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.permitted = true;
         this.wall = new UserWall(this);
+        this.messageAccess = Access.EVERYONE;
+        this.postAccess = Access.EVERYONE;
+        this.commentAccess = Access.EVERYONE;
     }
 
     public User(String username, String password, String email,

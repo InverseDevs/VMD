@@ -22,6 +22,39 @@ public class CustomUsersImpl implements CustomUsers {
         return em.find(User.class, userId);
     }
 
+
+    @Override
+    public User addFriend(User user, User friend) {
+        User userInDb = findInDb(user);
+        User friendInDb = findInDb(friend);
+        userInDb.getFriends().add(friendInDb);
+        return userInDb;
+    }
+
+    @Override
+    public User addFriendRequest(User user, User friend) {
+        User userInDb = findInDb(user);
+        User friendInDb = findInDb(friend);
+        friendInDb.getFriendRequests().add(user);
+        return friendInDb;
+    }
+
+    @Override
+    public User deleteFriend(User user, User friend) {
+        User userInDb = findInDb(user);
+        User friendInDb = findInDb(friend);
+        userInDb.getFriends().remove(friendInDb);
+        return userInDb;
+    }
+
+    @Override
+    public User deleteFriendRequest(User user, User friend) {
+        User userInDb = findInDb(user);
+        User friendInDb = findInDb(friend);
+        friendInDb.getFriendRequests().remove(user);
+        return friendInDb;
+    }
+
     @Override
     public User addFriend(User user, Long friendId) {
         User userInDb = findInDb(user);

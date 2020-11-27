@@ -14,4 +14,16 @@ public interface UserRepository extends JpaRepository<User, Long>, CustomUsers {
     @Modifying
     @Query("UPDATE User u Set u.permitted = true WHERE id = :id")
     void permitUser(@Param("id") Long id);
+
+    @Modifying
+    @Query("UPDATE User u SET u.commentAccess = :access WHERE u = :user")
+    void updateCommentAccess(@Param("user") User user, @Param("access") User.Access commentAccess);
+
+    @Modifying
+    @Query("UPDATE User u SET u.postAccess = :access WHERE u = :user")
+    void updatePostAccess(@Param("user") User user, @Param("access") User.Access postAccess);
+
+    @Modifying
+    @Query("UPDATE User u SET u.commentAccess = :access WHERE u = :user")
+    void updateMessageAccess(@Param("user") User user, @Param("access") User.Access messageAccess);
 }

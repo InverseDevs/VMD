@@ -84,20 +84,32 @@ public class UserService implements UserDetailsService {
         userRepository.makeUser(user);
     }
 
+    @Deprecated
     public void addFriend(User user, User friend) {
-        userRepository.addFriend(user, friend.getId());
+        userRepository.addFriend(user, friend);
+    }
+
+    public void makeFriends(User user1, User user2) {
+        userRepository.addFriend(user1, user2);
+        userRepository.addFriend(user2, user1);
     }
 
     public void addFriendRequest(User user, User friend) {
-        userRepository.addFriendRequest(user, friend.getId());
+        userRepository.addFriendRequest(user, friend);
     }
 
+    @Deprecated
     public void deleteFriend(User user, User friend) {
-        userRepository.deleteFriend(user, friend.getId());
+        userRepository.deleteFriend(user, friend);
+    }
+
+    public void deleteFriends(User user1, User user2) {
+        userRepository.deleteFriend(user1, user2);
+        userRepository.deleteFriend(user2, user1);
     }
 
     public void deleteFriendRequest(User user, User friend) {
-        userRepository.deleteFriendRequest(user, friend.getId());
+        userRepository.deleteFriendRequest(user, friend);
     }
 
     public boolean friendExists(User user, User friend) {
@@ -146,6 +158,18 @@ public class UserService implements UserDetailsService {
 
     public void updateOnline(User user, Boolean online) {
         userRepository.updateOnline(user, online);
+    }
+
+    public void updateCommentAccess(User user, User.Access commentAccess) {
+        userRepository.updateCommentAccess(user, commentAccess);
+    }
+
+    public void updatePostAccess(User user, User.Access postAccess) {
+        userRepository.updatePostAccess(user, postAccess);
+    }
+
+    public void updateMessageAccess(User user, User.Access messageAccess) {
+        userRepository.updateMessageAccess(user, messageAccess);
     }
 
     public boolean deleteUser(Long userId) {

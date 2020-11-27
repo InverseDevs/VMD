@@ -5,15 +5,27 @@ import Application.Entities.User;
 import java.time.LocalDate;
 
 public interface CustomUsers {
+    @Deprecated
     User addFriend(User user, Long friendId);
 
+    User addFriend(User user, User friend);
+
+    @Deprecated
     User addFriendRequest(User user, Long friendId);
 
+    User addFriendRequest(User user, User friend);
+
+    @Deprecated
     User deleteFriendRequest(User user, Long friendId);
+
+    User deleteFriendRequest(User user, User friend);
 
     boolean checkFriend(User user, User friend);
 
+    @Deprecated
     User deleteFriend(User user, Long friendId);
+
+    User deleteFriend(User user, User friend);
 
     User makeAdmin(User user);
 
