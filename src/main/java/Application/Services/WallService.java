@@ -164,8 +164,10 @@ public class WallService {
      */
     private WallPost addPost(User sender, String message, byte[] picture, Wall wall) {
         sender = userRepository.findById(sender.getId()).orElseThrow(NoUserFoundException::new);
-        //if(wall == null || wall.getId() == null) throw new NoWallFoundException();
-        //if(!wall.canPost(sender)) throw new WallNoPostAccessException();
+        if(wall == null || wall.getId() == null) throw new NoWallFoundException();
+        // обновление стены (возможно, в ней хранится старый объект пользователя или группы)
+        wall = wallRepository.findById(wall.getId()).get();
+        if(!wall.canPost(sender)) throw new WallNoPostAccessException();
         WallPost post = new WallPost(sender, message, LocalDateTime.now(), wall, picture);
         wall.getPosts().add(post);
         wallRepository.save(wall);
