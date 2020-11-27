@@ -135,9 +135,9 @@ public class Starter {
             chatService.saveMessage(new ChatMessage("Hello admin", LocalDateTime.now(), users.get(2), p2pChat));
             chatService.saveMessage(new ChatMessage("Hello skelantros!", LocalDateTime.now(), admin, p2pChat));
 
-            Chat multiChat = chatService.getChat(new HashSet<>(users));
-            chatService.saveMessage(new ChatMessage("hey y'all!", LocalDateTime.now(), users.get(2), multiChat));
-            chatService.saveMessage(new ChatMessage("hey dude!", LocalDateTime.now(), users.get(0), multiChat));
+//            Chat multiChat = chatService.getChat(new HashSet<>(users));
+//            chatService.saveMessage(new ChatMessage("hey y'all!", LocalDateTime.now(), users.get(2), multiChat));
+//            chatService.saveMessage(new ChatMessage("hey dude!", LocalDateTime.now(), users.get(0), multiChat));
 
             Group group1 = groupService.createGroup("Test Group","test", admin);
             users.forEach(group1::addMember);
