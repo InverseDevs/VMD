@@ -1,9 +1,8 @@
 package Application.Services;
 
-import Application.Controllers.API.Exceptions.CommentNotFoundException;
+import Application.Controllers.API.Exceptions.Comment.CommentNotFoundException;
 import Application.Database.CommentRepository;
 import Application.Entities.Content.Comment;
-import Application.Entities.Content.WallPost;
 import Application.Entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

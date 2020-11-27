@@ -1,4 +1,6 @@
-package Application.Controllers.API.Exceptions;
+package Application.Controllers.API.Exceptions.Comment;
+
+import Application.Controllers.API.Exceptions.APIException;
 
 public class CommentNotFoundException extends APIException {
     public CommentNotFoundException() {

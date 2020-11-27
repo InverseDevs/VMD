@@ -1,6 +1,6 @@
 package Application.Controllers;
 
-import Application.Controllers.API.Exceptions.CommentNotFoundException;
+import Application.Controllers.API.Exceptions.Comment.CommentNotFoundException;
 import Application.Controllers.API.Exceptions.WallPost.WallPostNotFoundException;
 import Application.Entities.Content.Comment;
 import Application.Entities.Content.WallPost;
