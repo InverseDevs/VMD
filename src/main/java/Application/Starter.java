@@ -138,7 +138,6 @@ public class Starter {
             Chat multiChat = chatService.getChat(new HashSet<>(users));
             chatService.saveMessage(new ChatMessage("hey y'all!", LocalDateTime.now(), users.get(2), multiChat));
             chatService.saveMessage(new ChatMessage("hey dude!", LocalDateTime.now(), users.get(0), multiChat));
-            chatService.saveMessage(new ChatMessage("it's a multi chat test", LocalDateTime.now(), users.get(1), multiChat));
 
             Group group1 = groupService.createGroup("Test Group","test", admin);
             users.forEach(group1::addMember);
