@@ -29,20 +29,21 @@ public class UserWall extends Wall {
 
     @Override
     public boolean canPost(User user) {
-        return hasAccess(this.getPostAccess(), user);
+        return hasAccess(this.user.getPostAccess(), user);
     }
 
     @Override
     public boolean canComment(User user) {
-        return hasAccess(this.getCommentAccess(), user);
+        return hasAccess(this.user.getCommentAccess(), user);
     }
 
     // TODO на данный момент метод работает неправильно, переделать!
-    private boolean hasAccess(AccessType access, User user) {
+    private boolean hasAccess(User.Access access, User user) {
+        // TODO добавить поддержку администраторов
         if(this.user.equals(user)) return true;
-        if(access.equals(AccessType.EVERYONE)) return true;
-        else if(access.equals(AccessType.FRIENDS)) return this.user.getFriends().contains(user);
-        else if(access.equals(AccessType.ADMINISTRATORS)) return false;
+        if(access.equals(User.Access.EVERYONE)) return true;
+        else if(access.equals(User.Access.FRIENDS)) return this.user.getFriends().contains(user);
+        else if(access.equals(User.Access.NOBODY)) return false;
         return false;
     }
 
