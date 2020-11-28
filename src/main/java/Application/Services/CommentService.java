@@ -1,6 +1,6 @@
 package Application.Services;
 
-import Application.Controllers.API.Exceptions.Comment.CommentNotFoundException;
+import Application.Exceptions.Comment.CommentNotFoundException;
 import Application.Database.CommentRepository;
 import Application.Entities.Content.Comment;
 import Application.Entities.User;

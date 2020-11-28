@@ -1,4 +1,4 @@
-package Application.Controllers.API.Exceptions;
+package Application.Exceptions;
 
 public abstract class APIException extends RuntimeException {
     public APIException(String message) {

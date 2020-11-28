@@ -1,9 +1,5 @@
 package Application;
-import Application.Controllers.API.Exceptions.WallPost.NoWallFoundException;
-import Application.Controllers.API.Exceptions.WallPost.WallNoPostAccessException;
-import Application.Database.CommentRepository;
-import Application.Database.GroupRepository;
-import Application.Database.Wall.WallRepository;
+import Application.Exceptions.WallPost.WallNoPostAccessException;
 import Application.Database.WallPostRepository;
 import Application.Entities.Chat;
 import Application.Entities.Content.ChatMessage;
@@ -27,14 +23,12 @@ import org.springframework.context.annotation.Bean;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 
 @SpringBootApplication
 @Slf4j
 public class Starter {
     public static final String homeLink = "http://inversedevs.herokuapp.com";
     //public static final String homeLink = "http://localhost:8080";
-    public static final String apiLink = "/api";
     @Autowired
     UserRepository userRepo;
     @Autowired
@@ -51,8 +45,6 @@ public class Starter {
     UserService userService;
     @Autowired
     GroupService groupService;
-
-    Logger logger = LoggerFactory.getLogger(Starter.class);
 
     public static void main(String[] args) {
         SpringApplication.run(Starter.class, args);
@@ -114,13 +106,13 @@ public class Starter {
             try {
                 wallService.addPost(test2, "I am not a friend of Skel, so my post won't be sent ):", skelantros);
             } catch(WallNoPostAccessException e) {
-                logger.info(e.getMessage());
+                log.info(e.getMessage());
             }
             userService.updatePostAccess(skelantros, User.Access.NOBODY);
             try {
                 wallService.addPost(test1, "I am still a friend of Skel, but I can't send anything on his wall :(", skelantros);
             } catch(WallNoPostAccessException e) {
-                logger.info(e.getMessage());
+                log.info(e.getMessage());
             }
 
             Comment simpleComment = new Comment(userRepo.findById(1L).get(),
@@ -163,7 +155,7 @@ public class Starter {
                 wallService.addPost(users.get(2), "Post from group admin", group1);
                 wallService.addPost(users.get(0), "Post from group member", group1);
             } catch(WallNoPostAccessException e) {
-                logger.info(e.getMessage());
+                log.info(e.getMessage());
             }
         };
     }

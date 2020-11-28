@@ -1,9 +1,9 @@
 package Application.Services;
 
-import Application.Controllers.API.Exceptions.Group.GroupAlreadyExistsByLinkException;
-import Application.Controllers.API.Exceptions.Group.GroupIsNotPersistedException;
-import Application.Controllers.API.Exceptions.Group.GroupNotFoundByLinkException;
-import Application.Controllers.API.Exceptions.Group.GroupNotFoundException;
+import Application.Exceptions.Group.GroupAlreadyExistsByLinkException;
+import Application.Exceptions.Group.GroupIsNotPersistedException;
+import Application.Exceptions.Group.GroupNotFoundByLinkException;
+import Application.Exceptions.Group.GroupNotFoundException;
 import Application.Database.GroupRepository;
 import Application.Database.Wall.WallRepository;
 import Application.Entities.Group;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional

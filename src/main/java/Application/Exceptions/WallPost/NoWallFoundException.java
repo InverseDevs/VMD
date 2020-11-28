@@ -1,6 +1,6 @@
-package Application.Controllers.API.Exceptions.WallPost;
+package Application.Exceptions.WallPost;
 
-import Application.Controllers.API.Exceptions.APIException;
+import Application.Exceptions.APIException;
 
 public class NoWallFoundException extends APIException {
     public NoWallFoundException() { super("Wall is not found."); }

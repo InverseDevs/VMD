@@ -1,6 +1,6 @@
-package Application.Controllers.API.Exceptions.Comment;
+package Application.Exceptions.Comment;
 
-import Application.Controllers.API.Exceptions.APIException;
+import Application.Exceptions.APIException;
 
 public class WallNoCommentAccessException extends APIException {
     public WallNoCommentAccessException() {

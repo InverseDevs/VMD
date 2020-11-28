@@ -1,4 +1,4 @@
-package Application.Controllers.API.Exceptions;
+package Application.Exceptions;
 
 public class NoUserFoundException extends APIException {
     public NoUserFoundException(String message) {

@@ -1,4 +1,4 @@
-package Application.Controllers.API.Exceptions;
+package Application.Exceptions;
 
 public class WrongRequestException extends APIException {
     public WrongRequestException(String message) {

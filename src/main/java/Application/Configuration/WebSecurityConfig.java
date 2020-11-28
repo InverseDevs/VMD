@@ -1,5 +1,6 @@
 package Application.Configuration;
 
+import Application.Security.CORSFilter;
 import Application.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

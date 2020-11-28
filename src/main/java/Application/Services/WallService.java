@@ -1,9 +1,9 @@
 package Application.Services;
 
-import Application.Controllers.API.Exceptions.NoUserFoundException;
-import Application.Controllers.API.Exceptions.WallPost.NoWallFoundException;
-import Application.Controllers.API.Exceptions.WallPost.WallNoPostAccessException;
-import Application.Controllers.API.Exceptions.WallPost.WallPostNotFoundException;
+import Application.Exceptions.NoUserFoundException;
+import Application.Exceptions.WallPost.NoWallFoundException;
+import Application.Exceptions.WallPost.WallNoPostAccessException;
+import Application.Exceptions.WallPost.WallPostNotFoundException;
 import Application.Database.User.UserRepository;
 import Application.Database.Wall.GroupWallRepository;
 import Application.Database.Wall.UserWallRepository;

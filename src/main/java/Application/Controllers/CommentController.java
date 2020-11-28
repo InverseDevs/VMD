@@ -1,7 +1,7 @@
 package Application.Controllers;
 
-import Application.Controllers.API.Exceptions.Comment.CommentNotFoundException;
-import Application.Controllers.API.Exceptions.WallPost.WallPostNotFoundException;
+import Application.Exceptions.Comment.CommentNotFoundException;
+import Application.Exceptions.WallPost.WallPostNotFoundException;
 import Application.Entities.Content.Comment;
 import Application.Entities.Content.WallPost;
 import Application.Entities.User;
@@ -238,6 +238,53 @@ public class CommentController {
         } catch (CommentNotFoundException e) {
             log.error("comment not found: " + e.getMessage());
             responseJson.put("status", "comment not found");
+        } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
+            responseJson.put("status", "unknown error");
+        }
+
+        return responseJson.toString();
+    }
+
+    @RequestMapping(value = "/comment/picture/{comment_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String changeCommentPicture(@PathVariable("comment_id") Long commentId, HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            String header = request.getHeader("Authorization");
+            if (header == null) {
+                throw new MissingRequestHeaderException("Authorization", null);
+            }
+            String jwt = header.substring(7);
+
+            if (JwtProvider.validateToken(jwt)) {
+                StringBuilder data = new StringBuilder();
+                String line;
+                while ((line = request.getReader().readLine()) != null) {
+                    data.append(line);
+                }
+
+                JSONObject receivedDataJson = new JSONObject(data.toString());
+                String picture = receivedDataJson.getString("picture");
+
+                Comment comment = commentService.findById(commentId);
+
+                commentService.updatePicture(comment, picture.getBytes());
+
+                responseJson.put("status", "success");
+            } else {
+                log.info("user not authorized");
+                responseJson.put("status", "user not authorized");
+            }
+        } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
+            responseJson.put("status", "incorrect request headers");
+        } catch (JSONException | IOException e) {
+            log.error("incorrect request body: " + e.getMessage());
+            responseJson.put("status", "incorrect request body");
+        } catch (UsernameNotFoundException e) {
+            log.error("user not found: " + e.getMessage());
+            responseJson.put("status", "user not found");
         } catch (Exception e) {
             log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");

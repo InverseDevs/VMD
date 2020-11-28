@@ -1,11 +1,9 @@
 package Application.Controllers;
 
-import Application.Entities.Content.Comment;
+import Application.Exceptions.WallPost.WallPostNotFoundException;
 import Application.Entities.Content.WallPost;
 import Application.Entities.User;
 import Application.Security.JwtProvider;
-import Application.Services.ChatService;
-import Application.Services.CommentService;
 import Application.Services.UserService;
 import Application.Services.WallService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,19 +21,55 @@ import java.io.IOException;
 @Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
 @Controller
-public class ImageController {
+public class WallPostsController {
     @Autowired
-    UserService userService;
+    private WallService wallService;
     @Autowired
-    WallService wallService;
-    @Autowired
-    CommentService commentService;
-    @Autowired
-    ChatService chatService;
+    private UserService userService;
 
-    @RequestMapping(value = "/avatar/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/posts/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String setAvatar(@PathVariable("id") Long id, HttpServletRequest request) {
+    public String getPosts(@PathVariable("id") Long id, HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            String header = request.getHeader("Authorization");
+            if (header == null) {
+                throw new MissingRequestHeaderException("Authorization", null);
+            }
+            String jwt = header.substring(7);
+
+            if (JwtProvider.validateToken(jwt)) {
+                User user = userService.findUserById(id);
+                Iterable<WallPost> posts = wallService.findAllUserPagePosts(user);
+
+                int idx = 0;
+                for (WallPost post : posts) {
+                    responseJson.put("post_" + ++idx, post.toJson());
+                }
+            } else {
+                log.info("user not authorized");
+                responseJson.put("status", "user not authorized");
+            }
+        } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
+            responseJson.put("status", "incorrect request headers");
+        } catch (UsernameNotFoundException e) {
+            log.error("user not found: " + e.getMessage());
+            responseJson.put("status", "user not found");
+        } catch (WallPostNotFoundException e) {
+            log.error("posts not found: " + e.getMessage());
+            responseJson.put("status", "posts not found");
+        } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
+            responseJson.put("status", "unknown error");
+        }
+
+        return responseJson.toString();
+    }
+
+    @RequestMapping(value = "/post/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String addPost(@PathVariable("id") Long id, HttpServletRequest request) {
         JSONObject responseJson = new JSONObject();
         try {
             String header = request.getHeader("Authorization");
@@ -52,11 +86,16 @@ public class ImageController {
                 }
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
-                String avatar = receivedDataJson.getString("avatar");
+                String sender = receivedDataJson.getString("sender");
+                String content = receivedDataJson.getString("content");
+                String picture = receivedDataJson.getString("picture");
+                User user = (User) userService.loadUserByUsername(sender);
 
-                User user = userService.findUserById(id);
-
-                userService.updateAvatar(user, avatar.getBytes());
+                wallService.addPost(
+                        user,
+                        content,
+                        userService.findUserById(id),
+                        picture.getBytes());
 
                 responseJson.put("status", "success");
             } else {
@@ -66,12 +105,9 @@ public class ImageController {
         } catch (MissingRequestHeaderException e) {
             log.error("incorrect request headers: " + e.getMessage());
             responseJson.put("status", "incorrect request headers");
-        } catch (JSONException e) {
+        } catch (JSONException | IOException e) {
             log.error("incorrect request body: " + e.getMessage());
             responseJson.put("status", "incorrect request body");
-        } catch (IOException e) {
-            log.error("incorrect byte sequence: " + e.getMessage());
-            responseJson.put("status", "incorrect byte sequence");
         } catch (UsernameNotFoundException e) {
             log.error("user not found: " + e.getMessage());
             responseJson.put("status", "user not found");
@@ -83,9 +119,43 @@ public class ImageController {
         return responseJson.toString();
     }
 
-    @RequestMapping(value = "/round/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/post/delete/{post_id}", method = RequestMethod.POST)
     @ResponseBody
-    public String setRound(@PathVariable("id") Long id, HttpServletRequest request) {
+    public String deletePost(@PathVariable("post_id") Long postId, HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            String header = request.getHeader("Authorization");
+            if (header == null) {
+                throw new MissingRequestHeaderException("Authorization", null);
+            }
+            String jwt = header.substring(7);
+
+            if (JwtProvider.validateToken(jwt)) {
+                //postService.deletePost(postId);
+                wallService.deletePostById(postId);
+
+                responseJson.put("status", "success");
+            } else {
+                log.info("user not authorized");
+                responseJson.put("status", "user not authorized");
+            }
+        } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
+            responseJson.put("status", "incorrect request headers");
+        } catch (WallPostNotFoundException e) {
+            log.error("post not found: " + e.getMessage());
+            responseJson.put("status", "post not found");
+        } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
+            responseJson.put("status", "unknown error");
+        }
+
+        return responseJson.toString();
+    }
+
+    @RequestMapping(value = "/like/post/{post_id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String likePost(@PathVariable("post_id") Long postId, HttpServletRequest request) {
         JSONObject responseJson = new JSONObject();
         try {
             String header = request.getHeader("Authorization");
@@ -102,13 +172,17 @@ public class ImageController {
                 }
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
-                String round = receivedDataJson.getString("round");
+                Long userId = receivedDataJson.getLong("userId");
+                User user = userService.findUserById(userId);
+                WallPost post = wallService.findPostById(postId);
 
-                User user = userService.findUserById(id);
-
-                userService.updateRound(user, round.getBytes());
-
-                responseJson.put("status", "success");
+                if (wallService.checkLike(post, user)) {
+                    wallService.like(post, user);
+                    responseJson.put("status", "added");
+                } else {
+                    wallService.removeLike(post, user);
+                    responseJson.put("status", "removed");
+                }
             } else {
                 log.info("user not authorized");
                 responseJson.put("status", "user not authorized");
@@ -116,15 +190,15 @@ public class ImageController {
         } catch (MissingRequestHeaderException e) {
             log.error("incorrect request headers: " + e.getMessage());
             responseJson.put("status", "incorrect request headers");
-        } catch (JSONException e) {
+        } catch (JSONException | IOException e) {
             log.error("incorrect request body: " + e.getMessage());
             responseJson.put("status", "incorrect request body");
-        } catch (IOException e) {
-            log.error("incorrect byte sequence: " + e.getMessage());
-            responseJson.put("status", "incorrect byte sequence");
         } catch (UsernameNotFoundException e) {
             log.error("user not found: " + e.getMessage());
             responseJson.put("status", "user not found");
+        } catch (WallPostNotFoundException e) {
+            log.error("post not found: " + e.getMessage());
+            responseJson.put("status", "post not found");
         } catch (Exception e) {
             log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");
@@ -172,95 +246,6 @@ public class ImageController {
         } catch (UsernameNotFoundException e) {
             log.error("user not found: " + e.getMessage());
             responseJson.put("status", "user not found");
-        } catch (Exception e) {
-            log.error("unknown error: " + e.getMessage());
-            responseJson.put("status", "unknown error");
-        }
-
-        return responseJson.toString();
-    }
-
-    @RequestMapping(value = "/comment/picture/{comment_id}", method = RequestMethod.POST)
-    @ResponseBody
-    public String changeCommentPicture(@PathVariable("comment_id") Long commentId, HttpServletRequest request) {
-        JSONObject responseJson = new JSONObject();
-        try {
-            String header = request.getHeader("Authorization");
-            if (header == null) {
-                throw new MissingRequestHeaderException("Authorization", null);
-            }
-            String jwt = header.substring(7);
-
-            if (JwtProvider.validateToken(jwt)) {
-                StringBuilder data = new StringBuilder();
-                String line;
-                while ((line = request.getReader().readLine()) != null) {
-                    data.append(line);
-                }
-
-                JSONObject receivedDataJson = new JSONObject(data.toString());
-                String picture = receivedDataJson.getString("picture");
-
-                Comment comment = commentService.findById(commentId);
-
-                commentService.updatePicture(comment, picture.getBytes());
-
-                responseJson.put("status", "success");
-            } else {
-                log.info("user not authorized");
-                responseJson.put("status", "user not authorized");
-            }
-        } catch (MissingRequestHeaderException e) {
-            log.error("incorrect request headers: " + e.getMessage());
-            responseJson.put("status", "incorrect request headers");
-        } catch (JSONException | IOException e) {
-            log.error("incorrect request body: " + e.getMessage());
-            responseJson.put("status", "incorrect request body");
-        } catch (UsernameNotFoundException e) {
-            log.error("user not found: " + e.getMessage());
-            responseJson.put("status", "user not found");
-        } catch (Exception e) {
-            log.error("unknown error: " + e.getMessage());
-            responseJson.put("status", "unknown error");
-        }
-
-        return responseJson.toString();
-    }
-
-    @RequestMapping(value = "/chat/avatar/{chat_id}", method = RequestMethod.POST)
-    @ResponseBody
-    public String changeChatPicture(@PathVariable("chat_id") Long chatId, HttpServletRequest request) {
-        JSONObject responseJson = new JSONObject();
-        try {
-            String header = request.getHeader("Authorization");
-            if (header == null) {
-                throw new MissingRequestHeaderException("Authorization", null);
-            }
-            String jwt = header.substring(7);
-
-            if (JwtProvider.validateToken(jwt)) {
-                StringBuilder data = new StringBuilder();
-                String line;
-                while ((line = request.getReader().readLine()) != null) {
-                    data.append(line);
-                }
-
-                JSONObject receivedDataJson = new JSONObject(data.toString());
-                String picture = receivedDataJson.getString("picture");
-
-                chatService.updatePicture(chatId, picture.getBytes());
-
-                responseJson.put("status", "success");
-            } else {
-                log.info("user not authorized");
-                responseJson.put("status", "user not authorized");
-            }
-        } catch (MissingRequestHeaderException e) {
-            log.error("incorrect request headers: " + e.getMessage());
-            responseJson.put("status", "incorrect request headers");
-        } catch (JSONException | IOException e) {
-            log.error("incorrect request body: " + e.getMessage());
-            responseJson.put("status", "incorrect request body");
         } catch (Exception e) {
             log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");

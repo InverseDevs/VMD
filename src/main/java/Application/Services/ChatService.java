@@ -1,6 +1,6 @@
 package Application.Services;
 
-import Application.Controllers.API.Exceptions.ChatNotFoundException;
+import Application.Exceptions.ChatNotFoundException;
 import Application.Database.Chat.ChatMessageRepository;
 import Application.Database.Chat.ChatRepository;
 import Application.Database.User.UserRepository;

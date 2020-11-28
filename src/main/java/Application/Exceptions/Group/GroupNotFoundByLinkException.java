@@ -1,6 +1,6 @@
-package Application.Controllers.API.Exceptions.Group;
+package Application.Exceptions.Group;
 
-import Application.Controllers.API.Exceptions.APIException;
+import Application.Exceptions.APIException;
 
 public class GroupNotFoundByLinkException extends APIException {
     public GroupNotFoundByLinkException() {
