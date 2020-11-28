@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
+@RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
 public class UserController {
     @Autowired
