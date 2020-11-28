@@ -1,6 +1,7 @@
 package Application.Controllers;
 
 import Application.Entities.Chat;
+import Application.Entities.Content.ChatMessage;
 import Application.Entities.User;
 import Application.Security.JwtProvider;
 import Application.Services.ChatService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -221,6 +223,60 @@ public class ChatController {
                 chatService.updatePicture(chatId, picture.getBytes());
 
                 responseJson.put("status", "success");
+            } else {
+                log.info("user not authorized");
+                responseJson.put("status", "user not authorized");
+            }
+        } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
+            responseJson.put("status", "incorrect request headers");
+        } catch (JSONException | IOException e) {
+            log.error("incorrect request body: " + e.getMessage());
+            responseJson.put("status", "incorrect request body");
+        } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
+            responseJson.put("status", "unknown error");
+        }
+
+        return responseJson.toString();
+    }
+
+    @RequestMapping(value = "/chat/messages/{chat_id}", method = RequestMethod.GET)
+    @ResponseBody
+    public String getOldMessages(@PathVariable("chat_id") Long chatId, HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            String header = request.getHeader("Authorization");
+            if (header == null) {
+                throw new MissingRequestHeaderException("Authorization", null);
+            }
+            String jwt = header.substring(7);
+
+            if (JwtProvider.validateToken(jwt)) {
+                StringBuilder data = new StringBuilder();
+                String line;
+                while ((line = request.getReader().readLine()) != null) {
+                    data.append(line);
+                }
+
+                JSONObject receivedDataJson = new JSONObject(data.toString());
+                int firstIdx = receivedDataJson.getInt("first_idx");
+                int lastIdx = receivedDataJson.getInt("last_idx");
+
+                try {
+                    List<ChatMessage> messages = chatService.getOldMessages(chatId, firstIdx, lastIdx);
+
+                    JSONObject messagesJson = new JSONObject();
+                    int messageIdx = 0;
+                    for (ChatMessage message : messages) {
+                        messagesJson.put("message_" + ++messageIdx, message.toJson());
+                    }
+                    responseJson.put("messages", messagesJson);
+
+                } catch (IndexOutOfBoundsException e) {
+                    responseJson.put("status", "no messages");
+                }
+
             } else {
                 log.info("user not authorized");
                 responseJson.put("status", "user not authorized");
