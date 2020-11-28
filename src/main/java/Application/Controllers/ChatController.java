@@ -56,10 +56,12 @@ public class ChatController {
                     users.add(userService.findUserById(usersJsonArray.getLong(i)));
                 }
 
-                Chat chat = new Chat();
-                chat.setUsers(users);
+                chatService.getChat(users);
 
-                chatService.saveChat(chat);
+//                Chat chat = new Chat();
+//                chat.setUsers(users);
+//
+//                chatService.saveChat(chat);
 
                 responseJson.put("status", "success");
             } else {
