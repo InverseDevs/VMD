@@ -243,7 +243,7 @@ public class ChatController {
         return responseJson.toString();
     }
 
-    @RequestMapping(value = "/chat/messages/{chat_id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/chat/messages/{chat_id}", method = RequestMethod.POST)
     @ResponseBody
     public String getOldMessages(@PathVariable("chat_id") Long chatId, HttpServletRequest request) {
         JSONObject responseJson = new JSONObject();
