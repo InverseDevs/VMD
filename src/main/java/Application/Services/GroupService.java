@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,7 +23,7 @@ public class GroupService {
     @Autowired
     private WallRepository wallRepository;
 
-    public Group findById(Long id) {
+    public Group findGroupById(Long id) {
         return groupRepository.findById(id).orElseThrow(GroupNotFoundException::new);
     }
 
@@ -32,6 +33,17 @@ public class GroupService {
 
     public List<Group> findAllGroups() {
         return groupRepository.findAll();
+    }
+
+    public List<Group> findAllGroupsByUserId(long userId) {
+        List<Long> groupIds = groupRepository.findGroupsByUserId(userId);
+
+        List<Group> groups = new ArrayList<>();
+        for (int i = 0; i < groupIds.size(); i++) {
+            groups.add(findGroupById(groupIds.get(i)));
+        }
+
+        return groups;
     }
 
     public Group refresh(Group group) {
@@ -49,5 +61,11 @@ public class GroupService {
         Group group = new Group(name, owner, namedLink);
         wallRepository.save(group.getWall());
         return groupRepository.save(group);
+    }
+
+    public void deleteGroup(Long groupId) {
+        Group group = findGroupById(groupId);
+        wallRepository.deleteById(group.getWall().getId());
+        groupRepository.deleteById(groupId);
     }
 }

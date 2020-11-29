@@ -2,10 +2,20 @@ package Application.Database;
 
 import Application.Entities.Group;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 public interface GroupRepository extends JpaRepository<Group, Long> {
     Optional<Group> findByNamedLink(String namedLink);
     boolean existsByNamedLink(String namedLink);
+
+    @Transactional
+    @Query(value = "SELECT group_id FROM group_members WHERE user_id = :id", nativeQuery = true)
+    List<Long> findGroupsByUserId(@Param("id") Long userId);
+
 }

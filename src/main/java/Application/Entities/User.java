@@ -1,6 +1,5 @@
 package Application.Entities;
 
-import Application.Entities.Content.Comment;
 import Application.Entities.Wall.UserWall;
 import lombok.*;
 import org.hibernate.annotations.Type;
@@ -12,7 +11,6 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -80,6 +78,7 @@ public class User implements UserDetails {
     public enum Access {
         EVERYONE, FRIENDS, NOBODY;
     }
+
     @Enumerated(EnumType.STRING)
     private Access messageAccess;
     @Enumerated(EnumType.STRING)
