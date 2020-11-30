@@ -26,7 +26,7 @@ create table if not exists users
   permitted          boolean,
   name               varchar(256),
   birth_town         varchar(256),
-  birth_date         date,
+  birth_date         timestamp,
   avatar             bytea,
   round              bytea,
   study_place        varchar(256),
@@ -70,7 +70,7 @@ create table if not exists messages
   sender_id int,
   chat_id   int,
   message   varchar(256),
-  sent_time date
+  sent_time timestamp
 );
 
 create table if not exists friends
@@ -90,7 +90,7 @@ create table if not exists wall_posts
   id            serial,
   sender_id     int,
   message       varchar(256),
-  sent_time     date,
+  sent_time     timestamp,
   wall_id       int,
   picture       bytea
 );
