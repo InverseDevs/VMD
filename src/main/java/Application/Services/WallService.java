@@ -146,7 +146,7 @@ public class WallService {
      * @see WallService#addPost(User, String, byte[], Wall)
      * @see Wall#canPost(User)
      */
-    public WallPost addPost(User sender, String message, byte[] picture, Group group) {
+    public WallPost addPost(User sender, String message, Group group, byte[] picture) {
         return addPost(sender, message, picture, groupWallRepository.findByGroup(group));
     }
 

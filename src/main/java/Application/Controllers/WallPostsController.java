@@ -4,6 +4,7 @@ import Application.Exceptions.WallPost.WallPostNotFoundException;
 import Application.Entities.Content.WallPost;
 import Application.Entities.User;
 import Application.Security.JwtProvider;
+import Application.Services.GroupService;
 import Application.Services.UserService;
 import Application.Services.WallService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,8 @@ public class WallPostsController {
     private WallService wallService;
     @Autowired
     private UserService userService;
+    @Autowired
+    GroupService groupService;
 
     @RequestMapping(value = "/posts/{id}", method = RequestMethod.GET)
     @ResponseBody
@@ -89,15 +92,29 @@ public class WallPostsController {
                 String sender = receivedDataJson.getString("sender");
                 String content = receivedDataJson.getString("content");
                 String picture = receivedDataJson.getString("picture");
+                String type = receivedDataJson.getString("type");
                 User user = (User) userService.loadUserByUsername(sender);
 
-                wallService.addPost(
-                        user,
-                        content,
-                        userService.findUserById(id),
-                        picture.getBytes());
+                if (type.equals("user")) {
+                    wallService.addPost(
+                            user,
+                            content,
+                            userService.findUserById(id),
+                            picture.getBytes());
 
-                responseJson.put("status", "success");
+                    responseJson.put("status", "success");
+                } else if (type.equals("group")) {
+                    wallService.addPost(
+                            user,
+                            content,
+                            groupService.findGroupById(id),
+                            picture.getBytes());
+
+                    responseJson.put("status", "success");
+                } else {
+                    log.info("unknown type to create post");
+                    responseJson.put("status", "unknown type");
+                }
             } else {
                 log.info("user not authorized");
                 responseJson.put("status", "user not authorized");

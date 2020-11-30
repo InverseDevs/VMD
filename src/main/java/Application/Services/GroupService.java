@@ -46,6 +46,10 @@ public class GroupService {
         return groups;
     }
 
+    public void updatePicture(Long groupId, byte[] picture) {
+        groupRepository.updatePicture(groupId, picture);
+    }
+
     public Group refresh(Group group) {
         return groupRepository.findById(group.getId()).orElseThrow(GroupIsNotPersistedException::new);
     }

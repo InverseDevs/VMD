@@ -18,4 +18,8 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     @Query(value = "SELECT group_id FROM group_members WHERE user_id = :id", nativeQuery = true)
     List<Long> findGroupsByUserId(@Param("id") Long userId);
 
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE groups SET picture = :picture where id = :id", nativeQuery = true)
+    int updatePicture(@Param("id") Long groupId, @Param("picture") byte[] picture);
 }

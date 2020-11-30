@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -51,6 +52,10 @@ public class Group {
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> members = new HashSet<>();
+
+    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
+    private byte[] picture;
 
     public Group(String name, User owner, String namedLink) {
         this.name = name;
@@ -107,6 +112,7 @@ public class Group {
         groupJson.put("name", this.getName() == null ? "" : this.getName());
         groupJson.put("named_link", this.getNamedLink() == null ? "" : this.getNamedLink());
         groupJson.put("owner_id", this.getOwner() == null ? "" : this.getOwner().getId());
+        groupJson.put("picture", this.picture == null ? "" : new String(picture));
 
         if (this.getWall() != null && this.getWall().getPosts().isEmpty()) {
             JSONObject postsJson = new JSONObject();

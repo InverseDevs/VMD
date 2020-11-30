@@ -134,7 +134,8 @@ create table if not exists groups
   name          varchar(256),
   named_link    varchar(64),
   owner_id      int,
-  wall_id       int
+  wall_id       int,
+  picture       bytea
 );
 
 create table if not exists group_admins
