@@ -1,5 +1,6 @@
 package Application.Controllers;
 
+import Application.Entities.Content.Comment;
 import Application.Exceptions.WallPost.WallPostNotFoundException;
 import Application.Entities.Content.WallPost;
 import Application.Entities.User;
@@ -18,6 +19,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.AbstractCollection;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 @Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
@@ -45,10 +52,18 @@ public class WallPostsController {
                 User user = userService.findUserById(id);
                 Iterable<WallPost> posts = wallService.findAllUserPagePosts(user);
 
-                int idx = 0;
+                List<WallPost> postsList = new ArrayList<>();
                 for (WallPost post : posts) {
-                    responseJson.put("post_" + ++idx, post.toJson());
+                    postsList.add(post);
                 }
+
+                AtomicInteger postIdx = new AtomicInteger();
+                Stream<WallPost> postsStream = postsList.stream().sorted(
+                        (post1, post2) -> post2.getSentTime().compareTo(post1.getSentTime()));
+                postsStream.forEach(post -> {
+                    responseJson.put("post_" + postIdx.incrementAndGet(), post.toJson());
+                });
+
             } else {
                 log.info("user not authorized");
                 responseJson.put("status", "user not authorized");
