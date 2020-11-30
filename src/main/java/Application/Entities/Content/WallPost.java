@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -93,7 +94,8 @@ public class WallPost extends Content {
         post.put("sender", this.getSender() == null ? "" : this.getSender().getUsername());
         post.put("name", this.getSender() == null ? "" : this.getSender().getName());
         post.put("content", this.getContent() == null ? "" : this.getContent());
-        post.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
+        post.put("sent_time", this.getSentTime() == null ? "" :
+                this.getSentTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy:hh.mm.ss")));
         post.put("picture", this.getPicture() == null ? "" : new String(this.getPicture()));
 
         if (!getLikes().isEmpty()) {

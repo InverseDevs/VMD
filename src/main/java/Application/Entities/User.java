@@ -163,7 +163,7 @@ public class User implements UserDetails {
         userJson.put("name", this.getName() == null ? "" : this.getName());
         userJson.put("birth_town", this.getBirthTown() == null ? "" : this.getBirthTown());
         userJson.put("birth_date", this.getBirthDate() == null ? "" :
-                this.getBirthDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                this.getBirthDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
         userJson.put("avatar", this.getAvatar() == null ? "" : new String(this.getAvatar()));
         userJson.put("study_place", this.getStudyPlace() == null ? "" : this.getStudyPlace());
         userJson.put("languages", this.getLanguages() == null ? "" : this.getLanguages());

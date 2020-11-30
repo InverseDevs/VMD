@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Getter
@@ -35,7 +36,8 @@ public class ChatMessage extends Content {
         resultJson.put("chat_id", this.getChat() == null ? "" : this.getChat().getId());
         resultJson.put("sender_id", this.getSender() == null ? "" : this.getSender().getId());
         resultJson.put("message", this.getContent() == null ? "" : this.getContent());
-        resultJson.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
+        resultJson.put("sent_time", this.getSentTime() == null ? "" :
+                this.getSentTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy:hh.mm.ss")));
 
         return resultJson;
     }

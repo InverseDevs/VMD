@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -64,7 +65,8 @@ public class Comment extends Content {
         resultJson.put("sender", this.getSender() == null ? "" : this.getSender().getUsername());
         resultJson.put("name", this.getSender() == null ? "" : this.getSender().getName());
         resultJson.put("content", this.getContent() == null ? "" : this.getContent());
-        resultJson.put("sent_time", this.getSentTime() == null ? "" : this.getSentTime().toString());
+        resultJson.put("sent_time", this.getSentTime() == null ? "" :
+                this.getSentTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy:hh.mm.ss")));
         resultJson.put("post_id", this.getPost() == null ? "" : this.getPost().getId());
         resultJson.put("reference_comment", this.getReferenceComment() == null ? "" : this.getReferenceComment().getId());
         resultJson.put("picture", this.getPicture() == null ? "" : new String(this.getPicture()));
