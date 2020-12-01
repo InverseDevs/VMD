@@ -1,5 +1,6 @@
 package Application.Services;
 
+import Application.Database.RoleRepository;
 import Application.Database.User.UserRepository;
 import Application.Database.Wall.UserWallRepository;
 import Application.Entities.Role;
@@ -8,6 +9,7 @@ import Application.Exceptions.User.Exist.UserAlreadyExists;
 import Application.Exceptions.User.Exist.UserAlreadyExistsByEmail;
 import Application.Exceptions.User.Exist.UserAlreadyExistsByUsername;
 import Application.Exceptions.User.NoUserFoundException;
+import Application.Exceptions.User.UserIsNotPersistedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -28,6 +30,12 @@ public class UserService implements UserDetailsService {
     @Autowired
     UserWallRepository wallRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+    private Role getUserRole() { return roleRepository.findById(1L).get(); }
+    private Role getAdminRole() { return roleRepository.findById(2L).get(); }
+
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)
@@ -43,13 +51,32 @@ public class UserService implements UserDetailsService {
      * @throws UserAlreadyExists пользователь с такими данными уже существует.
      */
     public User createUser(String username, String password, String email) throws UserAlreadyExists {
-        if(userRepository.existsByUsername(username))
+        return createUser(new User(username, password, email));
+    }
+
+    /**
+     * Создает пользователя с указанным набором данных.
+     * @param username
+     * @param password
+     * @param email
+     * @param name
+     * @param birthTown
+     * @param birthDate
+     * @return объект, соответствующий пользователю.
+     * @throws UserAlreadyExists пользователь с такими данными уже существует.
+     */
+    public User createUser(String username, String password, String email, String name,
+                           String birthTown, LocalDate birthDate) throws UserAlreadyExists {
+        return createUser(new User(username, password, email, name, birthTown, birthDate));
+    }
+
+    private User createUser(User user) throws UserAlreadyExists {
+        if(userRepository.existsByUsername(user.getUsername()))
             throw new UserAlreadyExistsByUsername();
-        if(userRepository.existsByEmail(email))
+        if(userRepository.existsByEmail(user.getEmail()))
             throw new UserAlreadyExistsByEmail();
-        User user = new User(username, password, email);
+        user.setRoles(Collections.singleton(this.getUserRole()));
         wallRepository.save(user.getWall());
-        this.makeUser(user);
         return userRepository.save(user);
     }
 
@@ -90,6 +117,12 @@ public class UserService implements UserDetailsService {
 
     public void permitUser(Long id) {
         userRepository.permitUser(id);
+    }
+
+    public void permitUser(User user) {
+        if(user.getId() == null) throw new UserIsNotPersistedException();
+        user.setPermitted(true);
+        userRepository.permitUser(user.getId());
     }
 
     public void makeAdmin(User user) {

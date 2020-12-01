@@ -12,6 +12,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
@@ -90,7 +91,7 @@ public class User implements UserDetails {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.permitted = true;
+        this.permitted = false;
         this.wall = new UserWall(this);
         this.messageAccess = Access.EVERYONE;
         this.postAccess = Access.EVERYONE;
@@ -213,6 +214,11 @@ public class User implements UserDetails {
     public boolean equals(Object o) {
         if (!(o instanceof User)) return false;
         User user = (User) o;
-        return user.id.equals(this.id);
+        return user.username.equals(this.username) && user.email.equals(this.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, email);
     }
 }
