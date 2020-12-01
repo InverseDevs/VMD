@@ -4,6 +4,10 @@ import Application.Database.User.UserRepository;
 import Application.Database.Wall.UserWallRepository;
 import Application.Entities.Role;
 import Application.Entities.User;
+import Application.Exceptions.User.Exist.UserAlreadyExists;
+import Application.Exceptions.User.Exist.UserAlreadyExistsByEmail;
+import Application.Exceptions.User.Exist.UserAlreadyExistsByUsername;
+import Application.Exceptions.User.NoUserFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,45 +30,57 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-
-        return user;
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
-    public User findUserById(Long id) {
-        Optional<User> user = userRepository.findById(id);
-
-        if (!user.isPresent()) {
-            throw new UsernameNotFoundException("User not found");
-        }
-
-        return user.get();
+    /**
+     * Создает пользователя с указанным набором данных.
+     * @param username имя пользователя.
+     * @param password пароль пользователя.
+     * @param email электронная почта пользователя.
+     * @return объект, соответствующий пользователю.
+     * @throws UserAlreadyExists пользователь с такими данными уже существует.
+     */
+    public User createUser(String username, String password, String email) throws UserAlreadyExists {
+        if(userRepository.existsByUsername(username))
+            throw new UserAlreadyExistsByUsername();
+        if(userRepository.existsByEmail(email))
+            throw new UserAlreadyExistsByEmail();
+        User user = new User(username, password, email);
+        wallRepository.save(user.getWall());
+        this.makeUser(user);
+        return userRepository.save(user);
     }
 
-    public User findUserByEmail(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
+    public User findUserById(Long id) throws NoUserFoundException {
+        return userRepository.findById(id).orElseThrow(NoUserFoundException::new);
+    }
 
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-
-        return user;
+    public User findUserByEmail(String email) throws NoUserFoundException {
+        return userRepository.findByEmail(email).orElseThrow(NoUserFoundException::new);
     }
 
     public List<User> allUsers() {
         return userRepository.findAll();
     }
 
+    /**
+     * Сохраняет пользователя в базу данных при условии, если пользователя с соответсвующим никнеймом не существует.
+     *
+     * Данный метод является устаревшим и ненадежным. В частности, он не проверяет, существует ли
+     * пользователь с данной электронной почтой, поэтому он позволяет создать несколько аккаунтов,
+     * зарегистрированных на одну почту.
+     *
+     * Метод должен быть заменен на {@link UserService#createUser(String, String, String)}
+     * @param user пользователь.
+     * @return получилось сохранить пользователя в БД или нет.
+     * @see UserService#createUser(String, String, String)
+     */
+    @Deprecated
     public boolean saveUser(User user) {
-        User userFromDB = userRepository.findByUsername(user.getUsername());
-
-        if (userFromDB != null) {
+        if(userRepository.existsByUsername(user.getUsername()))
             return false;
-        }
 
         user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
         wallRepository.save(user.getWall());
@@ -173,11 +189,8 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean deleteUser(Long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
-        if (userOptional.isPresent()) {
-            userRepository.deleteById(userId);
-            return true;
-        }
-        return false;
+        boolean exists = userRepository.existsById(userId);
+        userRepository.deleteById(userId);
+        return exists;
     }
 }
