@@ -8,12 +8,16 @@ import Application.Database.GroupRepository;
 import Application.Database.Wall.WallRepository;
 import Application.Entities.Group;
 import Application.Entities.User;
+import Application.Exceptions.User.UserIsNotPersistedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Service
 @Transactional
@@ -50,17 +54,17 @@ public class GroupService {
         groupRepository.updatePicture(groupId, picture);
     }
 
-    public Group refresh(Group group) {
+    public Group refresh(Group group) throws GroupIsNotPersistedException {
         return groupRepository.findById(group.getId()).orElseThrow(GroupIsNotPersistedException::new);
     }
 
-    public Group update(Group group) {
+    public Group update(Group group) throws GroupIsNotPersistedException {
         if(group.getId() == null) throw new GroupIsNotPersistedException();
         if(!groupRepository.existsById(group.getId())) throw new GroupNotFoundException();
         return groupRepository.save(group);
     }
 
-    public Group createGroup(String name, String namedLink, User owner) {
+    public Group createGroup(String name, String namedLink, User owner) throws GroupAlreadyExistsByLinkException {
         if(groupRepository.existsByNamedLink(namedLink)) throw new GroupAlreadyExistsByLinkException();
         Group group = new Group(name, owner, namedLink);
         wallRepository.save(group.getWall());
