@@ -1,13 +1,9 @@
 package Application.Exceptions.WallPost;
 
-import Application.Exceptions.APIException;
+import Application.Exceptions.ObjectIsNotFoundByIdException;
 
-public class WallPostNotFoundException extends APIException {
+public class WallPostNotFoundException extends ObjectIsNotFoundByIdException {
     public WallPostNotFoundException() {
-        super("Post with this id does not exist.");
-    }
-
-    public WallPostNotFoundException(String message) {
-        super(message);
+        super("Post");
     }
 }

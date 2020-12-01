@@ -1,7 +1,7 @@
 package Application.Exceptions.WallPost;
 
-import Application.Exceptions.APIException;
+import Application.Exceptions.ObjectIsNotFoundByIdException;
 
-public class NoWallFoundException extends APIException {
-    public NoWallFoundException() { super("Wall is not found."); }
+public class NoWallFoundException extends ObjectIsNotFoundByIdException {
+    public NoWallFoundException() { super("Wall"); }
 }
