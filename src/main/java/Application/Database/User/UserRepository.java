@@ -6,10 +6,15 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface UserRepository extends JpaRepository<User, Long>, CustomUsers {
-    User findByUsername(String username);
-    User findByEmail(String email);
-    User deleteByUsername(String username);
+    Optional<User> findByUsername(String username);
+    Optional<User> findByEmail(String email);
+    Optional<User> deleteByUsername(String username);
+
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
 
     @Modifying
     @Query("UPDATE User u Set u.permitted = true WHERE id = :id")

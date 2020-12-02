@@ -23,14 +23,13 @@ import org.springframework.context.annotation.Bean;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 
 @SpringBootApplication
 @Slf4j
 public class Starter {
     public static final String homeLink = "http://inversedevs.herokuapp.com";
     //public static final String homeLink = "http://localhost:8080";
-    @Autowired
-    UserRepository userRepo;
     @Autowired
     RoleRepository roleRepo;
     @Autowired
@@ -39,8 +38,6 @@ public class Starter {
     CommentService commentService;
     @Autowired
     WallService wallService;
-    @Autowired
-    WallPostRepository postRepo;
     @Autowired
     UserService userService;
     @Autowired
@@ -56,21 +53,20 @@ public class Starter {
             roleRepo.save(new Role(1L, "ROLE_USER"));
             roleRepo.save(new Role(2L, "ROLE_ADMIN"));
 
-            User admin = new User("admin", "admin", "admin@vmd.com",
+            User admin = userService.createUser("admin", "admin", "admin@vmd.com",
                     "Admin", "VMD", null);
-            userService.saveUser(admin);
             userService.makeAdmin(admin);
 
-            User test1 = new User("test1", "1234", "test1@vmd.com",
+            User test1 = userService.createUser("test1", "1234", "test1@vmd.com",
                     "Test Account 1", "VMD", null);
 
-            User test2 = new User("test2", "1234", "test2@vmd.com",
+            User test2 = userService.createUser("test2", "1234", "test2@vmd.com",
                     "Test Account 2", "VMD", null);
 
-            User skelantros = new User("skelantros", "23052001", "skelantros@vmd.com",
+            User skelantros = userService.createUser("skelantros", "23052001", "skelantros@vmd.com",
                     "Alex Egorowski", "Zelenokumsk", LocalDate.parse("1990-12-12"));
 
-            User nixon = new User("NixoN", "67562211", "mythtics2001@mail.ru",
+            User nixon = userService.createUser("NixoN", "67562211", "mythtics2001@mail.ru",
                     "Andrew Zhukov", "Ishim", LocalDate.parse("2001-02-15"));
 
             ArrayList<User> users = new ArrayList<>();
@@ -78,10 +74,8 @@ public class Starter {
             users.add(test2);
             users.add(skelantros);
             users.add(nixon);
-            for(User user : users) {
-                userService.saveUser(user);
-                userService.makeUser(user);
-            }
+            users.forEach(userService::permitUser);
+            userService.permitUser(admin);
 
             userService.makeFriends(nixon, admin);
             userService.makeFriends(nixon, test1);
@@ -115,20 +109,20 @@ public class Starter {
                 log.info(e.getMessage());
             }
 
-            Comment simpleComment = new Comment(userRepo.findById(1L).get(),
+            Comment simpleComment = new Comment(userService.findUserById(1L),
                     "simple comment",
                     LocalDateTime.now(),
-                    postRepo.findById(7L).get());
+                    wallService.findPostById(7));
 
-            Comment complexComment = new Comment(userRepo.findById(1L).get(),
+            Comment complexComment = new Comment(userService.findUserById(1L),
                     "complex comment",
                     LocalDateTime.now(),
-                    postRepo.findById(7L).get());
+                    wallService.findPostById(7));
 
-            Comment innerComment = new Comment(userRepo.findById(1L).get(),
+            Comment innerComment = new Comment(userService.findUserById(1L),
                     "inner comment",
                     LocalDateTime.now(),
-                    postRepo.findById(7L).get());
+                    wallService.findPostById(7));
             innerComment.setReferenceComment(complexComment);
 
             commentService.addComment(simpleComment);
@@ -139,24 +133,24 @@ public class Starter {
             chatService.saveMessage(new ChatMessage("Hello admin", LocalDateTime.now(), users.get(2), p2pChat));
             chatService.saveMessage(new ChatMessage("Hello skelantros!", LocalDateTime.now(), admin, p2pChat));
 
-//            Chat multiChat = chatService.getChat(new HashSet<>(users));
-//            chatService.saveMessage(new ChatMessage("hey y'all!", LocalDateTime.now(), users.get(2), multiChat));
-//            chatService.saveMessage(new ChatMessage("hey dude!", LocalDateTime.now(), users.get(0), multiChat));
+            Group group = groupService.createGroup("Test group", "test", nixon);
+            users.forEach(group::addMember);
+            group.banUser(test1);
+            group.addAdministrator(skelantros);
+            group = groupService.update(group);
 
-            Group group1 = groupService.createGroup("Test Group","test", admin);
-            users.forEach(group1::addMember);
-            group1.addAdministrator(users.get(2));
-            group1.banUser(users.get(1));
-            group1.banUser(admin); // этот пользователь не будет забанен, т.к. он является владельцем группы
-            group1 = groupService.update(group1);
+            WallPost groupPost = wallService.addPost(nixon, "Hello group!", group);
 
-            try {
-                wallService.addPost(admin, "Post from group owner", group1);
-                wallService.addPost(users.get(2), "Post from group admin", group1);
-                wallService.addPost(users.get(0), "Post from group member", group1);
-            } catch(WallNoPostAccessException e) {
-                log.info(e.getMessage());
-            }
+            Comment groupComment = new Comment(nixon, "This post is wonderful!",
+                    LocalDateTime.now(), groupPost);
+            Comment groupComplexComment = new Comment(skelantros, "I am an admin here!",
+                    LocalDateTime.now(), groupPost);
+            Comment groupInnerComment = new Comment(test2, "Hello admin!",
+                    LocalDateTime.now(), groupPost);
+            groupInnerComment.setReferenceComment(groupComplexComment);
+            commentService.addComment(groupComment);
+            commentService.addComment(groupComplexComment);
+            commentService.addComment(groupInnerComment);
         };
     }
 }

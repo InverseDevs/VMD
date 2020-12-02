@@ -1,6 +1,6 @@
 package Application.Services;
 
-import Application.Exceptions.NoUserFoundException;
+import Application.Exceptions.User.NoUserFoundException;
 import Application.Exceptions.WallPost.NoWallFoundException;
 import Application.Exceptions.WallPost.WallNoPostAccessException;
 import Application.Exceptions.WallPost.WallPostNotFoundException;

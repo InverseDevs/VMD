@@ -1,10 +1,9 @@
 package Application.Controllers;
 
 import Application.Entities.User;
-import Application.Exceptions.NoUserFoundException;
+import Application.Exceptions.User.NoUserFoundException;
 import Application.Security.JwtProvider;
 import Application.Services.UserService;
-import Application.Starter;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
 import org.json.JSONObject;

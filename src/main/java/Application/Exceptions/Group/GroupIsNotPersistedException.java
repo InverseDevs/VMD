@@ -1,9 +1,9 @@
 package Application.Exceptions.Group;
 
-import Application.Exceptions.APIException;
+import Application.Exceptions.ObjectIsNotPersistedException;
 
-public class GroupIsNotPersistedException extends APIException {
+public class GroupIsNotPersistedException extends ObjectIsNotPersistedException {
     public GroupIsNotPersistedException() {
-        super("Group is not persisted and thus cannot be refreshed/updated.");
+        super("Group");
     }
 }

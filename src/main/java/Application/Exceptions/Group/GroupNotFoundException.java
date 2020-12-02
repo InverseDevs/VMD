@@ -1,9 +1,9 @@
 package Application.Exceptions.Group;
 
-import Application.Exceptions.APIException;
+import Application.Exceptions.ObjectIsNotFoundByIdException;
 
-public class GroupNotFoundException extends APIException {
+public class GroupNotFoundException extends ObjectIsNotFoundByIdException {
     public GroupNotFoundException() {
-        super("Group with this id does not exist");
+        super("Group");
     }
 }
