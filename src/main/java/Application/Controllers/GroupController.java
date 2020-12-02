@@ -341,4 +341,42 @@ public class GroupController {
 
         return responseJson.toString();
     }
+
+    @RequestMapping(value = "/group/all", method = RequestMethod.GET)
+    @ResponseBody
+    public String findAllGroupsByUserId(HttpServletRequest request) {
+        JSONObject responseJson = new JSONObject();
+        try {
+            String header = request.getHeader("Authorization");
+            if (header == null) {
+                throw new MissingRequestHeaderException("Authorization", null);
+            }
+            String jwt = header.substring(7);
+
+            if (JwtProvider.validateToken(jwt)) {
+                List<Group> groups = groupService.findAllGroups();
+                JSONObject groupsJson = new JSONObject();
+
+                int groupIdx = 0;
+                for (Group group : groups) {
+                    groupsJson.put("group_" + ++groupIdx, group.toJson());
+                }
+                responseJson.put("groups", groupsJson);
+            } else {
+                log.info("user not authorized");
+                responseJson.put("status", "user not authorized");
+            }
+        } catch (MissingRequestHeaderException e) {
+            log.error("incorrect request headers: " + e.getMessage());
+            responseJson.put("status", "incorrect request headers");
+        } catch (UsernameNotFoundException e) {
+            log.error("user not found: " + e.getMessage());
+            responseJson.put("status", "user not found");
+        } catch (Exception e) {
+            log.error("unknown error: " + e.getMessage());
+            responseJson.put("status", "unknown error");
+        }
+
+        return responseJson.toString();
+    }
 }
