@@ -135,7 +135,7 @@ public class Group {
             Stream<User> adminsStream = this.getAdministrators().stream().sorted(
                     (admin1, admin2) -> admin2.getName().compareTo(admin1.getName()));
             adminsStream.forEach(admin -> {
-                adminsJson.put("admin_" + adminIdx.incrementAndGet(), admin.getId());
+                adminsJson.put("admin_" + adminIdx.incrementAndGet(), admin.toJson());
             });
             groupJson.put("admins", adminsJson);
         } else {
@@ -149,7 +149,7 @@ public class Group {
             Stream<User> bannedUsersStream = this.getBannedUsers().stream().sorted(
                     (bannedUser1, bannedUser2) -> bannedUser2.getName().compareTo(bannedUser1.getName()));
             bannedUsersStream.forEach(bannedUser -> {
-                bannedUsersJson.put("banned_user_" + bannedUserIdx.incrementAndGet(), bannedUser.getId());
+                bannedUsersJson.put("banned_user_" + bannedUserIdx.incrementAndGet(), bannedUser.toJson());
             });
             groupJson.put("banned_users", bannedUsersJson);
         } else {
@@ -163,7 +163,7 @@ public class Group {
             Stream<User> membersStream = this.getMembers().stream().sorted(
                     (member1, member2) -> member2.getName().compareTo(member1.getName()));
             membersStream.forEach(member -> {
-                membersJson.put("member_" + memberIdx.incrementAndGet(), member.getId());
+                membersJson.put("member_" + memberIdx.incrementAndGet(), member.toJson());
             });
             groupJson.put("members", membersJson);
         } else {

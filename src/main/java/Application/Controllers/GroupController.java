@@ -369,9 +369,6 @@ public class GroupController {
         } catch (MissingRequestHeaderException e) {
             log.error("incorrect request headers: " + e.getMessage());
             responseJson.put("status", "incorrect request headers");
-        } catch (UsernameNotFoundException e) {
-            log.error("user not found: " + e.getMessage());
-            responseJson.put("status", "user not found");
         } catch (Exception e) {
             log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");
