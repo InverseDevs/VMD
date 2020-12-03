@@ -114,7 +114,7 @@ public class Group {
         groupJson.put("owner_id", this.getOwner() == null ? "" : this.getOwner().getId());
         groupJson.put("picture", this.picture == null ? "" : new String(picture));
 
-        if (this.getWall() != null && this.getWall().getPosts().isEmpty()) {
+        if (this.getWall() != null && !this.getWall().getPosts().isEmpty()) {
             JSONObject postsJson = new JSONObject();
 
             AtomicInteger postIdx = new AtomicInteger();
