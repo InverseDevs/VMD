@@ -23,7 +23,9 @@ import org.springframework.context.annotation.Bean;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 
 @SpringBootApplication
 @Slf4j
@@ -134,10 +136,12 @@ public class Starter {
             chatService.saveMessage(new ChatMessage("Hello skelantros!", LocalDateTime.now(), admin, p2pChat));
 
             Group group = groupService.createGroup("Test group", "test", nixon);
-            users.forEach(group::addMember);
-            group.banUser(test1);
-            group.addAdministrator(skelantros);
-            group = groupService.update(group);
+            groupService.addMembers(group, new HashSet<>(users));
+            groupService.removeMember(group, test1);
+            groupService.addAdministrator(group, skelantros);
+            groupService.banUser(group, test2);
+            groupService.banUser(group, admin);
+            groupService.unbanUser(group, admin);
 
             WallPost groupPost = wallService.addPost(nixon, "Hello group!", group);
 
