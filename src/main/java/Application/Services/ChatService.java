@@ -44,8 +44,10 @@ public class ChatService {
             } else {
                 endIdx = Math.min(allMessages.size(), lastIdx);
             }
-            Collections.reverse(allMessages.subList(firstIdx, endIdx));
-            return allMessages;
+
+            List<ChatMessage> messagesToReturn = allMessages.subList(firstIdx, endIdx);
+            Collections.reverse(messagesToReturn);
+            return messagesToReturn;
         }
     }
 
