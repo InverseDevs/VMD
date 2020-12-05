@@ -34,23 +34,17 @@ public class ChatService {
         if (!chatOptional.isPresent()) {
             throw new ChatNotFoundException();
         } else {
-            Stream<ChatMessage> messageStream = messageRepository.findByChatId(chatId).stream().sorted(
-                    Comparator.comparing(Content::getId));
-            Object[] allMessages = messageStream.toArray();
-
-            List<ChatMessage> messagesToReturn = new ArrayList<>();
+            List<ChatMessage> allMessages = messageRepository.findByChatId(chatId).stream().sorted(
+                    Comparator.comparing(Content::getId)).
+                    collect(Collectors.toList());
 
             int endIdx;
-            if (allMessages.length < firstIdx) {
+            if (allMessages.size() < firstIdx) {
                 throw new IndexOutOfBoundsException("No messages");
             } else {
-                endIdx = Math.min(allMessages.length, lastIdx);
+                endIdx = Math.min(allMessages.size(), lastIdx);
             }
-            for (int i = firstIdx; i < endIdx; i++) {
-                messagesToReturn.add((ChatMessage) allMessages[i]);
-            }
-
-            return messagesToReturn;
+            return allMessages.subList(firstIdx, endIdx);
         }
     }
 
