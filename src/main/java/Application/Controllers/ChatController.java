@@ -271,10 +271,6 @@ public class ChatController {
                     JSONArray jsonArray = new JSONArray();
 
                     for (ChatMessage message : messages) {
-                        log.info(String.valueOf(message.getId()));
-                    }
-
-                    for (ChatMessage message : messages) {
                         jsonArray.put(message.toJson());
                     }
                     responseJson.put("messages", jsonArray);
