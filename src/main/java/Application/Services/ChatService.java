@@ -5,6 +5,7 @@ import Application.Database.Chat.ChatRepository;
 import Application.Database.User.UserRepository;
 import Application.Entities.Chat;
 import Application.Entities.Content.ChatMessage;
+import Application.Entities.Content.Content;
 import Application.Entities.User;
 import Application.Exceptions.ChatNotFoundException;
 import org.json.JSONObject;
@@ -34,12 +35,12 @@ public class ChatService {
             throw new ChatNotFoundException();
         } else {
             Stream<ChatMessage> messageStream = messageRepository.findByChatId(chatId).stream().sorted(
-                    (message1, message2) -> message2.getId().compareTo(message1.getId()));
+                    Comparator.comparing(Content::getId));
             Object[] allMessages = messageStream.toArray();
 
             List<ChatMessage> messagesToReturn = new ArrayList<>();
 
-            int endIdx = 0;
+            int endIdx;
             if (allMessages.length < firstIdx) {
                 throw new IndexOutOfBoundsException("No messages");
             } else {
