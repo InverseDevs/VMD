@@ -34,7 +34,7 @@ public class ChatService {
             throw new ChatNotFoundException();
         } else {
             Stream<ChatMessage> messageStream = messageRepository.findByChatId(chatId).stream().sorted(
-                    (message1, message2) -> message2.getSentTime().compareTo(message1.getSentTime()));
+                    (message1, message2) -> message2.getId().compareTo(message1.getId()));
             Object[] allMessages = messageStream.toArray();
 
             List<ChatMessage> messagesToReturn = new ArrayList<>();
