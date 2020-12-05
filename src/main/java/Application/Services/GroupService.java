@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @Service
@@ -133,6 +131,14 @@ public class GroupService {
     public Group unbanUser(Group group, User user)
             throws GroupIsNotPersistedException, UserIsNotPersistedException {
         return this.unbanUsers(group, Collections.singleton(user));
+    }
+
+    public void updatePostAccess(Group group, Group.Access postAccess) {
+        groupRepository.updatePostAccess(group, postAccess);
+    }
+
+    public void updateCommentAccess(Group group, Group.Access commentAccess) {
+        groupRepository.updateCommentAccess(group, commentAccess);
     }
 
     private Group changeGroup(Group group, Set<User> users, BiFunction<Group, Set<User>, Group> method)
