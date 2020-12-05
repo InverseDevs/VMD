@@ -7,12 +7,15 @@ import Application.Entities.Chat;
 import Application.Entities.Content.ChatMessage;
 import Application.Entities.User;
 import Application.Exceptions.ChatNotFoundException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -30,15 +33,20 @@ public class ChatService {
         if (!chatOptional.isPresent()) {
             throw new ChatNotFoundException();
         } else {
-            List<ChatMessage> allMessages = messageRepository.findByChatId(chatId);
-            List<ChatMessage> messagesToReturn;
+            Stream<ChatMessage> messageStream = messageRepository.findByChatId(chatId).stream().sorted(
+                    (message1, message2) -> message2.getSentTime().compareTo(message1.getSentTime()));
+            Object[] allMessages = messageStream.toArray();
 
-            if (allMessages.size() < firstIdx) {
+            List<ChatMessage> messagesToReturn = new ArrayList<>();
+
+            int endIdx = 0;
+            if (allMessages.length < firstIdx) {
                 throw new IndexOutOfBoundsException("No messages");
-            } else if (allMessages.size() < lastIdx) {
-                messagesToReturn = allMessages.subList(firstIdx, allMessages.size());
             } else {
-                messagesToReturn = allMessages.subList(firstIdx, lastIdx);
+                endIdx = Math.min(allMessages.length, lastIdx);
+            }
+            for (int i = firstIdx; i < endIdx; i++) {
+                messagesToReturn.add((ChatMessage) allMessages[i]);
             }
 
             return messagesToReturn;
