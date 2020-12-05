@@ -57,11 +57,22 @@ public class Group {
     @Type(type = "org.hibernate.type.BinaryType")
     private byte[] picture;
 
+    public enum Access {
+        EVERYONE, MEMBERS, ADMINISTRATORS, OWNER;
+    }
+
+    @Enumerated(EnumType.STRING)
+    private Access commentAccess;
+    @Enumerated(EnumType.STRING)
+    private Access postAccess;
+
     public Group(String name, User owner, String namedLink) {
         this.name = name;
         this.owner = owner;
         this.namedLink = namedLink;
         this.members.add(owner);
+        this.commentAccess = Access.EVERYONE;
+        this.postAccess = Access.ADMINISTRATORS;
         this.wall = new GroupWall(this);
     }
 
