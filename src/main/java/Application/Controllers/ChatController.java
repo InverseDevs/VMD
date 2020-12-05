@@ -272,12 +272,11 @@ public class ChatController {
                         log.info(String.valueOf(message.getId()));
                     }
 
-                    JSONObject messagesJson = new JSONObject();
-                    int messageIdx = 0;
+                    JSONArray jsonArray = new JSONArray();
                     for (ChatMessage message : messages) {
-                        messagesJson.put("message_" + ++messageIdx, message.toJson());
+                        jsonArray.put(message.toJson());
                     }
-                    responseJson.put("messages", messagesJson);
+                    responseJson.put("messages", jsonArray);
 
                 } catch (IndexOutOfBoundsException e) {
                     responseJson.put("status", "no messages");
