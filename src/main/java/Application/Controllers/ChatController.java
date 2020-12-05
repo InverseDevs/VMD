@@ -268,6 +268,10 @@ public class ChatController {
                 try {
                     List<ChatMessage> messages = chatService.getOldMessages(chatId, firstIdx, lastIdx);
 
+                    for (ChatMessage message : messages) {
+                        log.info(String.valueOf(message.getId()));
+                    }
+
                     JSONObject messagesJson = new JSONObject();
                     int messageIdx = 0;
                     for (ChatMessage message : messages) {
