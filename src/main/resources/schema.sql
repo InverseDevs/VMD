@@ -123,9 +123,7 @@ create table if not exists walls
   id        serial,
   type      varchar(16),
   user_id   int,
-  group_id  int,
-  comment_access varchar(32),
-  post_access  varchar(32)
+  group_id  int
 );
 
 create table if not exists groups

@@ -19,15 +19,9 @@ public class GroupWall extends Wall {
     @JoinColumn(name = "group_id")
     private Group group;
 
-    public GroupWall(Group group, AccessType postAccess, AccessType commentAccess) {
-        super(postAccess, commentAccess);
+    public GroupWall(Group group) {
         this.group = group;
     }
-
-    public GroupWall(Group group) {
-        this(group, AccessType.ADMINISTRATORS, AccessType.EVERYONE);
-    }
-
     @Override
     public boolean canPost(User user) {
         return hasAccess(group.getPostAccess(), user);

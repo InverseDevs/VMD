@@ -18,13 +18,8 @@ public class UserWall extends Wall {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public UserWall(User user, AccessType postAccess, AccessType commentAccess) {
-        super(postAccess, commentAccess);
-        this.user = user;
-    }
-
     public UserWall(User user) {
-        this(user, AccessType.EVERYONE, AccessType.EVERYONE);
+        this.user = user;
     }
 
     @Override
