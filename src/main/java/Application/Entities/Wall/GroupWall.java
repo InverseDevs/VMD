@@ -30,20 +30,24 @@ public class GroupWall extends Wall {
 
     @Override
     public boolean canPost(User user) {
-        return hasAccess(this.getPostAccess(), user);
+        return hasAccess(group.getPostAccess(), user);
     }
 
     @Override
     public boolean canComment(User user) {
-        return hasAccess(this.getCommentAccess(), user);
+        return hasAccess(group.getCommentAccess(), user);
     }
 
-    private boolean hasAccess(AccessType access, User user) {
+    private boolean hasAccess(Group.Access access, User user) {
         if(group.getOwner().equals(user)) return true;
-        if(this.group.getBannedUsers().contains(user)) return false;
-        if(access == AccessType.EVERYONE) return true;
-        if(access == AccessType.MEMBERS) return group.getMembers().contains(user);
-        if(access == AccessType.ADMINISTRATORS) return group.getAdministrators().contains(user);
+        if(group.getBannedUsers().contains(user)) return false;
+
+        if(access == Group.Access.EVERYONE)
+            return true;
+        if(access == Group.Access.MEMBERS)
+            return group.getMembers().contains(user);
+        if(access == Group.Access.ADMINISTRATORS)
+            return group.getAdministrators().contains(user);
         return false;
     }
 
