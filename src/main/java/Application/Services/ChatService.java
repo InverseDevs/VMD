@@ -35,7 +35,7 @@ public class ChatService {
             throw new ChatNotFoundException();
         } else {
             List<ChatMessage> allMessages = messageRepository.findByChatId(chatId).stream().sorted(
-                    Comparator.comparing(Content::getId)).
+                    (message1, message2) -> message2.getId().compareTo(message1.getId())).
                     collect(Collectors.toList());
 
             int endIdx;
