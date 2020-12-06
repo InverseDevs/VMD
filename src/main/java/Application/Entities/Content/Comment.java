@@ -62,8 +62,7 @@ public class Comment extends Content {
     public JSONObject toJson() {
         JSONObject resultJson = new JSONObject();
         resultJson.put("id", this.getId() == null ? "" : this.getId());
-        resultJson.put("sender", this.getSender() == null ? "" : this.getSender().getUsername());
-        resultJson.put("name", this.getSender() == null ? "" : this.getSender().getName());
+        resultJson.put("sender", this.getSender() == null ? "" : this.getSender().toJson());
         resultJson.put("content", this.getContent() == null ? "" : this.getContent());
         resultJson.put("sent_time", this.getSentTime() == null ? "" :
                 this.getSentTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy:hh.mm.ss")));
