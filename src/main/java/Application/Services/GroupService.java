@@ -5,6 +5,7 @@ import Application.Database.Group.GroupRepository;
 import Application.Database.Wall.WallRepository;
 import Application.Entities.Group;
 import Application.Entities.User;
+import Application.Exceptions.NotEnoughPermissionsException;
 import Application.Exceptions.User.UserIsNotPersistedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -139,6 +140,60 @@ public class GroupService {
 
     public void updateCommentAccess(Group group, Group.Access commentAccess) {
         groupRepository.updateCommentAccess(group, commentAccess);
+    }
+
+    /**
+     * Банит заданного пользователя в случае, если пользователь, пытающийся это сделать, имеет на то полномочия.
+     * @param group группа, в которой нужно забанить пользователя.
+     * @param toBan пользователь, которого нужно забанить.
+     * @param attempter пользователь, пытающийся забанить.
+     * @throws NotEnoughPermissionsException пользователь не имеет соответствующих прав.
+     */
+    public void banUserByUser(Group group, User toBan, User attempter) throws NotEnoughPermissionsException {
+        if(!group.getAdministrators().contains(attempter))
+            throw new NotEnoughPermissionsException();
+        banUser(group, toBan);
+    }
+
+    /**
+     * Разбанит заданного пользователя в случае, если пользователь, пытающийся это сделать, имеет на то полномочия.
+     * @param group группа, в которой нужно разбанить пользователя.
+     * @param toUnban пользователь, которого нужно разбанить.
+     * @param attempter пользователь, пытающийся разбанить.
+     * @throws NotEnoughPermissionsException пользователь не имеет соответствующих прав.
+     */
+    public void unbanUserByUser(Group group, User toUnban, User attempter) throws NotEnoughPermissionsException {
+        if(!group.getAdministrators().contains(attempter))
+            throw new NotEnoughPermissionsException();
+        unbanUser(group, toUnban);
+    }
+
+    /**
+     * Делает заданного пользователя администратором в случае, если пользователь, пытающийся
+     * это сделать, имеет на то полномочия.
+     * @param group группа, в которой нужно добавить администратора.
+     * @param toAdd пользователь, которого нужно сделать администратором.
+     * @param attempter пользователь, пытающийся это сделать.
+     * @throws NotEnoughPermissionsException Пользователь не имеет соответствующих прав.
+     */
+    public void addAdministratorByUser(Group group, User toAdd, User attempter) throws NotEnoughPermissionsException {
+        if(!attempter.equals(group.getOwner()))
+            throw new NotEnoughPermissionsException();
+        addAdministrator(group, toAdd);
+    }
+
+    /**
+     * Лишает заданного пользователя прав администратора в случае, если пользователь, пытающийся
+     * это сделать, имеет на то полномочия.
+     * @param group группа, в которой нужно удалить администратора.
+     * @param toRemove пользователь, которого нужно лишить прав администратора.
+     * @param attempter пользователь, пытающийся это сделать.
+     * @throws NotEnoughPermissionsException Пользователь не имеет соответствующих прав.
+     */
+    public void removeAdministratorByUser(Group group, User toRemove, User attempter) throws NotEnoughPermissionsException {
+        if(!attempter.equals(group.getOwner()))
+            throw new NotEnoughPermissionsException();
+        removeAdministrator(group, toRemove);
     }
 
     private Group changeGroup(Group group, Set<User> users, BiFunction<Group, Set<User>, Group> method)
