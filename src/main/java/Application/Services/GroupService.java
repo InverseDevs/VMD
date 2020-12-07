@@ -1,9 +1,6 @@
 package Application.Services;
 
-import Application.Exceptions.Group.GroupAlreadyExistsByLinkException;
-import Application.Exceptions.Group.GroupIsNotPersistedException;
-import Application.Exceptions.Group.GroupNotFoundByLinkException;
-import Application.Exceptions.Group.GroupNotFoundException;
+import Application.Exceptions.Group.*;
 import Application.Database.Group.GroupRepository;
 import Application.Database.Wall.WallRepository;
 import Application.Entities.Group;
@@ -15,6 +12,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +30,7 @@ public class GroupService {
     }
 
     public Group findByNamedLink(String namedLink) {
-        return groupRepository.findByNamedLink(namedLink).orElseThrow(GroupNotFoundByLinkException::new);
+        return groupRepository.findByNamedLink(namedLink.toLowerCase()).orElseThrow(GroupNotFoundByLinkException::new);
     }
 
     public List<Group> findAllGroups() {
@@ -61,8 +59,10 @@ public class GroupService {
     }
 
     public Group createGroup(String name, String namedLink, User owner) throws GroupAlreadyExistsByLinkException {
-        if(groupRepository.existsByNamedLink(namedLink)) throw new GroupAlreadyExistsByLinkException();
-        Group group = new Group(name, owner, namedLink);
+        if(groupRepository.existsByNamedLink(namedLink.toLowerCase())) throw new GroupAlreadyExistsByLinkException();
+        if(namedLink.equals("") || Pattern.compile("-?\\d+(\\.\\d+)?").matcher(namedLink).matches())
+            throw new InvalidNamedLinkException();
+        Group group = new Group(name, owner, namedLink.toLowerCase());
         wallRepository.save(group.getWall());
         return groupRepository.save(group);
     }
