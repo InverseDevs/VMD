@@ -1,5 +1,8 @@
 package Application.Services;
 
+import Application.Entities.Wall.GroupWall;
+import Application.Entities.Wall.UserWall;
+import Application.Exceptions.NotEnoughPermissionsException;
 import Application.Exceptions.User.NoUserFoundException;
 import Application.Exceptions.WallPost.NoWallFoundException;
 import Application.Exceptions.WallPost.WallNoPostAccessException;
@@ -77,6 +80,33 @@ public class WallService {
      * @param id числовой идентификатор.
      */
     public void deletePostById(long id) {
+        postRepository.deleteById(id);
+    }
+
+    /**
+     * Удаляет пост по его числовому идентификатору, если пользователь, пытающийся сделать это,
+     * имеет соответствующие права.
+     * @param id числовой идентификатор поста.
+     * @param attempter пользователь, пытающийся удалить пост.
+     * @throws NotEnoughPermissionsException пользователь не имеет соответствующие права.
+     */
+    public void deletePostByIdByUser(long id, User attempter) throws NotEnoughPermissionsException {
+        Optional<WallPost> postOptional = postRepository.findById(id);
+        if(!postOptional.isPresent()) return;
+        WallPost post = postOptional.get();
+        if(!post.getSender().equals(attempter)) {
+            if(post.getPageType() == WallPost.PageType.USER) {
+                User user = ((UserWall) post.getWall()).getUser();
+                if(!user.equals(attempter))
+                    throw new NotEnoughPermissionsException();
+            } else if(post.getPageType() == WallPost.PageType.GROUP) {
+                Group group = ((GroupWall) post.getWall()).getGroup();
+                if(!group.getAdministrators().contains(attempter) && !group.getOwner().equals(attempter))
+                    throw new NotEnoughPermissionsException();
+            } else {
+                throw new RuntimeException();
+            }
+        }
         postRepository.deleteById(id);
     }
 
@@ -177,6 +207,7 @@ public class WallService {
     public void removePost(WallPost post) {
         postRepository.delete(post);
     }
+
 
     public WallPost like(WallPost post, User user) {
         postRepository.addLike(post.getId(), user.getId());
