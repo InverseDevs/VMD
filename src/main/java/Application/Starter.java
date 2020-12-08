@@ -1,4 +1,5 @@
 package Application;
+import Application.Exceptions.NotEnoughPermissionsException;
 import Application.Exceptions.WallPost.WallNoPostAccessException;
 import Application.Database.WallPostRepository;
 import Application.Entities.Chat;
@@ -138,10 +139,14 @@ public class Starter {
             Group group = groupService.createGroup("Test group", "test", nixon);
             groupService.addMembers(group, new HashSet<>(users));
             groupService.removeMember(group, test1);
-//            groupService.addAdministratorByUser(group, skelantros, admin);
-//            groupService.banUserByUser(group, test2, admin);
-//            groupService.banUserByUser(group, admin, admin);
-//            groupService.unbanUserByUser(group, admin, admin);
+            try {
+            groupService.addAdministratorByUser(group, skelantros, admin);
+            groupService.banUserByUser(group, test2, admin);
+            groupService.banUserByUser(group, admin, skelantros);
+            groupService.unbanUserByUser(group, admin, skelantros);
+            } catch (NotEnoughPermissionsException e) {
+                log.info("no permission: " + e.getMessage());
+            }
 
             WallPost groupPost = wallService.addPost(nixon, "Hello group!", group);
 
