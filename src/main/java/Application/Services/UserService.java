@@ -92,29 +92,6 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    /**
-     * Сохраняет пользователя в базу данных при условии, если пользователя с соответсвующим никнеймом не существует.
-     *
-     * Данный метод является устаревшим и ненадежным. В частности, он не проверяет, существует ли
-     * пользователь с данной электронной почтой, поэтому он позволяет создать несколько аккаунтов,
-     * зарегистрированных на одну почту.
-     *
-     * Метод должен быть заменен на {@link UserService#createUser(String, String, String)}
-     * @param user пользователь.
-     * @return получилось сохранить пользователя в БД или нет.
-     * @see UserService#createUser(String, String, String)
-     */
-    @Deprecated
-    public boolean saveUser(User user) {
-        if(userRepository.existsByUsername(user.getUsername()))
-            return false;
-
-        user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
-        wallRepository.save(user.getWall());
-        userRepository.save(user);
-        return true;
-    }
-
     public void permitUser(Long id) {
         userRepository.permitUser(id);
     }
@@ -133,11 +110,6 @@ public class UserService implements UserDetailsService {
         userRepository.makeUser(user);
     }
 
-    @Deprecated
-    public void addFriend(User user, User friend) {
-        userRepository.addFriend(user, friend);
-    }
-
     public void makeFriends(User user1, User user2) {
         userRepository.addFriend(user1, user2);
         userRepository.addFriend(user2, user1);
@@ -145,11 +117,6 @@ public class UserService implements UserDetailsService {
 
     public void addFriendRequest(User user, User friend) {
         userRepository.addFriendRequest(user, friend);
-    }
-
-    @Deprecated
-    public void deleteFriend(User user, User friend) {
-        userRepository.deleteFriend(user, friend);
     }
 
     public void deleteFriends(User user1, User user2) {

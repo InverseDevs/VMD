@@ -60,11 +60,6 @@ public class ChatController {
 
                 chatService.getChat(users);
 
-//                Chat chat = new Chat();
-//                chat.setUsers(users);
-//
-//                chatService.saveChat(chat);
-
                 responseJson.put("status", "success");
             } else {
                 log.info("user not authorized");

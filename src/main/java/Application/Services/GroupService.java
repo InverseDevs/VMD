@@ -52,13 +52,6 @@ public class GroupService {
         return groupRepository.findById(group.getId()).orElseThrow(GroupIsNotPersistedException::new);
     }
 
-    @Deprecated
-    public Group update(Group group) throws GroupIsNotPersistedException {
-        if(group.getId() == null) throw new GroupIsNotPersistedException();
-        if(!groupRepository.existsById(group.getId())) throw new GroupNotFoundException();
-        return groupRepository.save(group);
-    }
-
     public Group createGroup(String name, String namedLink, User owner) throws GroupAlreadyExistsByLinkException {
         if(groupRepository.existsByNamedLink(namedLink.toLowerCase())) throw new GroupAlreadyExistsByLinkException();
         if(namedLink.equals("") || Pattern.compile("-?\\d+(\\.\\d+)?").matcher(namedLink).matches())
@@ -99,19 +92,9 @@ public class GroupService {
         return this.changeGroup(group, admins, groupRepository::addAdministrators);
     }
 
-    public Group addAdministrator(Group group, User admin)
-            throws GroupIsNotPersistedException, UserIsNotPersistedException {
-        return this.addAdministrators(group, Collections.singleton(admin));
-    }
-
     public Group removeAdministrators(Group group, Set<User> admins)
             throws GroupIsNotPersistedException, UserIsNotPersistedException {
         return this.changeGroup(group, admins, groupRepository::removeAdministrators);
-    }
-
-    public Group removeAdministrator(Group group, User admin)
-            throws GroupIsNotPersistedException, UserIsNotPersistedException {
-        return this.removeAdministrators(group, Collections.singleton(admin));
     }
 
     public Group banUsers(Group group, Set<User> users)
@@ -119,19 +102,9 @@ public class GroupService {
         return this.changeGroup(group, users, groupRepository::banUsers);
     }
 
-    public Group banUser(Group group, User user)
-            throws GroupIsNotPersistedException, UserIsNotPersistedException {
-        return this.banUsers(group, Collections.singleton(user));
-    }
-
     public Group unbanUsers(Group group, Set<User> users)
             throws GroupIsNotPersistedException, UserIsNotPersistedException {
         return this.changeGroup(group, users, groupRepository::unbanUsers);
-    }
-
-    public Group unbanUser(Group group, User user)
-            throws GroupIsNotPersistedException, UserIsNotPersistedException {
-        return this.unbanUsers(group, Collections.singleton(user));
     }
 
     public void updatePostAccess(Group group, Group.Access postAccess) {
@@ -203,5 +176,25 @@ public class GroupService {
         if(users.stream().anyMatch(u -> u.getId() == null))
             throw new UserIsNotPersistedException();
         return method.apply(group, users);
+    }
+
+    private Group banUser(Group group, User user)
+            throws GroupIsNotPersistedException, UserIsNotPersistedException {
+        return this.banUsers(group, Collections.singleton(user));
+    }
+
+    private Group unbanUser(Group group, User user)
+            throws GroupIsNotPersistedException, UserIsNotPersistedException {
+        return this.unbanUsers(group, Collections.singleton(user));
+    }
+
+    private Group addAdministrator(Group group, User admin)
+            throws GroupIsNotPersistedException, UserIsNotPersistedException {
+        return this.addAdministrators(group, Collections.singleton(admin));
+    }
+
+    private Group removeAdministrator(Group group, User admin)
+            throws GroupIsNotPersistedException, UserIsNotPersistedException {
+        return this.removeAdministrators(group, Collections.singleton(admin));
     }
 }

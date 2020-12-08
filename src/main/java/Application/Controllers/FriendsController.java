@@ -143,15 +143,13 @@ public class FriendsController {
 
                 JSONObject jsonObject = new JSONObject(data.toString());
                 long currentUserId = jsonObject.getLong("id");
-                User user = userService.findUserById(currentUserId);
-                User friend = userService.findUserById(userToAcceptId);
+                User friend1 = userService.findUserById(currentUserId);
+                User friend2 = userService.findUserById(userToAcceptId);
 
-                if (!user.getId().equals(friend.getId()) && !userService.friendExists(user, friend)) {
+                if (!friend1.getId().equals(friend2.getId()) && !userService.friendExists(friend1, friend2)) {
 
-                    userService.addFriend(user, friend);
-                    userService.addFriend(friend, user);
-
-                    userService.deleteFriendRequest(user, friend);
+                    userService.makeFriends(friend1, friend2);
+                    userService.deleteFriendRequest(friend1, friend2);
 
                     responseJson.put("status", "success");
                 } else {
@@ -252,12 +250,12 @@ public class FriendsController {
 
                 JSONObject jsonObject = new JSONObject(data.toString());
                 long currentUserId = jsonObject.getLong("id");
-                User user = userService.findUserById(currentUserId);
-                User friend = userService.findUserById(id);
+                User friend1 = userService.findUserById(currentUserId);
+                User friend2 = userService.findUserById(id);
 
-                if (!user.getId().equals(friend.getId()) && userService.friendExists(user, friend)) {
-                    userService.deleteFriend(user, friend);
-                    userService.deleteFriend(friend, user);
+                if (!friend1.getId().equals(friend2.getId()) && userService.friendExists(friend1, friend2)) {
+
+                    userService.deleteFriends(friend1, friend2);
 
                     responseJson.put("status", "success");
                 } else {

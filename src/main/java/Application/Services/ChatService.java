@@ -84,20 +84,6 @@ public class ChatService {
     }
 
     /**
-     * Возвращает список сообщений из чата по его идентификатору
-     * В последующем данный метод будет удалён
-     *
-     * @param chatId идентификатор чата
-     * @return список сообщений из чата
-     * @see ChatService#getMessages(Chat)
-     */
-    @Deprecated
-    public List<ChatMessage> getMessages(Long chatId) {
-        Optional<Chat> chatOptional = chatRepository.findById(chatId);
-        return chatOptional.map(chat -> new ArrayList<>(chat.getMessages())).orElse(null);
-    }
-
-    /**
      * Возвращает список сообщений из чата.
      * <p>
      * Отличие от {@link Chat#getMessages()} заключается в том, что в объекте Chat может храниться устаревший список сообщений.
@@ -110,26 +96,6 @@ public class ChatService {
      */
     public List<ChatMessage> getMessages(Chat chat) {
         return new ArrayList<>(this.refreshChat(chat).getMessages());
-    }
-
-    /**
-     * Возвращает идентификатор чата двух пользователей по их идентификаторам.
-     * В случае, если чата между пользователями не существует, создает его и возвращает его идентификатор.
-     * <p>
-     * На данный момент метод не актуален, но оставлен для обратной совместимости.
-     *
-     * @param senderId   ИД отправителя
-     * @param receiverId ИД получателя
-     * @return ИД чата двух пользователей
-     * @see ChatService#getChat(User, User)
-     * @see ChatService#getChat(Set)
-     */
-    @Deprecated
-    public Long getChat(Long senderId, Long receiverId) {
-        Optional<User> senderOptional = userRepository.findById(senderId);
-        Optional<User> receiverOptional = userRepository.findById(receiverId);
-        if (!senderOptional.isPresent() || !receiverOptional.isPresent()) return null;
-        else return getChat(senderOptional.get(), receiverOptional.get()).getId();
     }
 
     /**

@@ -4,6 +4,7 @@ import Application.Entities.Group;
 import Application.Entities.User;
 import Application.Exceptions.Group.GroupAlreadyExistsByLinkException;
 import Application.Exceptions.Group.GroupIsNotPersistedException;
+import Application.Exceptions.NotEnoughPermissionsException;
 import Application.Security.JwtProvider;
 import Application.Services.GroupService;
 import Application.Services.UserService;
@@ -229,11 +230,10 @@ public class GroupController {
                 }
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
-                User user = userService.findUserById(receivedDataJson.getLong("user_id"));
+                User member = userService.findUserById(receivedDataJson.getLong("user_id"));
                 Group group = groupService.findGroupById(groupId);
 
-                group.addMember(user);
-                groupService.update(group);
+                groupService.addMember(group, member);
 
                 responseJson.put("status", "success");
             } else {
@@ -276,11 +276,10 @@ public class GroupController {
                 }
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
-                User user = userService.findUserById(receivedDataJson.getLong("user_id"));
+                User member = userService.findUserById(receivedDataJson.getLong("user_id"));
                 Group group = groupService.findGroupById(groupId);
 
-                group.removeMember(user);
-                groupService.update(group);
+                groupService.removeMember(group, member);
 
                 responseJson.put("status", "success");
             } else {
@@ -397,10 +396,11 @@ public class GroupController {
                 }
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
-                User user = userService.findUserById(receivedDataJson.getLong("user_id"));
+                User userToBan = userService.findUserById(receivedDataJson.getLong("user_id"));
+                User attempter = userService.findUserById(receivedDataJson.getLong("attempter_id"));
                 Group group = groupService.findGroupById(groupId);
 
-                groupService.banUser(group, user);
+                groupService.banUserByUser(group, userToBan, attempter);
 
                 responseJson.put("status", "success");
             } else {
@@ -419,6 +419,9 @@ public class GroupController {
         } catch (GroupIsNotPersistedException e) {
             log.error("group not found: " + e.getMessage());
             responseJson.put("status", "group not found");
+        } catch (NotEnoughPermissionsException e) {
+            log.error("no permission: " + e.getMessage());
+            responseJson.put("status", "no permission");
         } catch (Exception e) {
             log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");
@@ -447,9 +450,10 @@ public class GroupController {
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
                 User user = userService.findUserById(receivedDataJson.getLong("user_id"));
+                User attempter = userService.findUserById(receivedDataJson.getLong("attempter_id"));
                 Group group = groupService.findGroupById(groupId);
 
-                groupService.unbanUser(group, user);
+                groupService.unbanUserByUser(group, user, attempter);
 
                 responseJson.put("status", "success");
             } else {
@@ -465,6 +469,9 @@ public class GroupController {
         } catch (UsernameNotFoundException e) {
             log.error("user not found: " + e.getMessage());
             responseJson.put("status", "user not found");
+        } catch (NotEnoughPermissionsException e) {
+            log.error("no permission: " + e.getMessage());
+            responseJson.put("status", "no permission");
         } catch (GroupIsNotPersistedException e) {
             log.error("group not found: " + e.getMessage());
             responseJson.put("status", "group not found");
@@ -496,9 +503,10 @@ public class GroupController {
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
                 User user = userService.findUserById(receivedDataJson.getLong("user_id"));
+                User attempter = userService.findUserById(receivedDataJson.getLong("attempter_id"));
                 Group group = groupService.findGroupById(groupId);
 
-                groupService.addAdministrator(group, user);
+                groupService.addAdministratorByUser(group, user, attempter);
 
                 responseJson.put("status", "success");
             } else {
@@ -517,6 +525,9 @@ public class GroupController {
         } catch (GroupIsNotPersistedException e) {
             log.error("group not found: " + e.getMessage());
             responseJson.put("status", "group not found");
+        } catch (NotEnoughPermissionsException e) {
+            log.error("no permission: " + e.getMessage());
+            responseJson.put("status", "no permission");
         } catch (Exception e) {
             log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");
@@ -545,9 +556,10 @@ public class GroupController {
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
                 User user = userService.findUserById(receivedDataJson.getLong("user_id"));
+                User attempter = userService.findUserById(receivedDataJson.getLong("attempter_id"));
                 Group group = groupService.findGroupById(groupId);
 
-                groupService.removeAdministrator(group, user);
+                groupService.removeAdministratorByUser(group, user, attempter);
 
                 responseJson.put("status", "success");
             } else {
@@ -566,6 +578,9 @@ public class GroupController {
         } catch (GroupIsNotPersistedException e) {
             log.error("group not found: " + e.getMessage());
             responseJson.put("status", "group not found");
+        } catch (NotEnoughPermissionsException e) {
+            log.error("no permission: " + e.getMessage());
+            responseJson.put("status", "no permission");
         } catch (Exception e) {
             log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");

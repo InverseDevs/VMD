@@ -2,6 +2,7 @@ package Application.Controllers;
 
 import Application.Email.MailSender;
 import Application.Entities.User;
+import Application.Exceptions.User.Exist.UserAlreadyExists;
 import Application.Services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 
 @Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
@@ -34,19 +34,18 @@ public class RegistrationController {
                 data.append(line);
             }
             JSONObject receivedDataJson = new JSONObject(data.toString());
-            User user = new User(
+
+            User user = userService.createUser(
                     receivedDataJson.getString("username"),
                     receivedDataJson.getString("password"),
                     receivedDataJson.getString("email"));
+            MailSender mailSender = new MailSender();
+            mailSender.sendVerification(user);
 
-            if (!userService.saveUser(user)) {
-                responseJson.put("status", "user already exists");
-            } else {
-                MailSender mailSender = new MailSender();
-                mailSender.sendVerification(user);
-
-                responseJson.put("status", "success");
-            }
+            responseJson.put("status", "success");
+        } catch (UserAlreadyExists e) {
+            log.error("user already exists: " + e.getMessage());
+            responseJson.put("status", "user already exists");
         } catch (JSONException | IOException e) {
             log.error("incorrect request body: " + e.getMessage());
             responseJson.put("status", "incorrect request body");

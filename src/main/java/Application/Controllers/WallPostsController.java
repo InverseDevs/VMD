@@ -1,6 +1,7 @@
 package Application.Controllers;
 
 import Application.Entities.Content.Comment;
+import Application.Exceptions.NotEnoughPermissionsException;
 import Application.Exceptions.WallPost.WallPostNotFoundException;
 import Application.Entities.Content.WallPost;
 import Application.Entities.User;
@@ -163,8 +164,15 @@ public class WallPostsController {
             String jwt = header.substring(7);
 
             if (JwtProvider.validateToken(jwt)) {
-                //postService.deletePost(postId);
-                wallService.deletePostById(postId);
+                StringBuilder data = new StringBuilder();
+                String line;
+                while ((line = request.getReader().readLine()) != null) {
+                    data.append(line);
+                }
+
+                JSONObject receivedDataJson = new JSONObject(data.toString());
+                User attempter = userService.findUserById(receivedDataJson.getLong("attempter_id"));
+                wallService.deletePostByIdByUser(postId, attempter);
 
                 responseJson.put("status", "success");
             } else {
@@ -177,6 +185,9 @@ public class WallPostsController {
         } catch (WallPostNotFoundException e) {
             log.error("post not found: " + e.getMessage());
             responseJson.put("status", "post not found");
+        } catch (NotEnoughPermissionsException e) {
+            log.error("no permission: " + e.getMessage());
+            responseJson.put("status", "no permission");
         } catch (Exception e) {
             log.error("unknown error: " + e.getMessage());
             responseJson.put("status", "unknown error");

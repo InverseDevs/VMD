@@ -138,10 +138,10 @@ public class Starter {
             Group group = groupService.createGroup("Test group", "test", nixon);
             groupService.addMembers(group, new HashSet<>(users));
             groupService.removeMember(group, test1);
-            groupService.addAdministrator(group, skelantros);
-            groupService.banUser(group, test2);
-            groupService.banUser(group, admin);
-            groupService.unbanUser(group, admin);
+            groupService.addAdministratorByUser(group, skelantros, admin);
+            groupService.banUserByUser(group, test2, admin);
+            groupService.banUserByUser(group, admin, admin);
+            groupService.unbanUserByUser(group, admin, admin);
 
             WallPost groupPost = wallService.addPost(nixon, "Hello group!", group);
 
