@@ -38,12 +38,17 @@ public class CommentService {
         return comment;
     }
 
-    public void addComment(User sender, String content, WallPost post)
+    public Comment addComment(User sender, String content, WallPost post)
+            throws WallPostNotFoundException, NotEnoughPermissionsException {
+        return addComment(sender, content, post, null);
+    }
+
+    public Comment addComment(User sender, String content, WallPost post, Comment referenceComment)
             throws WallPostNotFoundException, NotEnoughPermissionsException {
         WallPost updatedPost = postRepository.findById(post.getId()).orElseThrow(WallPostNotFoundException::new);
         if(!updatedPost.getWall().canComment(sender))
             throw new NotEnoughPermissionsException();
-        commentRepository.save(new Comment(sender, content, LocalDateTime.now(), post));
+        return commentRepository.save(new Comment(sender, content, LocalDateTime.now(), post, referenceComment));
     }
 
     @Deprecated
