@@ -41,6 +41,9 @@ public class Starter {
     @Autowired
     GroupService groupService;
 
+    public static final long adminRoleId = 2;
+    public static final long userRoleId = 1;
+
     public static void main(String[] args) {
         SpringApplication.run(Starter.class, args);
     }
@@ -48,8 +51,8 @@ public class Starter {
     @Bean
     CommandLineRunner addDefaultDbNotes() {
         return (String... args) -> {
-            roleRepo.save(new Role(1L, "ROLE_USER"));
-            roleRepo.save(new Role(2L, "ROLE_ADMIN"));
+            roleRepo.save(new Role(userRoleId, "ROLE_USER"));
+            roleRepo.save(new Role(adminRoleId, "ROLE_ADMIN"));
 
             User admin = userService.createUser("admin", "admin", "admin@vmd.com",
                     "Admin", "VMD", null);
