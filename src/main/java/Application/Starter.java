@@ -1,20 +1,17 @@
 package Application;
-import Application.Exceptions.NotEnoughPermissionsException;
-import Application.Exceptions.WallPost.WallNoPostAccessException;
-import Application.Database.WallPostRepository;
+
+import Application.Database.RoleRepository;
 import Application.Entities.Chat;
 import Application.Entities.Content.ChatMessage;
 import Application.Entities.Content.Comment;
 import Application.Entities.Content.WallPost;
-import Application.Database.RoleRepository;
-import Application.Database.User.UserRepository;
 import Application.Entities.Group;
 import Application.Entities.Role;
 import Application.Entities.User;
+import Application.Exceptions.NotEnoughPermissionsException;
+import Application.Exceptions.WallPost.WallNoPostAccessException;
 import Application.Services.*;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -24,8 +21,6 @@ import org.springframework.context.annotation.Bean;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 
 @SpringBootApplication
@@ -102,13 +97,13 @@ public class Starter {
             wallService.addPost(test1, "It's a-me, Skel, your friend!", skelantros);
             try {
                 wallService.addPost(test2, "I am not a friend of Skel, so my post won't be sent ):", skelantros);
-            } catch(WallNoPostAccessException e) {
+            } catch (WallNoPostAccessException e) {
                 log.info(e.getMessage());
             }
             userService.updatePostAccess(skelantros, User.Access.NOBODY);
             try {
                 wallService.addPost(test1, "I am still a friend of Skel, but I can't send anything on his wall :(", skelantros);
-            } catch(WallNoPostAccessException e) {
+            } catch (WallNoPostAccessException e) {
                 log.info(e.getMessage());
             }
 
@@ -140,10 +135,10 @@ public class Starter {
             groupService.addMembers(group, new HashSet<>(users));
             groupService.removeMember(group, test1);
             try {
-            groupService.addAdministratorByUser(group, skelantros, admin);
-            groupService.banUserByUser(group, test2, admin);
-            groupService.banUserByUser(group, admin, skelantros);
-            groupService.unbanUserByUser(group, admin, skelantros);
+                groupService.addAdministratorByUser(group, skelantros, admin);
+                groupService.banUserByUser(group, test2, admin);
+                groupService.banUserByUser(group, admin, skelantros);
+                groupService.unbanUserByUser(group, admin, skelantros);
             } catch (NotEnoughPermissionsException e) {
                 log.info("no permission: " + e.getMessage());
             }

@@ -397,7 +397,7 @@ public class GroupController {
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
                 User userToBan = userService.findUserById(receivedDataJson.getLong("user_id"));
-                User attempter = userService.findUserById(receivedDataJson.getLong("attempter_id"));
+                User attempter = (User) userService.loadUserByUsername(JwtProvider.getLoginFromToken(jwt));
                 Group group = groupService.findGroupById(groupId);
 
                 groupService.banUserByUser(group, userToBan, attempter);
@@ -450,7 +450,7 @@ public class GroupController {
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
                 User user = userService.findUserById(receivedDataJson.getLong("user_id"));
-                User attempter = userService.findUserById(receivedDataJson.getLong("attempter_id"));
+                User attempter = (User) userService.loadUserByUsername(JwtProvider.getLoginFromToken(jwt));
                 Group group = groupService.findGroupById(groupId);
 
                 groupService.unbanUserByUser(group, user, attempter);
@@ -503,7 +503,7 @@ public class GroupController {
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
                 User user = userService.findUserById(receivedDataJson.getLong("user_id"));
-                User attempter = userService.findUserById(receivedDataJson.getLong("attempter_id"));
+                User attempter = (User) userService.loadUserByUsername(JwtProvider.getLoginFromToken(jwt));
                 Group group = groupService.findGroupById(groupId);
 
                 groupService.addAdministratorByUser(group, user, attempter);
@@ -556,7 +556,7 @@ public class GroupController {
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
                 User user = userService.findUserById(receivedDataJson.getLong("user_id"));
-                User attempter = userService.findUserById(receivedDataJson.getLong("attempter_id"));
+                User attempter = (User) userService.loadUserByUsername(JwtProvider.getLoginFromToken(jwt));
                 Group group = groupService.findGroupById(groupId);
 
                 groupService.removeAdministratorByUser(group, user, attempter);

@@ -170,8 +170,7 @@ public class WallPostsController {
                     data.append(line);
                 }
 
-                JSONObject receivedDataJson = new JSONObject(data.toString());
-                User attempter = userService.findUserById(receivedDataJson.getLong("attempter_id"));
+                User attempter = (User) userService.loadUserByUsername(JwtProvider.getLoginFromToken(jwt));
                 wallService.deletePostByIdByUser(postId, attempter);
 
                 responseJson.put("status", "success");
