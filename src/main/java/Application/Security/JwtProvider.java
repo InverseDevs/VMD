@@ -18,7 +18,6 @@ public class JwtProvider {
         Date date = Date.from(LocalDate.now().plusDays(15).atStartOfDay(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
                 .setSubject(login)
-                .setSubject(password)
                 .setExpiration(date)
                 .signWith(SignatureAlgorithm.HS512, JWT_SECRET)
                 .compact();
