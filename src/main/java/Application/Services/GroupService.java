@@ -1,6 +1,7 @@
 package Application.Services;
 
 import Application.Database.RoleRepository;
+import Application.Entities.Role;
 import Application.Exceptions.Group.*;
 import Application.Database.Group.GroupRepository;
 import Application.Database.Wall.WallRepository;
@@ -8,6 +9,7 @@ import Application.Entities.Group;
 import Application.Entities.User;
 import Application.Exceptions.NotEnoughPermissionsException;
 import Application.Exceptions.User.UserIsNotPersistedException;
+import Application.Starter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,8 @@ public class GroupService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RoleRepository roleRepository;
 
     public Group findGroupById(Long id) {
         return groupRepository.findById(id).orElseThrow(GroupNotFoundException::new);
@@ -125,7 +129,7 @@ public class GroupService {
      * @throws NotEnoughPermissionsException пользователь не имеет соответствующих прав.
      */
     public void banUserByUser(Group group, User toBan, User attempter) throws NotEnoughPermissionsException {
-        if(!group.getAdministrators().contains(attempter))
+        if(!isAdmin(attempter) && !isGroupAdmin(attempter, group))
             throw new NotEnoughPermissionsException();
         banUser(group, toBan);
     }
@@ -138,7 +142,7 @@ public class GroupService {
      * @throws NotEnoughPermissionsException пользователь не имеет соответствующих прав.
      */
     public void unbanUserByUser(Group group, User toUnban, User attempter) throws NotEnoughPermissionsException {
-        if(!group.getAdministrators().contains(attempter))
+        if(!isAdmin(attempter) && !isGroupAdmin(attempter, group))
             throw new NotEnoughPermissionsException();
         unbanUser(group, toUnban);
     }
@@ -152,7 +156,7 @@ public class GroupService {
      * @throws NotEnoughPermissionsException Пользователь не имеет соответствующих прав.
      */
     public void addAdministratorByUser(Group group, User toAdd, User attempter) throws NotEnoughPermissionsException {
-        if(!attempter.equals(group.getOwner()))
+        if(!isAdmin(attempter) && !attempter.equals(group.getOwner()))
             throw new NotEnoughPermissionsException();
         addAdministrator(group, toAdd);
     }
@@ -166,7 +170,7 @@ public class GroupService {
      * @throws NotEnoughPermissionsException Пользователь не имеет соответствующих прав.
      */
     public void removeAdministratorByUser(Group group, User toRemove, User attempter) throws NotEnoughPermissionsException {
-        if(!attempter.equals(group.getOwner()))
+        if(!isAdmin(attempter) && !attempter.equals(group.getOwner()))
             throw new NotEnoughPermissionsException();
         removeAdministrator(group, toRemove);
     }
@@ -198,5 +202,14 @@ public class GroupService {
     public Group removeAdministrator(Group group, User admin)
             throws GroupIsNotPersistedException, UserIsNotPersistedException {
         return this.removeAdministrators(group, Collections.singleton(admin));
+    }
+
+    // TODO метод на данный момент нерабочий, исправить!
+    private boolean isAdmin(User user) {
+        return user.getRoles().contains(roleRepository.findById(Starter.adminRoleId).get());
+    }
+
+    private boolean isGroupAdmin(User user, Group group) {
+        return user.equals(group.getOwner()) || group.getAdministrators().contains(user);
     }
 }
