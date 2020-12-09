@@ -79,25 +79,14 @@ public class WallService {
      * имеет соответствующие права.
      * @param id числовой идентификатор поста.
      * @param attempter пользователь, пытающийся удалить пост.
+     * @throws WallPostNotFoundException пост с данным идентификатором не найден.
      * @throws NotEnoughPermissionsException пользователь не имеет соответствующие права.
      */
-    public void deletePostByIdByUser(long id, User attempter) throws NotEnoughPermissionsException {
-        Optional<WallPost> postOptional = postRepository.findById(id);
-        if(!postOptional.isPresent()) return;
-        WallPost post = postOptional.get();
-        if(!post.getSender().equals(attempter)) {
-            if(post.getPageType() == WallPost.PageType.USER) {
-                User user = ((UserWall) post.getWall()).getUser();
-                if(!user.equals(attempter))
-                    throw new NotEnoughPermissionsException();
-            } else if(post.getPageType() == WallPost.PageType.GROUP) {
-                Group group = ((GroupWall) post.getWall()).getGroup();
-                if(!group.getAdministrators().contains(attempter) && !group.getOwner().equals(attempter))
-                    throw new NotEnoughPermissionsException();
-            } else {
-                throw new RuntimeException();
-            }
-        }
+    public void deletePostByIdByUser(long id, User attempter)
+            throws WallPostNotFoundException, NotEnoughPermissionsException {
+        WallPost post = postRepository.findById(id).orElseThrow(WallPostNotFoundException::new);
+        if(!post.getSender().equals(attempter) && !post.getWall().canDeleteContent(attempter))
+            throw new NotEnoughPermissionsException();
         postRepository.deleteById(id);
     }
 
