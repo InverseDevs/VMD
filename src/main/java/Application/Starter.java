@@ -144,16 +144,21 @@ public class Starter {
 
             WallPost groupPost = wallService.addPost(nixon, "Hello group!", group);
 
-            Comment groupComment = new Comment(nixon, "This post is wonderful!",
-                    LocalDateTime.now(), groupPost);
-            Comment groupComplexComment = new Comment(skelantros, "I am an admin here!",
-                    LocalDateTime.now(), groupPost);
-            Comment groupInnerComment = new Comment(test2, "Hello admin!",
-                    LocalDateTime.now(), groupPost);
-            groupInnerComment.setReferenceComment(groupComplexComment);
-            commentService.addComment(groupComment);
-            commentService.addComment(groupComplexComment);
-            commentService.addComment(groupInnerComment);
+//            Comment groupComment = new Comment(nixon, "This post is wonderful!",
+//                    LocalDateTime.now(), groupPost);
+//            Comment groupComplexComment = new Comment(skelantros, "I am an admin here!",
+//                    LocalDateTime.now(), groupPost);
+//            Comment groupInnerComment = new Comment(test2, "Hello admin!",
+//                    LocalDateTime.now(), groupPost);
+//            groupInnerComment.setReferenceComment(groupComplexComment);
+
+            Comment groupComment = commentService.addComment(nixon, "This post is wonderful!", groupPost);
+            Comment groupComplexComment = commentService.addComment(skelantros, "I am an admin here!", groupPost);
+            Comment groupInnerComment = commentService.addComment(test1, "Hello admin!", groupPost, groupComplexComment);
+
+            //commentService.addComment(groupComment);
+            //commentService.addComment(groupComplexComment);
+            //commentService.addComment(groupInnerComment);
         };
     }
 }
