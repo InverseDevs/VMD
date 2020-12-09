@@ -59,6 +59,12 @@ public class Comment extends Content {
         this.post = post;
     }
 
+    public Comment(User sender, String content, LocalDateTime sentTime, WallPost post, Comment referenceComment) {
+        super(sender, content, sentTime);
+        this.post = post;
+        this.referenceComment = referenceComment;
+    }
+
     public JSONObject toJson() {
         JSONObject resultJson = new JSONObject();
         resultJson.put("id", this.getId() == null ? "" : this.getId());
