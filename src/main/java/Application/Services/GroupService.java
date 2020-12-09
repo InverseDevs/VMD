@@ -1,5 +1,6 @@
 package Application.Services;
 
+import Application.Database.RoleRepository;
 import Application.Exceptions.Group.*;
 import Application.Database.Group.GroupRepository;
 import Application.Database.Wall.WallRepository;
@@ -25,6 +26,7 @@ public class GroupService {
     private WallRepository wallRepository;
     @Autowired
     private UserService userService;
+
 
     public Group findGroupById(Long id) {
         return groupRepository.findById(id).orElseThrow(GroupNotFoundException::new);
@@ -178,22 +180,22 @@ public class GroupService {
         return method.apply(group, users);
     }
 
-    private Group banUser(Group group, User user)
+    public Group banUser(Group group, User user)
             throws GroupIsNotPersistedException, UserIsNotPersistedException {
         return this.banUsers(group, Collections.singleton(user));
     }
 
-    private Group unbanUser(Group group, User user)
+    public Group unbanUser(Group group, User user)
             throws GroupIsNotPersistedException, UserIsNotPersistedException {
         return this.unbanUsers(group, Collections.singleton(user));
     }
 
-    private Group addAdministrator(Group group, User admin)
+    public Group addAdministrator(Group group, User admin)
             throws GroupIsNotPersistedException, UserIsNotPersistedException {
         return this.addAdministrators(group, Collections.singleton(admin));
     }
 
-    private Group removeAdministrator(Group group, User admin)
+    public Group removeAdministrator(Group group, User admin)
             throws GroupIsNotPersistedException, UserIsNotPersistedException {
         return this.removeAdministrators(group, Collections.singleton(admin));
     }

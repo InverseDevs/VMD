@@ -134,14 +134,10 @@ public class Starter {
             Group group = groupService.createGroup("Test group", "test", nixon);
             groupService.addMembers(group, new HashSet<>(users));
             groupService.removeMember(group, test1);
-            try {
-                groupService.addAdministratorByUser(group, skelantros, admin);
-                groupService.banUserByUser(group, test2, admin);
-                groupService.banUserByUser(group, admin, skelantros);
-                groupService.unbanUserByUser(group, admin, skelantros);
-            } catch (NotEnoughPermissionsException e) {
-                log.info("no permission: " + e.getMessage());
-            }
+            groupService.addAdministrator(group, skelantros);
+            groupService.banUser(group, test2);
+            groupService.banUser(group, skelantros);
+            groupService.unbanUser(group, skelantros);
 
             WallPost groupPost = wallService.addPost(nixon, "Hello group!", group);
 
