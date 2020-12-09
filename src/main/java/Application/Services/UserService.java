@@ -10,6 +10,7 @@ import Application.Exceptions.User.Exist.UserAlreadyExistsByEmail;
 import Application.Exceptions.User.Exist.UserAlreadyExistsByUsername;
 import Application.Exceptions.User.NoUserFoundException;
 import Application.Exceptions.User.UserIsNotPersistedException;
+import Application.Starter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -32,8 +33,8 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private RoleRepository roleRepository;
-    private Role getUserRole() { return roleRepository.findById(1L).get(); }
-    private Role getAdminRole() { return roleRepository.findById(2L).get(); }
+    private Role getUserRole() { return roleRepository.findById(Starter.userRoleId).get(); }
+    private Role getAdminRole() { return roleRepository.findById(Starter.adminRoleId).get(); }
 
 
     @Override
