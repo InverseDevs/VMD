@@ -38,17 +38,12 @@ public class CommentService {
         return comment;
     }
 
-    public Comment addComment(User sender, String content, WallPost post)
-            throws WallPostNotFoundException, NotEnoughPermissionsException {
-        return addComment(sender, content, post, null);
-    }
-
-    public Comment addComment(User sender, String content, WallPost post, Comment referenceComment)
+    public Comment addComment(User sender, String content, WallPost post, Comment referenceComment, byte[] picture)
             throws WallPostNotFoundException, NotEnoughPermissionsException {
         WallPost updatedPost = postRepository.findById(post.getId()).orElseThrow(WallPostNotFoundException::new);
         if(!updatedPost.getWall().canComment(sender))
             throw new NotEnoughPermissionsException();
-        return commentRepository.save(new Comment(sender, content, LocalDateTime.now(), post, referenceComment));
+        return commentRepository.save(new Comment(sender, content, LocalDateTime.now(), post, referenceComment, picture));
     }
 
     @Deprecated
@@ -57,12 +52,6 @@ public class CommentService {
         if(!comment.getPost().getWall().canComment(comment.getSender()))
             throw new NotEnoughPermissionsException();
         commentRepository.save(comment);
-    }
-
-    public void deleteComment(Long commentId) throws CommentNotFoundException {
-        if(!commentRepository.existsById(commentId))
-            throw new CommentNotFoundException();
-        commentRepository.deleteById(commentId);
     }
 
     public void deleteCommentByUser(Long commentId, User attempter)

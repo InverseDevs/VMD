@@ -152,9 +152,12 @@ public class Starter {
 //                    LocalDateTime.now(), groupPost);
 //            groupInnerComment.setReferenceComment(groupComplexComment);
 
-            Comment groupComment = commentService.addComment(nixon, "This post is wonderful!", groupPost);
-            Comment groupComplexComment = commentService.addComment(skelantros, "I am an admin here!", groupPost);
-            Comment groupInnerComment = commentService.addComment(test1, "Hello admin!", groupPost, groupComplexComment);
+            Comment groupComment = commentService.addComment(
+                    nixon, "This post is wonderful!", groupPost, null, null);
+            Comment groupComplexComment = commentService.addComment(
+                    skelantros, "I am an admin here!", groupPost, null, null);
+            Comment groupInnerComment = commentService.addComment(
+                    test1, "Hello admin!", groupPost, groupComplexComment, null);
 
             //commentService.addComment(groupComment);
             //commentService.addComment(groupComplexComment);

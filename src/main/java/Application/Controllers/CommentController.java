@@ -52,21 +52,18 @@ public class CommentController {
                 }
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
-                String sender = receivedDataJson.getString("sender");
+                String senderFromJson = receivedDataJson.getString("sender");
                 String content = receivedDataJson.getString("content");
-                User user = (User) userService.loadUserByUsername(sender);
+                String picture = receivedDataJson.getString("picture");
+                User sender = (User) userService.loadUserByUsername(senderFromJson);
                 WallPost post = wallService.findPostById(post_id);
 
-                Comment comment = new Comment(
-                        user,
+                commentService.addComment(
+                        sender,
                         content,
-                        LocalDateTime.now(),
-                        post);
-
-                String picture = receivedDataJson.getString("picture");
-                comment.setPicture(picture.getBytes());
-
-                commentService.addComment(comment);
+                        post,
+                        null,
+                        picture.getBytes());
 
                 responseJson.put("status", "success");
             } else {
@@ -112,24 +109,19 @@ public class CommentController {
                 }
 
                 JSONObject receivedDataJson = new JSONObject(data.toString());
-                String sender = receivedDataJson.getString("sender");
+                String userFromJson = receivedDataJson.getString("sender");
                 String content = receivedDataJson.getString("content");
-                User user = (User) userService.loadUserByUsername(sender);
+                String picture = receivedDataJson.getString("picture");
+                User sender = (User) userService.loadUserByUsername(userFromJson);
                 Comment comment = commentService.findById(comment_id);
                 WallPost post = wallService.findPostById(comment.getPost().getId());
 
-                Comment newComment = new Comment(
-                        user,
+                commentService.addComment(
+                        sender,
                         content,
-                        LocalDateTime.now(),
-                        post);
-                newComment.setReferenceComment(
-                        comment.getReferenceComment() == null ? comment : comment.getReferenceComment());
-
-                String picture = receivedDataJson.getString("picture");
-                newComment.setPicture(picture.getBytes());
-
-                commentService.addComment(newComment);
+                        post,
+                        comment.getReferenceComment() == null ? comment : comment.getReferenceComment(),
+                        picture.getBytes());
 
                 responseJson.put("status", "success");
             } else {
@@ -225,7 +217,7 @@ public class CommentController {
             String jwt = header.substring(7);
 
             if (JwtProvider.validateToken(jwt)) {
-                commentService.deleteComment(commentId);
+                commentService.deleteCommentByUser(commentId, (User) userService.loadUserByUsername(JwtProvider.getLoginFromToken(jwt)));
 
                 responseJson.put("status", "success");
             } else {

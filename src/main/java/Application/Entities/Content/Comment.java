@@ -59,10 +59,11 @@ public class Comment extends Content {
         this.post = post;
     }
 
-    public Comment(User sender, String content, LocalDateTime sentTime, WallPost post, Comment referenceComment) {
+    public Comment(User sender, String content, LocalDateTime sentTime, WallPost post, Comment referenceComment, byte[] picture) {
         super(sender, content, sentTime);
         this.post = post;
         this.referenceComment = referenceComment;
+        this.picture = picture;
     }
 
     public JSONObject toJson() {
