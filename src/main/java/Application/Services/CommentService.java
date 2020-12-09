@@ -1,9 +1,18 @@
 package Application.Services;
 
+import Application.Database.Wall.WallRepository;
+import Application.Database.WallPostRepository;
+import Application.Entities.Content.WallPost;
+import Application.Entities.Group;
+import Application.Entities.Wall.GroupWall;
+import Application.Entities.Wall.UserWall;
+import Application.Entities.Wall.Wall;
 import Application.Exceptions.Comment.CommentNotFoundException;
 import Application.Database.CommentRepository;
 import Application.Entities.Content.Comment;
 import Application.Entities.User;
+import Application.Exceptions.NotEnoughPermissionsException;
+import Application.Exceptions.WallPost.WallPostNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +25,8 @@ import java.util.Optional;
 public class CommentService {
     @Autowired
     CommentRepository commentRepository;
+    @Autowired
+    WallPostRepository postRepository;
 
     public Comment findById(Long id) {
         Comment comment = commentRepository.findById(id).orElse(null);
@@ -27,17 +38,33 @@ public class CommentService {
         return comment;
     }
 
-    public void addComment(Comment comment) {
+    public void addComment(User sender, String content, WallPost post)
+            throws WallPostNotFoundException, NotEnoughPermissionsException {
+        WallPost updatedPost = postRepository.findById(post.getId()).orElseThrow(WallPostNotFoundException::new);
+        if(!updatedPost.getWall().canComment(sender))
+            throw new NotEnoughPermissionsException();
+        commentRepository.save(new Comment(sender, content, LocalDateTime.now(), post));
+    }
+
+    @Deprecated
+    public void addComment(Comment comment) throws NotEnoughPermissionsException {
         comment.setSentTime(LocalDateTime.now());
+        if(!comment.getPost().getWall().canComment(comment.getSender()))
+            throw new NotEnoughPermissionsException();
         commentRepository.save(comment);
     }
 
-    public void deleteComment(Long commentId) {
-        Optional<Comment> commentOptional = commentRepository.findById(commentId);
+    public void deleteComment(Long commentId) throws CommentNotFoundException {
+        if(!commentRepository.existsById(commentId))
+            throw new CommentNotFoundException();
+        commentRepository.deleteById(commentId);
+    }
 
-        if (!commentOptional.isPresent()) {
-            throw new CommentNotFoundException("comment not found");
-        }
+    public void deleteCommentByUser(Long commentId, User attempter)
+            throws CommentNotFoundException, NotEnoughPermissionsException {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
+        if(!comment.getSender().equals(attempter) || !comment.getPost().getWall().canDeleteContent(attempter))
+            throw new NotEnoughPermissionsException();
         commentRepository.deleteById(commentId);
     }
 
