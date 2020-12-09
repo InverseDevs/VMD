@@ -32,6 +32,11 @@ public class GroupWall extends Wall {
         return hasAccess(group.getCommentAccess(), user);
     }
 
+    @Override
+    public boolean canDeleteContent(User user) {
+        return user.equals(this.group.getOwner()) || this.group.getAdministrators().contains(user);
+    }
+
     private boolean hasAccess(Group.Access access, User user) {
         if(group.getOwner().equals(user)) return true;
         if(group.getBannedUsers().contains(user)) return false;

@@ -25,4 +25,5 @@ public abstract class Wall {
 
     public abstract boolean canPost(User user);
     public abstract boolean canComment(User user);
+    public abstract boolean canDeleteContent(User user);
 }

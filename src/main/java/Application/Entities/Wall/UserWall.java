@@ -32,6 +32,11 @@ public class UserWall extends Wall {
         return hasAccess(this.user.getCommentAccess(), user);
     }
 
+    @Override
+    public boolean canDeleteContent(User user) {
+        return user.equals(this.user);
+    }
+
     // TODO на данный момент метод работает неправильно, переделать!
     private boolean hasAccess(User.Access access, User user) {
         // TODO добавить поддержку администраторов
