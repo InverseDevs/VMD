@@ -102,6 +102,7 @@ public class Group {
     }
 
     public void removeMember(User user) {
+        administrators.remove(user);
         members.remove(user);
     }
 
