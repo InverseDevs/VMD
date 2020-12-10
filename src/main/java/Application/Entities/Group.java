@@ -7,13 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 @Entity
@@ -126,57 +126,49 @@ public class Group {
         groupJson.put("picture", this.picture == null ? "" : new String(picture));
 
         if (this.getWall() != null && !this.getWall().getPosts().isEmpty()) {
-            JSONObject postsJson = new JSONObject();
+            JSONArray postsArray = new JSONArray();
 
-            AtomicInteger postIdx = new AtomicInteger();
             Stream<WallPost> postsStream = this.getWall().getPosts().stream().sorted(
                     (post1, post2) -> post2.getSentTime().compareTo(post1.getSentTime()));
-            postsStream.forEach(post -> {
-                postsJson.put("post_" + postIdx.incrementAndGet(), post.toJson());
-            });
-            groupJson.put("posts", postsJson);
+            postsStream.forEach(post -> postsArray.put(post.toJson()));
+
+            groupJson.put("posts", postsArray);
         } else {
             groupJson.put("posts", "");
         }
 
         if (this.getAdministrators() != null && !this.getAdministrators().isEmpty()) {
-            JSONObject adminsJson = new JSONObject();
+            JSONArray adminsArray = new JSONArray();
 
-            AtomicInteger adminIdx = new AtomicInteger();
             Stream<User> adminsStream = this.getAdministrators().stream().sorted(
                     (admin1, admin2) -> admin2.getName().compareTo(admin1.getName()));
-            adminsStream.forEach(admin -> {
-                adminsJson.put("admin_" + adminIdx.incrementAndGet(), admin.toJson());
-            });
-            groupJson.put("admins", adminsJson);
+            adminsStream.forEach(admin -> adminsArray.put(admin.toJson()));
+
+            groupJson.put("admins", adminsArray);
         } else {
             groupJson.put("admins", "");
         }
 
         if (this.getBannedUsers() != null && !this.getBannedUsers().isEmpty()) {
-            JSONObject bannedUsersJson = new JSONObject();
+            JSONArray bannedUsersArray = new JSONArray();
 
-            AtomicInteger bannedUserIdx = new AtomicInteger();
             Stream<User> bannedUsersStream = this.getBannedUsers().stream().sorted(
                     (bannedUser1, bannedUser2) -> bannedUser2.getName().compareTo(bannedUser1.getName()));
-            bannedUsersStream.forEach(bannedUser -> {
-                bannedUsersJson.put("banned_user_" + bannedUserIdx.incrementAndGet(), bannedUser.toJson());
-            });
-            groupJson.put("banned_users", bannedUsersJson);
+            bannedUsersStream.forEach(bannedUser -> bannedUsersArray.put(bannedUser.toJson()));
+
+            groupJson.put("banned_users", bannedUsersArray);
         } else {
             groupJson.put("banned_users", "");
         }
 
         if (this.getMembers() != null && !this.getMembers().isEmpty()) {
-            JSONObject membersJson = new JSONObject();
+            JSONArray membersArray = new JSONArray();
 
-            AtomicInteger memberIdx = new AtomicInteger();
             Stream<User> membersStream = this.getMembers().stream().sorted(
                     (member1, member2) -> member2.getName().compareTo(member1.getName()));
-            membersStream.forEach(member -> {
-                membersJson.put("member_" + memberIdx.incrementAndGet(), member.toJson());
-            });
-            groupJson.put("members", membersJson);
+            membersStream.forEach(member -> membersArray.put(member.toJson()));
+
+            groupJson.put("members", membersArray);
         } else {
             groupJson.put("members", "");
         }

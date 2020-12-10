@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -15,7 +16,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 @Entity
@@ -58,14 +58,14 @@ public class WallPost extends Content {
     }
 
     public Long getPageId() {
-        if(wall instanceof UserWall) return ((UserWall) wall).getUser().getId();
-        else if(wall instanceof GroupWall) return ((GroupWall) wall).getGroup().getId();
+        if (wall instanceof UserWall) return ((UserWall) wall).getUser().getId();
+        else if (wall instanceof GroupWall) return ((GroupWall) wall).getGroup().getId();
         else return null;
     }
 
     public PageType getPageType() {
-        if(wall instanceof UserWall) return PageType.USER;
-        else if(wall instanceof GroupWall) return PageType.GROUP;
+        if (wall instanceof UserWall) return PageType.USER;
+        else if (wall instanceof GroupWall) return PageType.GROUP;
         else return null;
     }
 
@@ -98,26 +98,25 @@ public class WallPost extends Content {
         post.put("picture", this.getPicture() == null ? "" : new String(this.getPicture()));
 
         if (!getLikes().isEmpty()) {
-            JSONObject likesJson = new JSONObject();
-            int userIdx = 0;
+            JSONArray likesArray = new JSONArray();
+
             for (User user : getLikes()) {
-                likesJson.put("like_" + ++userIdx, user.toJson());
+                likesArray.put(user.toJson());
             }
-            post.put("likes", likesJson);
+
+            post.put("likes", likesArray);
         } else {
             post.put("likes", "");
         }
 
         if (!getComments().isEmpty()) {
-            JSONObject commentsJson = new JSONObject();
+            JSONArray commentsArray = new JSONArray();
 
-            AtomicInteger commentIdx = new AtomicInteger();
             Stream<Comment> commentStream = this.getComments().stream().sorted(
                     (comment1, comment2) -> comment2.getSentTime().compareTo(comment1.getSentTime()));
-            commentStream.forEach(comment -> {
-                commentsJson.put("comment_" + commentIdx.incrementAndGet(), comment.toJson());
-            });
-            post.put("comments", commentsJson);
+            commentStream.forEach(comment -> commentsArray.put(comment.toJson()));
+
+            post.put("comments", commentsArray);
         } else {
             post.put("comments", "");
         }

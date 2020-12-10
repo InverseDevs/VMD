@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.persistence.*;
@@ -12,7 +13,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 @Entity
@@ -78,25 +78,24 @@ public class Comment extends Content {
         resultJson.put("picture", this.getPicture() == null ? "" : new String(this.getPicture()));
 
         if (!getLikes().isEmpty()) {
-            JSONObject likesJson = new JSONObject();
-            int userIdx = 0;
+            JSONArray likesArray = new JSONArray();
+
             for (User user : getLikes()) {
-                likesJson.put("like_" + ++userIdx, user.toJson());
+                likesArray.put(user.toJson());
             }
-            resultJson.put("likes", likesJson);
+            resultJson.put("likes", likesArray);
         } else {
             resultJson.put("likes", "");
         }
 
         if (!getComments().isEmpty()) {
-            JSONObject commentsJson = new JSONObject();
-            AtomicInteger commentIdx = new AtomicInteger();
+            JSONArray commentsArray = new JSONArray();
+
             Stream<Comment> commentStream = this.getComments().stream().sorted(
                     (comment1, comment2) -> comment2.getSentTime().compareTo(comment1.getSentTime()));
-            commentStream.forEach(comment -> {
-                commentsJson.put("comment_" + commentIdx.incrementAndGet(), comment.toJson());
-            });
-            resultJson.put("comments", commentsJson);
+            commentStream.forEach(comment -> commentsArray.put(comment.toJson()));
+
+            resultJson.put("comments", commentsArray);
         } else {
             resultJson.put("comments", "");
         }

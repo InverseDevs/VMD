@@ -3,6 +3,7 @@ package Application.Entities;
 import Application.Entities.Wall.UserWall;
 import lombok.*;
 import org.hibernate.annotations.Type;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 @Getter
@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@Setter(AccessLevel.PRIVATE)
@@ -173,36 +173,37 @@ public class User implements UserDetails {
         userJson.put("online", this.getOnline() != null && this.getOnline());
 
         if (!this.getRoles().isEmpty()) {
-            JSONObject rolesJson = new JSONObject();
-            int roleIdx = 0;
+            JSONArray rolesArray = new JSONArray();
+
             for (Role role : this.getRoles()) {
-                rolesJson.put("role_" + ++roleIdx, role.getAuthority());
+                rolesArray.put(role.getAuthority());
             }
-            userJson.put("roles", rolesJson);
+
+            userJson.put("roles", rolesArray);
         } else {
             userJson.put("roles", "");
         }
 
         if (!getFriends().isEmpty()) {
-            JSONObject friendsJson = new JSONObject();
-            AtomicInteger friendIdx = new AtomicInteger();
+            JSONArray friendsArray = new JSONArray();
+
             Stream<User> friendStream = this.getFriends().stream().sorted(
                     (friend1, friend2) -> friend2.getName().compareTo(friend1.getName()));
-            friendStream.forEach(friend -> {
-                friendsJson.put("friend_" + friendIdx.incrementAndGet(), friend.getId());
-            });
-            userJson.put("friends", friendsJson);
+            friendStream.forEach(friend -> friendsArray.put(friend.getId()));
+
+            userJson.put("friends", friendsArray);
         } else {
             userJson.put("friends", "");
         }
 
         if (!friendRequests.isEmpty()) {
-            JSONObject friendsRequestsJson = new JSONObject();
-            int friendRequestIdx = 0;
+            JSONArray friendsRequestsArray = new JSONArray();
+
             for (User friendRequest : this.getFriendRequests()) {
-                friendsRequestsJson.put("friend_request_" + ++friendRequestIdx, friendRequest.getId());
+                friendsRequestsArray.put(friendRequest.getId());
             }
-            userJson.put("friends_requests", friendsRequestsJson);
+
+            userJson.put("friends_requests", friendsRequestsArray);
         } else {
             userJson.put("friends_requests", "");
         }

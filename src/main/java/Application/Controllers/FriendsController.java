@@ -4,6 +4,7 @@ import Application.Entities.User;
 import Application.Security.JwtProvider;
 import Application.Services.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,19 +41,21 @@ public class FriendsController {
                 Set<User> friends = new HashSet<>(user.getFriends());
                 Set<User> friendRequests = new HashSet<>(user.getFriendRequests());
 
-                JSONObject friendsJson = new JSONObject();
-                int friendIdx = 0;
-                for (User friend : friends) {
-                    friendsJson.put("friend_" + ++friendIdx, friend.toJson());
-                }
-                responseJson.put("friends", friendsJson);
+                JSONArray friendsArray = new JSONArray();
 
-                JSONObject friendsRequestsJson = new JSONObject();
-                int friendRequestIdx = 0;
-                for (User friendRequest : friendRequests) {
-                    friendsRequestsJson.put("friend_request_" + ++friendRequestIdx, friendRequest.toJson());
+                for (User friend : friends) {
+                    friendsArray.put(friend.toJson());
                 }
-                responseJson.put("friends_requests", friendsRequestsJson);
+
+                responseJson.put("friends", friendsArray);
+
+                JSONArray friendsRequestsArray = new JSONArray();
+
+                for (User friendRequest : friendRequests) {
+                    friendsRequestsArray.put(friendRequest.toJson());
+                }
+
+                responseJson.put("friends_requests", friendsRequestsArray);
             } else {
                 responseJson.put("status", "user not authorized");
             }

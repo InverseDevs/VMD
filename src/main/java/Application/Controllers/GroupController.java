@@ -9,6 +9,7 @@ import Application.Security.JwtProvider;
 import Application.Services.GroupService;
 import Application.Services.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,13 +127,13 @@ public class GroupController {
                 User user = userService.findUserById(userId);
 
                 List<Group> groups = groupService.findAllGroupsByUserId(userId);
-                JSONObject groupsJson = new JSONObject();
+                JSONArray groupsArray = new JSONArray();
 
-                int groupIdx = 0;
                 for (Group group : groups) {
-                    groupsJson.put("group_" + ++groupIdx, group.toJson());
+                    groupsArray.put(group.toJson());
                 }
-                responseJson.put("groups", groupsJson);
+
+                responseJson.put("groups", groupsArray);
             } else {
                 log.info("user not authorized");
                 responseJson.put("status", "user not authorized");
@@ -355,13 +356,13 @@ public class GroupController {
 
             if (JwtProvider.validateToken(jwt)) {
                 List<Group> groups = groupService.findAllGroups();
-                JSONObject groupsJson = new JSONObject();
+                JSONArray groupsArray = new JSONArray();
 
-                int groupIdx = 0;
                 for (Group group : groups) {
-                    groupsJson.put("group_" + ++groupIdx, group.toJson());
+                    groupsArray.put(group.toJson());
                 }
-                responseJson.put("groups", groupsJson);
+
+                responseJson.put("groups", groupsArray);
             } else {
                 log.info("user not authorized");
                 responseJson.put("status", "user not authorized");

@@ -10,6 +10,7 @@ import Application.Services.GroupService;
 import Application.Services.UserService;
 import Application.Services.WallService;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,13 +59,13 @@ public class WallPostsController {
                     postsList.add(post);
                 }
 
-                AtomicInteger postIdx = new AtomicInteger();
+                JSONArray postsArray = new JSONArray();
+
                 Stream<WallPost> postsStream = postsList.stream().sorted(
                         (post1, post2) -> post2.getSentTime().compareTo(post1.getSentTime()));
-                postsStream.forEach(post -> {
-                    responseJson.put("post_" + postIdx.incrementAndGet(), post.toJson());
-                });
+                postsStream.forEach(post -> postsArray.put(post.toJson()));
 
+                responseJson.put("posts", postsArray);
             } else {
                 log.info("user not authorized");
                 responseJson.put("status", "user not authorized");

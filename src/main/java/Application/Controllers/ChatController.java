@@ -102,12 +102,12 @@ public class ChatController {
                 User user = userService.findUserById(userId);
 
                 Set<Chat> chats = chatService.getAllChatsByUser(user);
-                JSONObject chatsJson = new JSONObject();
-                int chatIdx = 0;
+                JSONArray chatsArray = new JSONArray();
                 for (Chat chat : chats) {
-                    chatsJson.put("chat_" + ++chatIdx, chat.toJson());
+                    chatsArray.put(chat.toJson());
                 }
-                responseJson.put("chats", chatsJson);
+
+                responseJson.put("chats", chatsArray);
             } else {
                 log.info("user not authorized");
                 responseJson.put("status", "user not authorized");
@@ -268,12 +268,11 @@ public class ChatController {
                     for (ChatMessage message : messages) {
                         jsonArray.put(message.toJson());
                     }
-                    responseJson.put("messages", jsonArray);
 
+                    responseJson.put("messages", jsonArray);
                 } catch (IndexOutOfBoundsException e) {
                     responseJson.put("status", "no messages");
                 }
-
             } else {
                 log.info("user not authorized");
                 responseJson.put("status", "user not authorized");

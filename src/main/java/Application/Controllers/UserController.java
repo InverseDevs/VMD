@@ -5,6 +5,7 @@ import Application.Exceptions.User.NoUserFoundException;
 import Application.Security.JwtProvider;
 import Application.Services.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +40,13 @@ public class UserController {
             if (JwtProvider.validateToken(jwt)) {
                 List<User> users = userService.allUsers();
 
-                int idx = 0;
+                JSONArray usersArray = new JSONArray();
+
                 for (User user : users) {
-                    responseJson.put("user_" + ++idx, user.toJson());
+                    usersArray.put(user.toJson());
                 }
+
+                responseJson.put("users", usersArray);
             } else {
                 log.info("user not authorized");
                 responseJson.put("status", "user not authorized");

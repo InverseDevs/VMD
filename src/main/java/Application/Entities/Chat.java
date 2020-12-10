@@ -24,13 +24,13 @@ public class Chat {
     @Setter(AccessLevel.PRIVATE)
     private Long id;
 
-    @OneToMany(mappedBy="chat", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMessage> messages = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(name="chats_to_users",
-    joinColumns = @JoinColumn(name = "chat_id"),
-    inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JoinTable(name = "chats_to_users",
+            joinColumns = @JoinColumn(name = "chat_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> users = new HashSet<>();
 
     @Lob
@@ -52,19 +52,19 @@ public class Chat {
         chatJson.put("chat_id", this.getId() == null ? "" : this.getId());
         chatJson.put("picture", this.getPicture() == null ? "" : new String(this.getPicture()));
 
-        JSONObject usersJson = new JSONObject();
-        int userIdx = 0;
+        JSONArray usersArray = new JSONArray();
         for (User user : this.getUsers()) {
-            usersJson.put("user_" + ++userIdx, user.toJson());
+            usersArray.put(user.toJson());
         }
-        chatJson.put("users", usersJson);
+
+        chatJson.put("users", usersArray);
 
         return chatJson;
     }
 
     @Override
     public boolean equals(Object o) {
-        if(!(o instanceof Chat)) return false;
+        if (!(o instanceof Chat)) return false;
         Chat chat = (Chat) o;
         return this.messages.equals(chat.messages) && this.users.equals(chat.users);
     }
