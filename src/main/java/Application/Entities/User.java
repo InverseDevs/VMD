@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-class User implements UserDetails {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@Setter(AccessLevel.PRIVATE)

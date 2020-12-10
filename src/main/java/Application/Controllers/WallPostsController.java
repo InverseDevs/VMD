@@ -1,10 +1,9 @@
 package Application.Controllers;
 
-import Application.Entities.Content.Comment;
-import Application.Exceptions.NotEnoughPermissionsException;
-import Application.Exceptions.WallPost.WallPostNotFoundException;
 import Application.Entities.Content.WallPost;
 import Application.Entities.User;
+import Application.Exceptions.NotEnoughPermissionsException;
+import Application.Exceptions.WallPost.WallPostNotFoundException;
 import Application.Security.JwtProvider;
 import Application.Services.GroupService;
 import Application.Services.UserService;
@@ -21,11 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.AbstractCollection;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 @Slf4j
