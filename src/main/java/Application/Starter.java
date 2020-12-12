@@ -42,8 +42,10 @@ public class Starter {
     CommandLineRunner addDefaultDbNotes() {
         return (String... args) -> {
             try {
-                //roleRepo.save(new Role(userRoleId, "ROLE_USER"));
-                //roleRepo.save(new Role(adminRoleId, "ROLE_ADMIN"));
+                if(!roleRepo.existsById(userRoleId))
+                    roleRepo.save(new Role(userRoleId, "ROLE_USER"));
+                if(!roleRepo.existsById(adminRoleId))
+                    roleRepo.save(new Role(adminRoleId, "ROLE_ADMIN"));
 
                 User admin = userService.createUser("admin", "admin", "admin@vmd.com",
                         "Admin", "VMD", LocalDate.parse("1988-01-01"));
