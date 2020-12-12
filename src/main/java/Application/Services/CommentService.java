@@ -57,7 +57,7 @@ public class CommentService {
     public void deleteCommentByUser(Long commentId, User attempter)
             throws CommentNotFoundException, NotEnoughPermissionsException {
         Comment comment = commentRepository.findById(commentId).orElseThrow(CommentNotFoundException::new);
-        if(!comment.getSender().equals(attempter) || !comment.getPost().getWall().canDeleteContent(attempter))
+        if(!comment.getSender().equals(attempter) && !comment.getPost().getWall().canDeleteContent(attempter))
             throw new NotEnoughPermissionsException();
         commentRepository.deleteById(commentId);
     }
