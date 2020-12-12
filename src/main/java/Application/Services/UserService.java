@@ -114,6 +114,8 @@ public class UserService implements UserDetailsService {
     public void makeFriends(User user1, User user2) {
         userRepository.addFriend(user1, user2);
         userRepository.addFriend(user2, user1);
+        userRepository.deleteFriendRequest(user1, user2);
+        userRepository.deleteFriendRequest(user2, user1);
     }
 
     public void addFriendRequest(User user, User friend) {
