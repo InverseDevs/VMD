@@ -41,13 +41,17 @@ public class Starter {
     @Bean
     CommandLineRunner addDefaultDbNotes() {
         return (String... args) -> {
-            roleRepo.save(new Role(userRoleId, "ROLE_USER"));
-            roleRepo.save(new Role(adminRoleId, "ROLE_ADMIN"));
+            try {
+                //roleRepo.save(new Role(userRoleId, "ROLE_USER"));
+                //roleRepo.save(new Role(adminRoleId, "ROLE_ADMIN"));
 
-            User admin = userService.createUser("admin", "admin", "admin@vmd.com",
-                    "Admin", "VMD", LocalDate.parse("1988-01-01"));
-            userService.makeAdmin(admin);
-            userService.permitUser(admin);
+                User admin = userService.createUser("admin", "admin", "admin@vmd.com",
+                        "Admin", "VMD", LocalDate.parse("1988-01-01"));
+                userService.makeAdmin(admin);
+                userService.permitUser(admin);
+            } catch (Exception e) {
+                log.info("init info lready exists");
+            }
         };
     }
 }
