@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 @Slf4j
 @Controller
@@ -101,11 +103,11 @@ public class ChatController {
                 }
                 User user = userService.findUserById(userId);
 
-                Set<Chat> chats = chatService.getAllChatsByUser(user);
                 JSONArray chatsArray = new JSONArray();
-                for (Chat chat : chats) {
-                    chatsArray.put(chat.toJson());
-                }
+
+                Stream<Chat> chatStream = chatService.getAllChatsByUser(user).stream().sorted(
+                        Comparator.comparing(Chat::getId));
+                chatStream.forEach(chat -> chatsArray.put(chat.toJson()));
 
                 responseJson.put("chats", chatsArray);
             } else {

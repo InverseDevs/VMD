@@ -52,7 +52,7 @@ public class Starter {
                 userService.makeAdmin(admin);
                 userService.permitUser(admin);
             } catch (Exception e) {
-                log.info("init info lready exists");
+                log.info("init info already exists");
             }
         };
     }
