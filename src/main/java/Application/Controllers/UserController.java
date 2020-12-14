@@ -310,9 +310,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/user/ping/{id}", method = RequestMethod.POST)
-    @ResponseBody
-    public String ping(@PathVariable("id") Long userId, HttpServletRequest request) {
-        JSONObject responseJson = new JSONObject();
+    public void ping(@PathVariable("id") Long userId, HttpServletRequest request) {
         try {
             String header = request.getHeader("Authorization");
             if (header == null) {
@@ -324,23 +322,15 @@ public class UserController {
                 User user = userService.findUserById(userId);
 
                 log.info("ping " + LocalDate.now());
-
-                responseJson.put("status", "success");
             } else {
                 log.info("user not authorized");
-                responseJson.put("status", "user not authorized");
             }
         } catch (MissingRequestHeaderException e) {
             log.error("incorrect request headers: " + e.getMessage());
-            responseJson.put("status", "incorrect request headers");
         } catch (UsernameNotFoundException e) {
             log.error("user not found: " + e.getMessage());
-            responseJson.put("status", "user not found");
         } catch (Exception e) {
             log.error("unknown error: " + e.getMessage());
-            responseJson.put("status", "unknown error");
         }
-
-        return responseJson.toString();
     }
 }
