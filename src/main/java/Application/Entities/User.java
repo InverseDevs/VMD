@@ -178,8 +178,6 @@ public class User implements UserDetails {
         userJson.put("last_online", this.getLastOnline() == null ? "" :
                 this.getLastOnline().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
 
-        log.info(this.getId() + " lo " + this.getLastOnline());
-
         userJson.put("online", Duration.between(this.getLastOnline(), LocalDateTime.now()).getSeconds() < 120L);
 
         if (!this.getRoles().isEmpty()) {
