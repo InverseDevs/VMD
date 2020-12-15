@@ -2,6 +2,7 @@ package Application.Entities;
 
 import Application.Entities.Wall.UserWall;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Type;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,6 +19,8 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
+
+@Slf4j
 
 @Getter
 @Setter
@@ -174,6 +177,8 @@ public class User implements UserDetails {
         userJson.put("hobbies", this.getHobbies() == null ? "" : this.getHobbies());
         userJson.put("last_online", this.getLastOnline() == null ? "" :
                 this.getLastOnline().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+
+        log.info("lo " + this.getLastOnline());
 
         userJson.put("online", Duration.between(this.getLastOnline(), LocalDateTime.now()).getSeconds() < 120L);
 
