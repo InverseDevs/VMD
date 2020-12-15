@@ -113,9 +113,9 @@ public class WallPost extends Content {
         if (!getComments().isEmpty()) {
             JSONArray commentsArray = new JSONArray();
 
-            Stream<Comment> commentStream = this.getComments().stream().sorted(
-                    Comparator.comparing(Content::getSentTime));
-            commentStream.forEach(comment -> commentsArray.put(comment.toJson()));
+            Stream<Comment> friendStream = this.getComments().stream().sorted(
+                    (comment1, comment2) -> comment2.getId().compareTo(comment1.getId()));
+            friendStream.forEach(comment -> commentsArray.put(comment.toJson()));
 
             post.put("comments", commentsArray);
         } else {
