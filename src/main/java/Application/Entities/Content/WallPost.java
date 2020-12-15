@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -113,7 +114,7 @@ public class WallPost extends Content {
             JSONArray commentsArray = new JSONArray();
 
             Stream<Comment> commentStream = this.getComments().stream().sorted(
-                    (comment1, comment2) -> comment2.getSentTime().compareTo(comment1.getSentTime()));
+                    Comparator.comparing(Content::getSentTime));
             commentStream.forEach(comment -> commentsArray.put(comment.toJson()));
 
             post.put("comments", commentsArray);
