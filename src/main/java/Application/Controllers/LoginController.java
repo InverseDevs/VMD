@@ -17,6 +17,7 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @Slf4j
 @CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
@@ -46,7 +47,7 @@ public class LoginController {
                 response.addHeader("Access-Control-Expose-Headers", "Authorization");
                 response.addHeader("Authorization", "Bearer " + token);
 
-                userService.updateOnline(user, true);
+                userService.updateLastOnline(user, LocalDateTime.now());
 
                 responseJson = user.toJson();
             } else {
@@ -116,7 +117,7 @@ public class LoginController {
             if (JwtProvider.validateToken(jwt)) {
                 User user = userService.findUserById(userId);
 
-                userService.updateOnline(user, false);
+                log.info("exit");
 
                 responseJson.put("status", "success");
             } else {

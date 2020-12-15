@@ -45,7 +45,6 @@ public class User implements UserDetails {
     private String phone;
     private String hobbies;
     private LocalDate birthDate;
-    private Boolean online;
     private LocalDateTime lastOnline;
 
     @OneToOne
@@ -176,8 +175,7 @@ public class User implements UserDetails {
         userJson.put("last_online", this.getLastOnline() == null ? "" :
                 this.getLastOnline().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
 
-        this.setOnline(Duration.between(this.getLastOnline(), LocalDateTime.now()).getSeconds() < 120L);
-        userJson.put("online", this.getOnline() != null && this.getOnline());
+        userJson.put("online", Duration.between(this.getLastOnline(), LocalDateTime.now()).getSeconds() < 120L);
 
         if (!this.getRoles().isEmpty()) {
             JSONArray rolesArray = new JSONArray();

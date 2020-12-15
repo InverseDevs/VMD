@@ -283,7 +283,7 @@ public class UserController {
 
                 User user = userService.findUserById(userId);
 
-                userService.updateOnline(user, state);
+                log.info("set online");
 
                 responseJson.put("status", "success");
             } else {
@@ -325,7 +325,6 @@ public class UserController {
                 User user = userService.findUserById(userId);
 
                 userService.updateLastOnline(user, LocalDateTime.now());
-                userService.updateOnline(user, true);
 
                 responseJson.put("status", "success");
             } else {

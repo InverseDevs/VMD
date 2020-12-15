@@ -52,7 +52,5 @@ public interface CustomUsers {
 
     User updateHobbies(User user, String hobbies);
 
-    User updateOnline(User user, Boolean online);
-
     User updateLastOnline(User user, LocalDateTime online);
 }

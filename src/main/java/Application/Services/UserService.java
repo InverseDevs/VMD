@@ -176,10 +176,6 @@ public class UserService implements UserDetailsService {
         userRepository.updateHobbies(user, hobbies);
     }
 
-    public void updateOnline(User user, Boolean online) {
-        userRepository.updateOnline(user, online);
-    }
-
     public void updateLastOnline(User user, LocalDateTime lastOnline) {
         userRepository.updateLastOnline(user, lastOnline);
     }

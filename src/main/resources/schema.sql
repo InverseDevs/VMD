@@ -14,7 +14,6 @@ create table if not exists users
   languages          varchar(256),
   phone              varchar(256),
   hobbies            varchar(256),
-  online             boolean,
   wall_id            int,
   post_access        varchar(32),
   comment_access     varchar(32),
