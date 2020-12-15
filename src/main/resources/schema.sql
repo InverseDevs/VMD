@@ -18,7 +18,8 @@ create table if not exists users
   wall_id            int,
   post_access        varchar(32),
   comment_access     varchar(32),
-  message_access     varchar(32)
+  message_access     varchar(32),
+  last_online        timestamp
 );
 
 create table if not exists roles
@@ -35,7 +36,7 @@ create table if not exists user_to_role
 
 create table if not exists chats
 (
-  id                 serial,
+  id                   serial,
   picture              bytea
 );
 
@@ -109,14 +110,14 @@ create table if not exists walls
 
 create table if not exists groups
 (
-  id            serial,
-  name          varchar(256),
-  named_link    varchar(64),
-  owner_id      int,
-  wall_id       int,
-  picture       bytea,
+  id             serial,
+  name           varchar(256),
+  named_link     varchar(64),
+  owner_id       int,
+  wall_id        int,
+  picture        bytea,
   comment_access varchar(32),
-  post_access varchar(32)
+  post_access    varchar(32)
 );
 
 create table if not exists group_admins

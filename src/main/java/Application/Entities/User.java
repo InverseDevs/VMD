@@ -10,7 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Objects;
@@ -44,6 +46,7 @@ public class User implements UserDetails {
     private String hobbies;
     private LocalDate birthDate;
     private Boolean online;
+    private LocalDateTime lastOnline;
 
     @OneToOne
     @JoinColumn(name = "wall_id")
@@ -170,6 +173,10 @@ public class User implements UserDetails {
         userJson.put("languages", this.getLanguages() == null ? "" : this.getLanguages());
         userJson.put("phone", this.getPhone() == null ? "" : this.getPhone());
         userJson.put("hobbies", this.getHobbies() == null ? "" : this.getHobbies());
+        userJson.put("last_online", this.getLastOnline() == null ? "" :
+                this.getLastOnline().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")));
+
+        this.setOnline(Duration.between(this.getLastOnline(), LocalDateTime.now()).getSeconds() < 120L);
         userJson.put("online", this.getOnline() != null && this.getOnline());
 
         if (!this.getRoles().isEmpty()) {

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -177,6 +178,10 @@ public class UserService implements UserDetailsService {
 
     public void updateOnline(User user, Boolean online) {
         userRepository.updateOnline(user, online);
+    }
+
+    public void updateLastOnline(User user, LocalDateTime lastOnline) {
+        userRepository.updateLastOnline(user, lastOnline);
     }
 
     public void updateCommentAccess(User user, User.Access commentAccess) {

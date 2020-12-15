@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -323,7 +324,8 @@ public class UserController {
             if (JwtProvider.validateToken(jwt)) {
                 User user = userService.findUserById(userId);
 
-                log.info("ping " + LocalDate.now());
+                userService.updateLastOnline(user, LocalDateTime.now());
+                userService.updateOnline(user, true);
 
                 responseJson.put("status", "success");
             } else {

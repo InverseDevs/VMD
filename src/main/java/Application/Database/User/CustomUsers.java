@@ -3,6 +3,7 @@ package Application.Database.User;
 import Application.Entities.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface CustomUsers {
     @Deprecated
@@ -52,4 +53,6 @@ public interface CustomUsers {
     User updateHobbies(User user, String hobbies);
 
     User updateOnline(User user, Boolean online);
+
+    User updateLastOnline(User user, LocalDateTime online);
 }

@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Transactional
@@ -175,6 +176,13 @@ public class CustomUsersImpl implements CustomUsers {
     public User updateOnline(User user, Boolean online) {
         User userInDb = findInDb(user);
         userInDb.setOnline(online);
+        return userInDb;
+    }
+
+    @Override
+    public User updateLastOnline(User user, LocalDateTime lastOnline) {
+        User userInDb = findInDb(user);
+        userInDb.setLastOnline(lastOnline);
         return userInDb;
     }
 
