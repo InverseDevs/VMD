@@ -114,7 +114,7 @@ public class WallPost extends Content {
             JSONArray commentsArray = new JSONArray();
 
             Stream<Comment> friendStream = this.getComments().stream().sorted(
-                    (comment1, comment2) -> comment2.getId().compareTo(comment1.getId()));
+                    Comparator.comparing(Content::getId));
             friendStream.forEach(comment -> commentsArray.put(comment.toJson()));
 
             post.put("comments", commentsArray);
