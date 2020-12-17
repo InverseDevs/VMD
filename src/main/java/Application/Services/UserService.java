@@ -1,5 +1,6 @@
 package Application.Services;
 
+import Application.Cache.UserCache;
 import Application.Database.RoleRepository;
 import Application.Database.User.UserRepository;
 import Application.Database.Wall.UserWallRepository;
@@ -22,7 +23,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -34,8 +34,14 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private RoleRepository roleRepository;
-    private Role getUserRole() { return roleRepository.findById(Starter.userRoleId).get(); }
-    private Role getAdminRole() { return roleRepository.findById(Starter.adminRoleId).get(); }
+
+    private Role getUserRole() {
+        return roleRepository.findById(Starter.userRoleId).get();
+    }
+
+    private Role getAdminRole() {
+        return roleRepository.findById(Starter.adminRoleId).get();
+    }
 
 
     @Override
@@ -46,9 +52,10 @@ public class UserService implements UserDetailsService {
 
     /**
      * Создает пользователя с указанным набором данных.
+     *
      * @param username имя пользователя.
      * @param password пароль пользователя.
-     * @param email электронная почта пользователя.
+     * @param email    электронная почта пользователя.
      * @return объект, соответствующий пользователю.
      * @throws UserAlreadyExists пользователь с такими данными уже существует.
      */
@@ -58,6 +65,7 @@ public class UserService implements UserDetailsService {
 
     /**
      * Создает пользователя с указанным набором данных.
+     *
      * @param username
      * @param password
      * @param email
@@ -73,9 +81,9 @@ public class UserService implements UserDetailsService {
     }
 
     private User createUser(User user) throws UserAlreadyExists {
-        if(userRepository.existsByUsername(user.getUsername()))
+        if (userRepository.existsByUsername(user.getUsername()))
             throw new UserAlreadyExistsByUsername();
-        if(userRepository.existsByEmail(user.getEmail()))
+        if (userRepository.existsByEmail(user.getEmail()))
             throw new UserAlreadyExistsByEmail();
         user.setRoles(Collections.singleton(this.getUserRole()));
         wallRepository.save(user.getWall());
@@ -83,7 +91,14 @@ public class UserService implements UserDetailsService {
     }
 
     public User findUserById(Long id) throws NoUserFoundException {
-        return userRepository.findById(id).orElseThrow(NoUserFoundException::new);
+        User userFromCache = UserCache.getUser(id);
+        if (userFromCache == null) {
+            User user = userRepository.findById(id).orElseThrow(NoUserFoundException::new);
+            UserCache.cacheUser(user);
+            return user;
+        } else {
+            return userFromCache;
+        }
     }
 
     public User findUserByEmail(String email) throws NoUserFoundException {
@@ -99,7 +114,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void permitUser(User user) {
-        if(user.getId() == null) throw new UserIsNotPersistedException();
+        if (user.getId() == null) throw new UserIsNotPersistedException();
         user.setPermitted(true);
         userRepository.permitUser(user.getId());
     }
