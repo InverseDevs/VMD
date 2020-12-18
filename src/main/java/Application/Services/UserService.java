@@ -92,16 +92,14 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public User findUserById(Long id) throws NoUserFoundException {
         User userFromCache = UserCache.getUser(id);
-        log.info("get");
         if (userFromCache == null) {
             User user = userRepository.findById(id).orElseThrow(NoUserFoundException::new);
             UserCache.cacheUser(user);
-            log.info("cache");
             return user;
         } else {
-            log.info("return");
             return userFromCache;
         }
     }
