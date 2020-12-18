@@ -4,10 +4,8 @@ import Application.Entities.User;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
-import javax.transaction.Transactional;
 import java.util.concurrent.TimeUnit;
 
-@Transactional
 public class UserCache {
     private static final Cache<Long, User> userCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
 

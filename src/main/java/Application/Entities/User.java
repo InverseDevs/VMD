@@ -15,6 +15,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
@@ -157,7 +158,19 @@ public class User implements UserDetails {
                 ", permitted=" + permitted +
                 ", name='" + name + '\'' +
                 ", birthTown='" + birthTown + '\'' +
+                ", studyPlace='" + studyPlace + '\'' +
+                ", languages='" + languages + '\'' +
+                ", phone='" + phone + '\'' +
+                ", hobbies='" + hobbies + '\'' +
                 ", birthDate=" + birthDate +
+                ", lastOnline=" + lastOnline +
+                ", wall=" + wall +
+                ", roles=" + roles +
+                ", friends=" + friends +
+                ", friendRequests=" + friendRequests +
+                ", messageAccess=" + messageAccess +
+                ", postAccess=" + postAccess +
+                ", commentAccess=" + commentAccess +
                 '}';
     }
 
