@@ -17,7 +17,6 @@ public class UserCache {
 
     public static void cacheUser(User user) {
         log.info("cache");
-        log.info(user.toString());
         userCache.put(user.getId(), user);
     }
 }

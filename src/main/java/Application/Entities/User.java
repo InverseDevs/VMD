@@ -148,32 +148,6 @@ public class User implements UserDetails {
         return password;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", permitted=" + permitted +
-                ", name='" + name + '\'' +
-                ", birthTown='" + birthTown + '\'' +
-                ", studyPlace='" + studyPlace + '\'' +
-                ", languages='" + languages + '\'' +
-                ", phone='" + phone + '\'' +
-                ", hobbies='" + hobbies + '\'' +
-                ", birthDate=" + birthDate +
-                ", lastOnline=" + lastOnline +
-                ", wall=" + wall +
-                ", roles=" + roles +
-                ", friends=" + friends +
-                ", friendRequests=" + friendRequests +
-                ", messageAccess=" + messageAccess +
-                ", postAccess=" + postAccess +
-                ", commentAccess=" + commentAccess +
-                '}';
-    }
-
     public JSONObject toJson() {
         JSONObject userJson = new JSONObject();
         userJson.put("id", this.getId() == null ? "" : this.getId());
