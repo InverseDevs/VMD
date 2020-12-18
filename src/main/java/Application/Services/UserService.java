@@ -12,6 +12,7 @@ import Application.Exceptions.User.Exist.UserAlreadyExistsByUsername;
 import Application.Exceptions.User.NoUserFoundException;
 import Application.Exceptions.User.UserIsNotPersistedException;
 import Application.Starter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional
 public class UserService implements UserDetailsService {
@@ -92,11 +94,14 @@ public class UserService implements UserDetailsService {
 
     public User findUserById(Long id) throws NoUserFoundException {
         User userFromCache = UserCache.getUser(id);
+        log.info("get");
         if (userFromCache == null) {
             User user = userRepository.findById(id).orElseThrow(NoUserFoundException::new);
             UserCache.cacheUser(user);
+            log.info("cache");
             return user;
         } else {
+            log.info("return");
             return userFromCache;
         }
     }

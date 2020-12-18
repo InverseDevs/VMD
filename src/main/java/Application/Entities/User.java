@@ -63,19 +63,19 @@ public class User implements UserDetails {
     @Type(type = "org.hibernate.type.BinaryType")
     private byte[] round;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "user_to_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "friends",
             joinColumns = @JoinColumn(name = "user1_id"),
             inverseJoinColumns = @JoinColumn(name = "user2_id"))
     private Set<User> friends;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "friendRequests",
             joinColumns = @JoinColumn(name = "to_user"),
             inverseJoinColumns = @JoinColumn(name = "from_user"))
