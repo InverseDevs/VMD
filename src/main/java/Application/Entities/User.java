@@ -53,7 +53,7 @@ public class User implements UserDetails {
 
     @OneToOne
     @JoinColumn(name = "wall_id")
-    @Setter(AccessLevel.PRIVATE)
+    @Setter
     private UserWall wall;
 
     @Lob
