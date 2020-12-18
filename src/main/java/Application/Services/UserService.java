@@ -99,9 +99,6 @@ public class UserService implements UserDetailsService {
             UserCache.cacheUser(user);
             return user;
         } else {
-
-            log.info(userFromCache.toString());
-
             return userFromCache;
         }
     }
