@@ -93,14 +93,19 @@ public class UserService implements UserDetailsService {
     }
 
     public User findUserById(Long id) throws NoUserFoundException {
-        User userFromCache = UserCache.getUser(id);
-        if (userFromCache == null) {
-            User user = userRepository.findById(id).orElseThrow(NoUserFoundException::new);
-            UserCache.cacheUser(user);
-            return user;
-        } else {
-            return userFromCache;
+        try {
+            User userFromCache = UserCache.getUser(id);
+            if (userFromCache == null) {
+                User user = userRepository.findById(id).orElseThrow(NoUserFoundException::new);
+                UserCache.cacheUser(user);
+                return user;
+            } else {
+                return userFromCache;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     public User findUserByEmail(String email) throws NoUserFoundException {
